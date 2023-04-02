@@ -10,6 +10,7 @@ import documentRoute from "./src/routes/document.js";
 import fileRoute from "./src/routes/file.js";
 import feedbackCommentRoute from "./src/routes/feedbackComment.js";
 import notificationRoute from "./src/routes/notification.js";
+import openaiRoute from "./src/routes/openai.js";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -33,6 +34,7 @@ app.use("/api/document", documentRoute);
 app.use("/api/file", fileRoute);
 app.use("/api/feedback", feedbackCommentRoute);
 app.use("/api/notification", notificationRoute);
+app.use("/api/openai", openaiRoute);
 app.listen(port, () => {
   console.log("Server Run");
 });
