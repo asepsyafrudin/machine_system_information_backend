@@ -1,12 +1,12 @@
 import db from "../config/db.js";
+import { v4 as uuidv4 } from "uuid";
 
-export const createDocumentModels = (data) => {
+export const createDocumentModels = (data, id) => {
   const sql = `INSERT INTO t_document SET 
-    id = '${data.id}',
+    id = '${id}',
     title = '${data.title}',
     machine_id = '${data.machine_id}',
     user_id=${parseInt(data.user_id)},
-    create_date = '${data.create_date}',
     file_type ='${data.file_type}',
     description='${data.description}',
     status ='${data.status}'`;
@@ -18,7 +18,6 @@ export const updateDocumentByIdModels = (data) => {
     title = '${data.title}',
     machine_id = '${data.machine_id}',
     user_id=${parseInt(data.user_id)},
-    create_date = '${data.create_date}',
     file_type ='${data.file_type}',
     description='${data.description}'
     WHERE id = '${data.id}'`;
@@ -35,6 +34,8 @@ export const getAllDocumentModels = () => {
     t_document.status,
     t_document.file_type,
     t_users.username,
+    t_users.photo,
+    t_users.email,
     t_document.machine_id,
     t_machine.machine_name,
     t_machine.line_id,
@@ -45,7 +46,7 @@ export const getAllDocumentModels = () => {
     JOIN t_machine ON t_document.machine_id = t_machine.id
     JOIN t_line ON t_line.id = t_machine.line_id 
     JOIN t_product ON t_product.id = t_line.product_id 
-    ORDER BY t_document.id DESC
+    ORDER BY t_document.create_date DESC
     `;
   return db.execute(sql);
 };
@@ -60,6 +61,8 @@ export const getAllDocumentByUserIdModels = (userId) => {
   t_document.status,
   t_document.file_type,
   t_users.username,
+  t_users.photo,
+  t_users.email,
   t_document.machine_id,
   t_machine.machine_name,
   t_machine.line_id,
@@ -70,7 +73,7 @@ export const getAllDocumentByUserIdModels = (userId) => {
   JOIN t_machine ON t_document.machine_id = t_machine.id
   JOIN t_line ON t_line.id = t_machine.line_id 
   JOIN t_product ON t_product.id = t_line.product_id
-  WHERE t_document.user_id = ${userId} ORDER BY t_document.id DESC`;
+  WHERE t_document.user_id = ${userId} ORDER BY t_document.create_date DESC`;
 
   return db.execute(sql);
 };
@@ -86,6 +89,8 @@ export const searchAllDocumentModels = (searchValue) => {
     t_document.status,
     t_document.file_type,
     t_users.username,
+    t_users.photo,
+    t_users.email,
     t_document.machine_id,
     t_machine.machine_name,
     t_machine.line_id,
@@ -103,7 +108,7 @@ export const searchAllDocumentModels = (searchValue) => {
     t_line.line_name like '%${searchValue}%' or 
     t_product.product_name like '%${searchValue}%' 
     and t_document.status='Active'    
-    ORDER BY t_document.id DESC
+    ORDER BY t_document.create_date DESC
     `;
   return db.execute(sql);
 };
@@ -119,6 +124,8 @@ export const searchDocumentForUserModels = (userId, searchValue) => {
     t_document.status,
     t_document.file_type,
     t_users.username,
+    t_users.photo,
+    t_users.email,
     t_document.machine_id,
     t_machine.machine_name,
     t_machine.line_id,
@@ -136,7 +143,7 @@ export const searchDocumentForUserModels = (userId, searchValue) => {
     t_line.line_name like '%${searchValue}%' or 
     t_product.product_name like '%${searchValue}%' 
     and t_document.user_id = ${userId}
-    ORDER BY t_document.id DESC
+    ORDER BY t_document.create_date DESC
     `;
   return db.execute(sql);
 };
@@ -151,6 +158,8 @@ export const searchDocumentForAdminModels = (searchValue) => {
     t_document.user_id,
     t_document.status,
     t_users.username,
+    t_users.photo,
+    t_users.email,
     t_document.machine_id,
     t_document.file_type,
     t_machine.machine_name,
@@ -168,7 +177,7 @@ export const searchDocumentForAdminModels = (searchValue) => {
     t_machine.machine_name like '%${searchValue}%' or
     t_line.line_name like '%${searchValue}%' or 
     t_product.product_name like '%${searchValue}%'
-    ORDER BY t_document.id DESC
+    ORDER BY t_document.create_date DESC
     `;
   return db.execute(sql);
 };
@@ -193,6 +202,8 @@ export const getDocumentByIdModels = (id) => {
   t_document.user_id,
   t_document.status,
   t_users.username,
+  t_users.photo,
+  t_users.email,
   t_document.machine_id,
   t_document.file_type,
   t_machine.machine_name,

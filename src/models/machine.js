@@ -7,6 +7,7 @@ export const createMachineModels = (data) => {
     cycletime = '${data.cycletime}', 
     operation_ratio = '${data.operation_ratio}',
     masspro_date = '${data.masspro_date}',
+    asset_id ='${data.asset_id}',
     status = '${data.status}',
     description = '${data.description}',
     line_id = ${data.line_id}
@@ -28,6 +29,7 @@ export const updateStatusMachineModels = (data) => {
 export const updateMachineModels = (data) => {
   const sql = `UPDATE t_machine SET 
     machine_name = '${data.machine_name}', 
+    asset_id ='${data.asset_id}',
     cycletime = '${data.cycletime}', 
     operation_ratio = '${data.operation_ratio}',
     masspro_date = '${data.masspro_date}',
@@ -43,6 +45,7 @@ export const getAllMachineModels = () => {
     t_machine.id , 
     t_machine.machine_name,
     t_machine.cycletime,
+    t_machine.asset_id,
     t_machine.operation_ratio,
     t_machine.masspro_date,
     t_machine.status,
@@ -65,6 +68,7 @@ export const searchMachineModel = (searchValue) => {
     t_machine.id , 
     t_machine.machine_name,
     t_machine.cycletime,
+    t_machine.asset_id,
     t_machine.operation_ratio,
     t_machine.masspro_date,
     t_machine.status,

@@ -11,12 +11,16 @@ import fileRoute from "./src/routes/file.js";
 import feedbackCommentRoute from "./src/routes/feedbackComment.js";
 import notificationRoute from "./src/routes/notification.js";
 import openaiRoute from "./src/routes/openai.js";
+import requestRoute from "./src/routes/request.js";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use("/static", express.static(path.join(__dirname, "src/assets")));
@@ -35,6 +39,7 @@ app.use("/api/file", fileRoute);
 app.use("/api/feedback", feedbackCommentRoute);
 app.use("/api/notification", notificationRoute);
 app.use("/api/openai", openaiRoute);
+app.use("/api/request", requestRoute);
 app.listen(port, () => {
-  console.log("Server Run");
+  console.log("Server Run On Port " + port);
 });

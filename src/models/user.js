@@ -62,3 +62,17 @@ export const getUserByNPKModels = (npk) => {
   const sql = `SELECT * FROM t_users where npk = '${npk}'`;
   return db.execute(sql);
 };
+
+export const getUserByEmailModels = (email) => {
+  const sql = `SELECT * FROM t_users where email = '${email}'`;
+  return db.execute(sql);
+};
+
+export const changePasswordModels = (data) => {
+  const password = encryptPassword(data.password);
+  const sql = `UPDATE t_users SET 
+  password = '${password}' where email = '${data.email}'
+  `;
+
+  return db.execute(sql);
+};

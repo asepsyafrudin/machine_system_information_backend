@@ -7,6 +7,8 @@ import {
   findUserModels,
   getUserByUserIdModels,
   getUserByNPKModels,
+  getUserByEmailModels,
+  changePasswordModels,
 } from "../models/user.js";
 
 export const createUser = async (req, res) => {
@@ -220,6 +222,36 @@ export const getUserByNPK = async (req, res) => {
   } catch (error) {
     res.status(200).json({
       msg: "Password Beda",
+      errMsg: error,
+    });
+  }
+};
+
+export const getUserByEmail = async (req, res) => {
+  try {
+    const [result] = await getUserByEmailModels(req.params.email);
+    res.status(200).json({
+      msg: "result get user by email ",
+      data: result,
+    });
+  } catch (error) {
+    res.status(200).json({
+      msg: "Password Beda",
+      errMsg: error,
+    });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    await changePasswordModels(req.body);
+    res.status(200).json({
+      msg: "change password berhasil",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(200).json({
+      msg: "change password gagal",
       errMsg: error,
     });
   }

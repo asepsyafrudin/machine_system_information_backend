@@ -16,12 +16,14 @@ import {
   getFileByDocumentId,
 } from "../models/file.js";
 import { getUserByUserIdModels } from "../models/user.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const createDocument = async (req, res) => {
   try {
-    await createDocumentModels(req.body);
+    const id = uuidv4();
+    await createDocumentModels(req.body, id);
     const file = req.files;
-    const document_id = req.body.id;
+    const document_id = id;
     if (file) {
       for (let index = 0; index < file.length; index++) {
         let filename =
@@ -103,6 +105,8 @@ export const getDocumentByPage = async (req, res) => {
         description: result[index].description,
         user_id: result[index].user_id,
         username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
         machine_id: result[index].machine_id,
         machine_name: result[index].machine_name,
         line_id: result[index].line_id,
@@ -150,6 +154,8 @@ export const getDocumentByUserIdAndPage = async (req, res) => {
         description: result[index].description,
         user_id: result[index].user_id,
         username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
         machine_id: result[index].machine_id,
         machine_name: result[index].machine_name,
         line_id: result[index].line_id,
@@ -198,6 +204,8 @@ export const searchDocumentByPage = async (req, res) => {
         description: result[index].description,
         user_id: result[index].user_id,
         username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
         machine_id: result[index].machine_id,
         machine_name: result[index].machine_name,
         line_id: result[index].line_id,
@@ -253,6 +261,8 @@ export const searchDocumentForDashboardMenu = async (req, res) => {
         description: result[index].description,
         user_id: result[index].user_id,
         username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
         machine_id: result[index].machine_id,
         machine_name: result[index].machine_name,
         line_id: result[index].line_id,
@@ -330,6 +340,8 @@ export const getDocumentById = async (req, res) => {
         description: result[index].description,
         user_id: result[index].user_id,
         username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
         machine_id: result[index].machine_id,
         machine_name: result[index].machine_name,
         line_id: result[index].line_id,

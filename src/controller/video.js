@@ -12,9 +12,11 @@ import {
   updateStatusVideoModels,
   updateVideoModels,
 } from "../models/video.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const createVideo = async (req, res) => {
   try {
+    const id = uuidv4();
     let filename = "";
     if (!req.file) {
       filename = "";
@@ -27,7 +29,7 @@ export const createVideo = async (req, res) => {
         req.file.filename;
     }
 
-    await createVideoModels(req.body, filename);
+    await createVideoModels(req.body, filename, id);
     res.status(200).json({
       msg: "video berhasil di upload",
       data: req.body,

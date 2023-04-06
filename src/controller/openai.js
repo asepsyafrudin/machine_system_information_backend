@@ -12,17 +12,29 @@ const openai = new OpenAIApi(configuration);
 export const postOpenai = async (req, res) => {
   try {
     const prompt = req.body.prompt;
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      temperature: 1,
+    // const response = await openai.createCompletion({
+    //   model: "text-davinci-003",
+    //   prompt: prompt,
+    //   temperature: 0.7,
+    //   max_tokens: 3000,
+    //   top_p: 1,
+    //   frequency_penalty: 0,
+    //   presence_penalty: 0,
+    // });
+
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
       max_tokens: 3000,
-      frequency_penalty: 0.5,
-      presence_penalty: 0.5,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
     });
+
     res.status(200).json({
       msg: "succees to get answere from openapi",
-      bot: response.data.choices[0].text,
+      bot: response.data.choices[0].message.content,
     });
   } catch (error) {
     res.status(400).json({

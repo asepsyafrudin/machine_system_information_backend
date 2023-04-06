@@ -12,6 +12,8 @@ import {
   getUserByPage,
   userCheckPassword,
   getUserByNPK,
+  getUserByEmail,
+  changePassword,
 } from "../controller/user.js";
 
 import { diskStorageProfile } from "../config/multer.js";
@@ -29,4 +31,7 @@ router.get("/getUserByUserId/:userId", getUserByUserId);
 router.get("/getUserByPage/:page", getUserByPage);
 router.post("/comparePassword", userCheckPassword);
 router.get("/getUserByNPK/:npk", getUserByNPK);
+router.get("/getUserByEmail/:email", getUserByEmail);
+router.patch("/changePassword", changePassword);
+
 export default router;

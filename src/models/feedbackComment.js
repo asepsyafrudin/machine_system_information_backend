@@ -4,7 +4,6 @@ export const createFeedbackModels = (data) => {
   const sql = `INSERT INTO t_feedback_comment SET 
     comment_id =${parseInt(data.comment_id)},
     feedback ='${data.feedback}',
-    create_date = '${data.create_date}',
     user_id = ${parseInt(data.user_id)}`;
 
   return db.execute(sql);
@@ -20,7 +19,8 @@ export const getFeedbackByCommentId = (commentId) => {
     t_feedback_comment.feedback,
     t_feedback_comment.user_id,
     t_feedback_comment.create_date,
-    t_comment.video_id,
+    t_comment.selected_id,
+    t_comment.selected_item,
     t_users.username,
     t_users.email,
     t_users.photo FROM t_feedback_comment JOIN t_users 

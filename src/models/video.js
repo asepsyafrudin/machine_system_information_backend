@@ -1,15 +1,14 @@
 import db from "../config/db.js";
 
-export const createVideoModels = (data, filename) => {
-  const sql = `INSERT INTO t_video SET 
+export const createVideoModels = (data, filename, id) => {
+  const sql = `INSERT INTO t_video SET
+    id ='${id}',
     video_name = '${data.video_name}',
     machine_id = '${data.machine_id}',
     user_id = ${data.user_id},
     video_url ='${filename}',
     description = '${data.description}',
-    status ='${data.status}',
-    create_date = '${data.create_date}'
-    `;
+    status ='${data.status}'`;
 
   return db.execute(sql);
 };
@@ -40,7 +39,7 @@ export const getAllVideoModels = () => {
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
     where t_video.status = 'Active'
-    ORDER BY id desc 
+    ORDER BY t_video.create_date desc 
     
     `;
   return db.execute(sql);
@@ -53,21 +52,20 @@ export const updateVideoModels = (data, filename) => {
     user_id = ${data.user_id},
     video_url ='${filename}',
     description = '${data.description}',
-    status ='${data.status}',
-    create_date = '${data.create_date}'
-    where id=${data.id}`;
+    status ='${data.status}'
+    where id='${data.id}'`;
 
   return db.execute(sql);
 };
 
 export const deleteVideoModels = (id) => {
-  const sql = `DELETE from t_video where id = ${id}`;
+  const sql = `DELETE from t_video where id = '${id}'`;
   return db.execute(sql);
 };
 
 export const updateStatusVideoModels = (data) => {
   const sql = `UPDATE t_video SET 
-    status = '${data.status}' where id = ${data.id}`;
+    status = '${data.status}' where id = '${data.id}'`;
   return db.execute(sql);
 };
 
@@ -95,7 +93,7 @@ export const getVideoByIdModels = (id) => {
   t_machine.line_id = t_line.id JOIN t_product ON
   t_line.product_id = t_product.id JOIN t_users ON
   t_users.id = t_video.user_id
-  where t_video.id=${id}`;
+  where t_video.id='${id}'`;
   return db.execute(sql);
 };
 
@@ -123,7 +121,7 @@ export const getVideoByUserIdModels = (userId) => {
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
-    where t_video.user_id=${userId}`;
+    where t_video.user_id=${userId} ORDER BY t_video.create_date desc`;
   return db.execute(sql);
 };
 
@@ -152,8 +150,7 @@ export const getAllVideoForAdminModels = () => {
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
-    ORDER BY id desc 
-    
+    ORDER BY t_video.create_date desc
     `;
   return db.execute(sql);
 };
@@ -187,7 +184,7 @@ export const searchVideoModels = (searchValue) => {
     or t_video.machine_id like '%${searchValue}%'
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%'
-    and t_video.status = 'Active'`;
+    and t_video.status = 'Active' ORDER BY t_video.create_date desc `;
 
   return db.execute(sql);
 };
@@ -221,7 +218,7 @@ export const searchVideoForUserModels = (userId, searchValue) => {
     or t_video.machine_id like '%${searchValue}%'
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%'
-    and t_video.user_id = ${userId}`;
+    and t_video.user_id = ${userId} ORDER BY t_video.create_date desc`;
   return db.execute(sql);
 };
 
@@ -253,7 +250,7 @@ export const searchVideoForAdminModels = (searchValue) => {
     WHERE t_video.video_name like '%${searchValue}%'
     or t_video.machine_id like '%${searchValue}%'
     or t_line.line_name like '%${searchValue}%'
-    or t_product.product_name like '%${searchValue}%'`;
+    or t_product.product_name like '%${searchValue}%' ORDER BY t_video.create_date desc`;
 
   return db.execute(sql);
 };

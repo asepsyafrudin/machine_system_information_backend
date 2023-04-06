@@ -1,42 +1,50 @@
 import { getCommentByCommentId } from "../models/comment.js";
+import { getDocumentByIdModels } from "../models/document.js";
 import {
   createFeedbackModels,
   deleteFeedbackModels,
   getFeedbackByCommentId,
 } from "../models/feedbackComment.js";
+import dotenv from "dotenv";
 import { createNotificationModels } from "../models/notification.js";
 import { getVideoByIdModels } from "../models/video.js";
+
+dotenv.config();
 
 export const createFeedbackComment = async (req, res) => {
   try {
     await createFeedbackModels(req.body);
-    console.log(req.body);
-    const [feedbackComment] = await getFeedbackByCommentId(req.body.comment_id);
-    const [comment] = await getCommentByCommentId(req.body.comment_id);
-    const [video] = await getVideoByIdModels(req.body.video_id);
-
     let newArrayListUserNotif = [];
+    if (req.body.selected_item === "document") {
+      const [document] = await getDocumentByIdModels(req.body.selected_id);
+      newArrayListUserNotif.push({
+        user_id: document[0].user_id,
+        username: document[0].username,
+        email: document[0].email,
+      });
+    } else if (req.body.selected_item === "video") {
+      const [video] = await getVideoByIdModels(req.body.selected_id);
+      newArrayListUserNotif.push({
+        user_id: video[0].user_id,
+        username: video[0].username,
+        email: video[0].email,
+      });
+    }
+
+    const [comment] = await getCommentByCommentId(req.body.comment_id);
     newArrayListUserNotif.push({
       user_id: comment[0].user_id,
       username: comment[0].username,
       email: comment[0].email,
-      video_id: comment[0].video_id,
     });
 
-    newArrayListUserNotif.push({
-      user_id: video[0].user_id,
-      username: video[0].username,
-      email: video[0].email,
-      video_id: video[0].id,
-    });
-
+    const [feedbackComment] = await getFeedbackByCommentId(req.body.comment_id);
     if (feedbackComment.length !== 0) {
       for (let index = 0; index < feedbackComment.length; index++) {
         newArrayListUserNotif.push({
           user_id: feedbackComment[index].user_id,
           username: feedbackComment[index].username,
           email: feedbackComment[index].email,
-          video_id: feedbackComment[index].video_id,
         });
       }
     }
@@ -56,16 +64,30 @@ export const createFeedbackComment = async (req, res) => {
     // console.log(emailListPushNotif);
     //simulasi send notif email
 
-    const port = "http://172.31.73.34:3000";
-    for (let index = 0; index < arrayList2.length; index++) {
-      const data = {
-        user_id: arrayList2[index].user_id,
-        link: `${port}/video/${video[0].id}`,
-        type: "video",
-        user_comment_id: req.body.user_id,
-      };
-      await createNotificationModels(data);
+    const port = process.env.IP_ADDRESS_LOCALHOST;
+
+    if (req.body.selected_item === "document") {
+      for (let index = 0; index < arrayList2.length; index++) {
+        const data = {
+          user_id: arrayList2[index].user_id,
+          link: `${port}/document/${req.body.selected_id}`,
+          type: "document",
+          user_comment_id: req.body.user_id,
+        };
+        await createNotificationModels(data);
+      }
+    } else if (req.body.selected_item === "video") {
+      for (let index = 0; index < arrayList2.length; index++) {
+        const data = {
+          user_id: arrayList2[index].user_id,
+          link: `${port}/video/${req.body.selected_id}`,
+          type: "video",
+          user_comment_id: req.body.user_id,
+        };
+        await createNotificationModels(data);
+      }
     }
+
     res.status(200).json({
       msg: "comment berhasil di post",
       data: req.body,
