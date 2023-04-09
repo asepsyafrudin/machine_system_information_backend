@@ -12,6 +12,7 @@ import feedbackCommentRoute from "./src/routes/feedbackComment.js";
 import notificationRoute from "./src/routes/notification.js";
 import openaiRoute from "./src/routes/openai.js";
 import requestRoute from "./src/routes/request.js";
+import capabilityRoute from "./src/routes/capability.js";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -40,6 +41,7 @@ app.use("/api/feedback", feedbackCommentRoute);
 app.use("/api/notification", notificationRoute);
 app.use("/api/openai", openaiRoute);
 app.use("/api/request", requestRoute);
+app.use("/api/capability", capabilityRoute);
 app.listen(port, () => {
   console.log("Server Run On Port " + port);
 });
