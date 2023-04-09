@@ -5,7 +5,6 @@ export const createCapabilityModels = (data, id) => {
     id = '${id}',
     user_id = '${data.user_id}',
     machine_id = '${data.machine_id}',
-    title= '${data.title}',
     part_name = '${data.part_name}',
     part_number = '${data.part_number}',
     item_check = '${data.item_check}',
@@ -23,8 +22,7 @@ export const createCapabilityModels = (data, id) => {
 export const updateCapabilityModels = (data) => {
   const sql = `UPDATE t_capability SET 
     user_id = '${data.user_id}',
-    machine_id = '${data.machine_id}',
-    title= '${data.title}',
+    machine_id = '${data.machine_id}',  
     part_name = '${data.part_name}',
     part_number = '${data.part_number}',
     item_check = '${data.item_check}',

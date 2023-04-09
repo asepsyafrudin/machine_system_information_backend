@@ -21,7 +21,7 @@ export const createCapability = async (req, res) => {
     await createCapabilityModels(req.body, id);
     if (capabilityData.length > 0) {
       for (let index = 0; index < capabilityData.length; index++) {
-        await createDataCapabilityModels(capabilityData[index], id);
+        await createDataCapabilityModels(capabilityData[index].data, id);
       }
     }
     res.status(200).json({
@@ -47,7 +47,10 @@ export const updateCapability = async (req, res) => {
       await deleteDataCapabilityByCapabilityIdModels(req.body.capability_id);
       if (data.length > 0) {
         for (let index = 0; index < data.length; index++) {
-          await createDataCapabilityModels(data[index], req.body.capability_id);
+          await createDataCapabilityModels(
+            data[index].data,
+            req.body.capability_id
+          );
         }
       }
     }
@@ -109,9 +112,21 @@ export const getAllCapability = async (req, res) => {
 export const getCapabilityById = async (req, res) => {
   try {
     const [result] = await getCapabilityByIdModels(req.params.id);
+    let data = [];
+    if (result.length > 0) {
+      const [data_capability] = await getDataCapabilityByCapabilityIdModels(
+        result[0].id
+      );
+      data.push(...data_capability);
+    }
+
+    const response = {
+      result,
+      data,
+    };
     res.status(200).json({
       msg: "get data berhasil",
-      data: result,
+      data: response,
     });
   } catch (error) {
     res.status(400).json({
