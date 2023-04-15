@@ -4,6 +4,7 @@ import {
   getAllCapability,
   getCapabilityById,
   getCapabilityByUserId,
+  searchCapability,
   updateCapability,
 } from "../controller/capability.js";
 import express from "express";
@@ -16,5 +17,6 @@ router.delete("/delete/:id", deleteCapability);
 router.get("/getAllCapability/:page", getAllCapability);
 router.get("/getCapabilityByUserId/:user_id/:page", getCapabilityByUserId);
 router.get("/getCapabilityById/:id", getCapabilityById);
+router.get("/search/:searchValue/:page", searchCapability);
 
 export default router;

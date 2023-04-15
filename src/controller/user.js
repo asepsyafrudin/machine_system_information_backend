@@ -9,6 +9,7 @@ import {
   getUserByNPKModels,
   getUserByEmailModels,
   changePasswordModels,
+  resetPhotoProfileModels,
 } from "../models/user.js";
 
 export const createUser = async (req, res) => {
@@ -50,6 +51,7 @@ export const editUser = async (req, res) => {
         "/static/profile/" +
         req.file.filename;
     }
+
     await updateUsersModels(req.body, filename);
     res.status(200).json({
       msg: "Submit Data Berhasil",
@@ -252,6 +254,21 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     res.status(200).json({
       msg: "change password gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const resetPhotoProfile = async (req, res) => {
+  try {
+    await resetPhotoProfileModels(req.params.id);
+    res.status(200).json({
+      msg: "reset photo success",
+      data: req.params.id,
+    });
+  } catch (error) {
+    res.status(200).json({
+      msg: "reset photo gagal",
       errMsg: error,
     });
   }

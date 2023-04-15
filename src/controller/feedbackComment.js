@@ -4,6 +4,7 @@ import {
   createFeedbackModels,
   deleteFeedbackModels,
   getFeedbackByCommentId,
+  getFeedbackByIdModels,
 } from "../models/feedbackComment.js";
 import dotenv from "dotenv";
 import { createNotificationModels } from "../models/notification.js";
@@ -110,6 +111,21 @@ export const deleteFeedback = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "comment gagal di post",
+      errMsg: error,
+    });
+  }
+};
+
+export const getFeedbackById = async (req, res) => {
+  try {
+    const [result] = await getFeedbackByIdModels(req.params.id);
+    res.status(200).json({
+      msg: "get data berhasil",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get data gagal",
       errMsg: error,
     });
   }

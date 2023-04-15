@@ -4,7 +4,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "Samsung@a6plus",
-  database: "machine_information_systemdb",
+  database: "machine_information_system_trial",
 });
 
 export default db.promise();

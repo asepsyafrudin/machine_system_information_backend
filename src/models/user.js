@@ -76,3 +76,9 @@ export const changePasswordModels = (data) => {
 
   return db.execute(sql);
 };
+
+export const resetPhotoProfileModels = (id) => {
+  const sql = `update t_users set 
+  photo = '' where id = ${id}`;
+  return db.execute(sql);
+};

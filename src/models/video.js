@@ -180,10 +180,10 @@ export const searchVideoModels = (searchValue) => {
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
-    WHERE t_video.video_name like '%${searchValue}%'
+    WHERE (t_video.video_name like '%${searchValue}%'
     or t_video.machine_id like '%${searchValue}%'
     or t_line.line_name like '%${searchValue}%'
-    or t_product.product_name like '%${searchValue}%'
+    or t_product.product_name like '%${searchValue}%')
     and t_video.status = 'Active' ORDER BY t_video.create_date desc `;
 
   return db.execute(sql);
@@ -214,10 +214,10 @@ export const searchVideoForUserModels = (userId, searchValue) => {
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
-    WHERE t_video.video_name like '%${searchValue}%'
+    WHERE (t_video.video_name like '%${searchValue}%'
     or t_video.machine_id like '%${searchValue}%'
     or t_line.line_name like '%${searchValue}%'
-    or t_product.product_name like '%${searchValue}%'
+    or t_product.product_name like '%${searchValue}%')
     and t_video.user_id = ${userId} ORDER BY t_video.create_date desc`;
   return db.execute(sql);
 };

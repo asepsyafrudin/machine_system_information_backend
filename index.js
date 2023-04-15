@@ -13,6 +13,8 @@ import notificationRoute from "./src/routes/notification.js";
 import openaiRoute from "./src/routes/openai.js";
 import requestRoute from "./src/routes/request.js";
 import capabilityRoute from "./src/routes/capability.js";
+import fileUploadGeneralRoute from "./src/routes/fileUpload.js";
+import allItemRoute from "./src/routes/allItem.js";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -25,6 +27,7 @@ const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use("/static", express.static(path.join(__dirname, "src/assets")));
+app.use(express.static(path.join(__dirname, "../back-end-app/public")));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -42,6 +45,11 @@ app.use("/api/notification", notificationRoute);
 app.use("/api/openai", openaiRoute);
 app.use("/api/request", requestRoute);
 app.use("/api/capability", capabilityRoute);
+app.use("/api/allItem", allItemRoute);
+app.use("api/fileUpload", fileUploadGeneralRoute);
+app.use("/presysta", (req, res) => {
+  res.sendFile(path.join(__dirname, "../back-end-app/public/index.html"));
+});
 app.listen(port, () => {
   console.log("Server Run On Port " + port);
 });

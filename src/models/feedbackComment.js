@@ -30,3 +30,8 @@ export const getFeedbackByCommentId = (commentId) => {
     ORDER BY t_feedback_comment.id ASC`;
   return db.execute(sql);
 };
+
+export const getFeedbackByIdModels = (id) => {
+  const sql = `SELECT * from t_feedback_comment where id = ${id}`;
+  return db.execute(sql);
+};

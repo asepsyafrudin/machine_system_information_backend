@@ -48,3 +48,18 @@ export const diskStorageVideo = multer.diskStorage({
     );
   },
 });
+
+export const diskStorageGeneral = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, path.join(__dirname, "../assets/general"));
+  },
+  filename: (req, file, callback) => {
+    callback(
+      null,
+      path.parse(file.originalname).name +
+        "-" +
+        Date.now() +
+        path.extname(file.originalname)
+    );
+  },
+});

@@ -14,6 +14,7 @@ import {
   getUserByNPK,
   getUserByEmail,
   changePassword,
+  resetPhotoProfile,
 } from "../controller/user.js";
 
 import { diskStorageProfile } from "../config/multer.js";
@@ -33,5 +34,6 @@ router.post("/comparePassword", userCheckPassword);
 router.get("/getUserByNPK/:npk", getUserByNPK);
 router.get("/getUserByEmail/:email", getUserByEmail);
 router.patch("/changePassword", changePassword);
+router.patch("/resetPhoto/:id", resetPhotoProfile);
 
 export default router;
