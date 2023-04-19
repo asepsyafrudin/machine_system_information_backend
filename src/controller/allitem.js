@@ -1,7 +1,9 @@
 import { getAllCapabilityForRecent } from "../models/capability.js";
 import { getAllDocumentForGeneralModels } from "../models/document.js";
 import { getAllVideoModels } from "../models/video.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 export const getAllItem = async (req, res) => {
   try {
     const [document] = await getAllDocumentForGeneralModels();
@@ -16,7 +18,7 @@ export const getAllItem = async (req, res) => {
           create_date: document[index].create_date,
           file_type: document[index].file_type,
           username: document[index].username,
-          link_detail: `http://172.31.73.34:8080/presysta/document/${document[index].id}`,
+          link_detail: `${process.env.IP_ADDRESS_LOCALHOST}/document/${document[index].id}`,
         });
       }
     }
@@ -29,7 +31,7 @@ export const getAllItem = async (req, res) => {
           create_date: video[index].create_date,
           file_type: "video",
           username: video[index].username,
-          link_detail: `http://172.31.73.34:8080/presysta/video/${video[index].id}`,
+          link_detail: `${process.env.IP_ADDRESS_LOCALHOST}/video/${video[index].id}`,
         });
       }
     }
@@ -42,7 +44,7 @@ export const getAllItem = async (req, res) => {
           create_date: capability[index].create_date,
           file_type: "capability",
           username: capability[index].username,
-          link_detail: `http://172.31.73.34:8080/presysta/capabilityForm/${capability[index].id}`,
+          link_detail: `${process.env.IP_ADDRESS_LOCALHOST}/capabilityForm/${capability[index].id}`,
         });
       }
     }
