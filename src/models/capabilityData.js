@@ -1,9 +1,10 @@
 import db from "../config/db.js";
 
-export const createDataCapabilityModels = (data, capabilityId) => {
+export const createDataCapabilityModels = (data, capabilityId, status) => {
   const sql = `INSERT INTO t_capability_data SET 
     capability_id = '${capabilityId}',
-    data = '${data}'
+    data = '${data}',
+    status = '${status}'
     `;
   return db.execute(sql);
 };

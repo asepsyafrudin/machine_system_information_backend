@@ -19,11 +19,40 @@ import { v4 as uuidv4 } from "uuid";
 export const createCapability = async (req, res) => {
   try {
     const id = uuidv4();
-    const capabilityData = req.body.data;
+    const status = req.body.status;
+
     await createCapabilityModels(req.body, id);
-    if (capabilityData.length > 0) {
-      for (let index = 0; index < capabilityData.length; index++) {
-        await createDataCapabilityModels(capabilityData[index].data, id);
+    if (status === "single") {
+      const capabilityData = req.body.data;
+      if (capabilityData.length > 0) {
+        const statusData = "current";
+        for (let index = 0; index < capabilityData.length; index++) {
+          await createDataCapabilityModels(
+            capabilityData[index].data,
+            id,
+            statusData
+          );
+        }
+      }
+    } else if (status === "compare") {
+      const capabilityData1 = req.body.data1;
+      const capabilityData2 = req.body.data2;
+      const statusData1 = "current";
+      const statusData2 = "after";
+      for (let index = 0; index < capabilityData1.length; index++) {
+        await createDataCapabilityModels(
+          capabilityData1[index].data,
+          id,
+          statusData1
+        );
+      }
+
+      for (let index = 0; index < capabilityData2.length; index++) {
+        await createDataCapabilityModels(
+          capabilityData2[index].data,
+          id,
+          statusData2
+        );
       }
     }
     res.status(200).json({
@@ -40,15 +69,44 @@ export const createCapability = async (req, res) => {
 
 export const updateCapability = async (req, res) => {
   try {
-    const data = req.body.data;
+    const status = req.body.status;
+    const id = req.body.id;
     await updateCapabilityModels(req.body);
     const [result] = await getDataCapabilityByCapabilityIdModels(req.body.id);
     if (result.length > 0) {
       await deleteDataCapabilityByCapabilityIdModels(req.body.id);
-      if (data.length > 0) {
-        for (let index = 0; index < data.length; index++) {
-          await createDataCapabilityModels(data[index].data, req.body.id);
+    }
+
+    if (status === "single") {
+      const capabilityData = req.body.data;
+      if (capabilityData.length > 0) {
+        const statusData = "current";
+        for (let index = 0; index < capabilityData.length; index++) {
+          await createDataCapabilityModels(
+            capabilityData[index].data,
+            id,
+            statusData
+          );
         }
+      }
+    } else if (status === "compare") {
+      const capabilityData1 = req.body.data1;
+      const capabilityData2 = req.body.data2;
+      const statusData1 = "current";
+      const statusData2 = "after";
+      for (let index = 0; index < capabilityData1.length; index++) {
+        await createDataCapabilityModels(
+          capabilityData1[index].data,
+          id,
+          statusData1
+        );
+      }
+      for (let index = 0; index < capabilityData2.length; index++) {
+        await createDataCapabilityModels(
+          capabilityData2[index].data,
+          id,
+          statusData2
+        );
       }
     }
     res.status(200).json({
@@ -113,13 +171,30 @@ export const getAllCapability = async (req, res) => {
 
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
-        const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-          result[index].id
-        );
-        data.push({
-          ...result[index],
-          data: data_capability,
-        });
+        if (result[index].status === "compare") {
+          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
+            result[index].id
+          );
+          const data1 = data_capability.filter(
+            (value) => value.status === "current"
+          );
+          const data2 = data_capability.filter(
+            (value) => value.status === "after"
+          );
+          data.push({
+            ...result[index],
+            data1: data1,
+            data2: data2,
+          });
+        } else {
+          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
+            result[index].id
+          );
+          data.push({
+            ...result[index],
+            data1: data_capability,
+          });
+        }
       }
     }
     res.status(200).json({
@@ -142,13 +217,32 @@ export const getCapabilityById = async (req, res) => {
     const [result] = await getCapabilityByIdModels(req.params.id);
     let data = [];
     if (result.length > 0) {
-      const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-        result[0].id
-      );
-      data.push({
-        ...result[0],
-        data: data_capability,
-      });
+      for (let index = 0; index < result.length; index++) {
+        if (result[index].status === "compare") {
+          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
+            result[index].id
+          );
+          const data1 = data_capability.filter(
+            (value) => value.status === "current"
+          );
+          const data2 = data_capability.filter(
+            (value) => value.status === "after"
+          );
+          data.push({
+            ...result[index],
+            data1: data1,
+            data2: data2,
+          });
+        } else {
+          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
+            result[index].id
+          );
+          data.push({
+            ...result[index],
+            data1: data_capability,
+          });
+        }
+      }
     }
 
     res.status(200).json({

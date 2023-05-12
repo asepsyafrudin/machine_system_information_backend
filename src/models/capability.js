@@ -14,7 +14,8 @@ export const createCapabilityModels = (data, id) => {
     standard = '${data.standard}',
     standard_max = '${data.standard_max}',
     standard_min = '${data.standard_min}',
-    description = '${data.description}'
+    description = '${data.description}',
+    status = '${data.status}'
     `;
   return db.execute(sql);
 };
@@ -32,7 +33,8 @@ export const updateCapabilityModels = (data) => {
     standard = '${data.standard}',
     standard_max = '${data.standard_max}',
     standard_min = '${data.standard_min}',
-    description = '${data.description}'
+    description = '${data.description}',
+    status = '${data.status}'
     where id = '${data.id}'`;
   return db.execute(sql);
 };
@@ -51,6 +53,7 @@ export const getAllCapabilityForRecent = () => {
   t_capability.standard_min,
   t_capability.description,
   t_capability.user_id,
+  t_capability.status,
   t_users.username,
   t_capability.machine_id,
   t_machine.machine_name,
@@ -81,6 +84,7 @@ export const getAllCapabilityModels = (limit, offset) => {
     t_capability.standard_min,
     t_capability.description,
     t_capability.user_id,
+    t_capability.status,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,
@@ -112,6 +116,7 @@ export const getCapabilityByUserIdModels = (limit, offset, userId) => {
       t_capability.standard_min,
       t_capability.description,
       t_capability.user_id,
+      t_capability.status,
       t_users.username,
       t_capability.machine_id,
       t_machine.machine_name,
@@ -144,6 +149,7 @@ export const getCapabilityByIdModels = (id) => {
     t_capability.standard_min,
     t_capability.description,
     t_capability.user_id,
+    t_capability.status,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,
@@ -185,6 +191,7 @@ export const searchCapabilityModels = (searchValue, offset, limit) => {
     t_capability.standard_min,
     t_capability.description,
     t_capability.user_id,
+    t_capability.status,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,

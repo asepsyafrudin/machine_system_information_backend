@@ -19,6 +19,8 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
+import https from "https";
+import fs from "fs";
 
 dotenv.config();
 
@@ -50,6 +52,15 @@ app.use("api/fileUpload", fileUploadGeneralRoute);
 app.use("/presysta", (req, res) => {
   res.sendFile(path.join(__dirname, "../back-end-app/public/index.html"));
 });
-app.listen(port, () => {
+
+const cert = fs.readFileSync(
+  path.join(__dirname, "../back-end-app/src/cert/localhost.crt")
+);
+const key = fs.readFileSync(
+  path.join(__dirname, "../back-end-app/src/cert/localhost.decrypted.key")
+);
+
+const server = https.createServer({ cert, key }, app);
+server.listen(port, () => {
   console.log("Server Run On Port " + port);
 });
