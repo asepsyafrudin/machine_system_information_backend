@@ -32,13 +32,6 @@ export const countDataProblem = () => {
   return db.execute(sql);
 };
 
-export const getProblemModelsByMachineId = (machineId) => {
-  const sql = `SELECT * FROM t_problem where 
-    machine_id = '${machineId}'`;
-
-  return db.execute(sql);
-};
-
 export const getProblemByIdModels = (problemId) => {
   const sql = `SELECT 
   t_problem.id,
@@ -59,7 +52,27 @@ export const getProblemByIdModels = (problemId) => {
   return db.execute(sql);
 };
 
+export const getProblemModelsByMachineId = (machineId) => {
+  const sql = `SELECT 
+  t_problem.id,
+  t_problem.machine_id,
+  t_machine.machine_name,
+  t_problem.user_id,
+  t_users.username,
+  t_users.email,
+  t_problem.create_date,
+  t_problem.problem_name,
+  t_machine.line_id,
+  t_line.product_id
+  FROM t_problem JOIN t_machine ON t_problem.machine_id = t_machine.id 
+  JOIN t_users ON t_problem.user_id = t_users.id 
+  JOIN t_line ON t_machine.line_id = t_line.id 
+  JOIN t_product ON t_line.product_id = t_product.id
+  where t_problem.machine_id = '${machineId}' ORDER by t_problem.create_date DESC`;
+  return db.execute(sql);
+};
+
 export const deleteProblemModels = (id) => {
   const sql = `DELETE from t_problem where id = "${id}"`;
-  return db.execute(id);
+  return db.execute(sql);
 };

@@ -32,7 +32,11 @@ const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use("/static", express.static(path.join(__dirname, "src/assets")));
-app.use(express.static(path.join(__dirname, "../back-end-app/public")));
+app.use(
+  express.static(
+    path.join(__dirname, "../machine_system_information_backend/public")
+  )
+);
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -54,16 +58,27 @@ app.use("/api/allItem", allItemRoute);
 app.use("/api/problem", problemRoute);
 app.use("/api/ftaLv1", ftaLv1Route);
 app.use("/api/ftaLv2", ftaLv2route);
-app.use("api/fileUpload", fileUploadGeneralRoute);
+app.use("/api/fileUpload", fileUploadGeneralRoute);
 app.use("/presysta", (req, res) => {
-  res.sendFile(path.join(__dirname, "../back-end-app/public/index.html"));
+  res.sendFile(
+    path.join(
+      __dirname,
+      "../machine_system_information_backend/public/index.html"
+    )
+  );
 });
 
 const cert = fs.readFileSync(
-  path.join(__dirname, "../back-end-app/src/cert/localhost.crt")
+  path.join(
+    __dirname,
+    "../machine_system_information_backend/src/cert/localhost.crt"
+  )
 );
 const key = fs.readFileSync(
-  path.join(__dirname, "../back-end-app/src/cert/localhost.decrypted.key")
+  path.join(
+    __dirname,
+    "../machine_system_information_backend/src/cert/localhost.decrypted.key"
+  )
 );
 
 const server = https.createServer({ cert, key }, app);

@@ -120,7 +120,7 @@ export const deleteProblem = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      msg: "problem gagal di get",
+      msg: "problem gagal di delete",
       errMsg: error,
     });
   }
