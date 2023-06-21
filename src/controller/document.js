@@ -25,7 +25,7 @@ export const createDocument = async (req, res) => {
     await createDocumentModels(req.body, id);
     const file = req.files;
     const document_id = id;
-    if (file) {
+    if (file.length > 0) {
       for (let index = 0; index < file.length; index++) {
         let filename =
           req.protocol +

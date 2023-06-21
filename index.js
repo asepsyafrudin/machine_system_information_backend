@@ -21,6 +21,9 @@ import path from "path";
 import dotenv from "dotenv";
 import https from "https";
 import fs from "fs";
+import problemRoute from "./src/routes/problem.js";
+import ftaLv1Route from "./src/routes/ftaLv1.js";
+import ftaLv2route from "./src/routes/ftaLv2.js";
 
 dotenv.config();
 
@@ -48,6 +51,9 @@ app.use("/api/openai", openaiRoute);
 app.use("/api/request", requestRoute);
 app.use("/api/capability", capabilityRoute);
 app.use("/api/allItem", allItemRoute);
+app.use("/api/problem", problemRoute);
+app.use("/api/ftaLv1", ftaLv1Route);
+app.use("/api/ftaLv2", ftaLv2route);
 app.use("api/fileUpload", fileUploadGeneralRoute);
 app.use("/presysta", (req, res) => {
   res.sendFile(path.join(__dirname, "../back-end-app/public/index.html"));
