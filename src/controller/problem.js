@@ -8,6 +8,7 @@ import {
   getAllProblemModels,
   getProblemByIdModels,
   getProblemModelsByMachineId,
+  searchProblemByIdMachineModels,
 } from "../models/problem.js";
 
 export const createProblem = async (req, res) => {
@@ -33,6 +34,36 @@ export const getAllProblemList = async (req, res) => {
     const [result] = await getAllProblemModels(dataPerPage, offset);
     const [totalData] = await countDataProblem();
     const totalPageData = Math.ceil(totalData[0].count / dataPerPage);
+    res.status(200).json({
+      msg: "get problem berhasil",
+      dataPerage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "problem gagal di get",
+      errMsg: error,
+    });
+  }
+};
+
+export const searchProblemByMachineId = async (req, res) => {
+  try {
+    const machineId = req.params.machineId;
+    const page = req.params.page;
+    const dataPerPage = 10;
+    const offset = (page - 1) * dataPerPage;
+    const [result] = await searchProblemByIdMachineModels(
+      machineId,
+      dataPerPage,
+      offset
+    );
+
+    const [countData] = await getProblemModelsByMachineId(machineId);
+    const totalPageData = Math.ceil(countData.length / dataPerPage);
+
     res.status(200).json({
       msg: "get problem berhasil",
       dataPerage: dataPerPage,
