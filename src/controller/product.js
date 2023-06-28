@@ -2,6 +2,7 @@ import {
   createProductModels,
   deleteProductModels,
   getAllProductModels,
+  getProductByIdModels,
   searchProductModels,
   updateProductNameModels,
   updateProductStatusModels,
@@ -92,6 +93,21 @@ export const searchProduct = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "product gagal di cari",
+      errMsg: error,
+    });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const [result] = await getProductByIdModels(req.params.id);
+    res.status(200).json({
+      msg: "get product berhasil",
+      data: result,
+    });
+  } catch (error) {
+    res.status(200).json({
+      msg: "get product gagal",
       errMsg: error,
     });
   }

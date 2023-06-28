@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const sendingEmail = async (toUserMail, message) => {
+export const sendingEmail = async (toUserMail, subject, message) => {
   let transporter = nodemailer.createTransport({
     host: "",
     port: "",
@@ -17,8 +17,8 @@ export const sendingEmail = async (toUserMail, message) => {
   let info = await transporter.sendMail({
     from: '"Asep" <asep.syafrudin.a5g@ap.denso.com>',
     to: toUserMail,
-    subject: "Presysta Notification",
-    text: message,
+    subject: subject,
+    html: message,
   });
 
   console.log("Message sent: %s", info.messageId);

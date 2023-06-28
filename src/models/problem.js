@@ -28,7 +28,7 @@ export const getAllProblemModels = (limit, offset) => {
 };
 
 export const countDataProblem = () => {
-  const sql = `SELECT COUNT(id) as count FROM t_problem`;
+  const sql = `SELECT * FROM t_problem`;
   return db.execute(sql);
 };
 

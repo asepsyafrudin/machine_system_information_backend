@@ -33,7 +33,7 @@ export const getAllProblemList = async (req, res) => {
     const offset = (page - 1) * dataPerPage;
     const [result] = await getAllProblemModels(dataPerPage, offset);
     const [totalData] = await countDataProblem();
-    const totalPageData = Math.ceil(totalData[0].count / dataPerPage);
+    const totalPageData = Math.ceil(totalData.length / dataPerPage);
     res.status(200).json({
       msg: "get problem berhasil",
       dataPerage: dataPerPage,

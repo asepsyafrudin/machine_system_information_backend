@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProduct,
   getAllProduct,
+  getProductById,
   searchProduct,
   updateProductName,
   updateProductStatus,
@@ -16,5 +17,6 @@ router.delete("/delete/:id", deleteProduct);
 router.get("/:searchValue", searchProduct);
 router.patch("/updateProductName", updateProductName);
 router.patch("/updateStatus", updateProductStatus);
+router.get("/getProductById/:id", getProductById);
 
 export default router;

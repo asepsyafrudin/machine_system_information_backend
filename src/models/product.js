@@ -29,3 +29,8 @@ export const searchProductModels = (searchValue) => {
   const sql = `SELECT * from t_product where product_name like '%${searchValue}%' or status like '%${searchValue}%'`;
   return db.execute(sql);
 };
+
+export const getProductByIdModels = (id) => {
+  const sql = `SELECT * from t_product WHERE id= ${id}`;
+  return db.execute(sql);
+};

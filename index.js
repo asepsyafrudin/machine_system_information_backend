@@ -24,6 +24,8 @@ import fs from "fs";
 import problemRoute from "./src/routes/problem.js";
 import ftaLv1Route from "./src/routes/ftaLv1.js";
 import ftaLv2route from "./src/routes/ftaLv2.js";
+import projectRoute from "./src/routes/project.js";
+import actvityRoute from "./src/routes/activity.js";
 
 dotenv.config();
 
@@ -58,8 +60,10 @@ app.use("/api/allItem", allItemRoute);
 app.use("/api/problem", problemRoute);
 app.use("/api/ftaLv1", ftaLv1Route);
 app.use("/api/ftaLv2", ftaLv2route);
+app.use("/api/activity", actvityRoute);
 app.use("/api/fileUpload", fileUploadGeneralRoute);
-app.use("/presysta", (req, res) => {
+app.use("/api/project", projectRoute);
+app.use("/prosysta", (req, res) => {
   res.sendFile(
     path.join(
       __dirname,
