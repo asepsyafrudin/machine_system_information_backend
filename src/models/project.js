@@ -32,7 +32,7 @@ export const updateProjectModels = (data) => {
 };
 
 export const getAllProjectModels = (limit, offset) => {
-  const sql = `SELECT * FROM t_project ORDER BY create_date DESC LIMIT ${offset},${limit}
+  const sql = `SELECT * FROM t_project ORDER BY start ASC LIMIT ${offset},${limit}
     `;
   return db.execute(sql);
 };
@@ -50,5 +50,29 @@ export const countGetAllProjectModels = () => {
 
 export const updateStatusProjectModels = (id, status) => {
   const sql = `UPDATE t_project SET status = '${status}' WHERE id = '${id}'`;
+  return db.execute(sql);
+};
+
+export const deleteProjectByProjectIdModels = (id) => {
+  const sql = `DELETE from t_project WHERE id = '${id}'`;
+  return db.execute(sql);
+};
+
+export const getProjectByProductIdModels = (productId) => {
+  const sql = `SELECT * FROM t_project WHERE product_id = '${productId}' ORDER BY start ASC`;
+  return db.execute(sql);
+};
+
+export const getProjectByDateRangeModels = (fromDate, toDate) => {
+  const sql = `SELECT * FROM t_project WHERE start >= '${fromDate}' AND finish <= '${toDate}' ORDER BY start ASC`;
+  return db.execute(sql);
+};
+
+export const getProjectByProductIdAndDateRange = (
+  fromDate,
+  toDate,
+  productId
+) => {
+  const sql = `SELECT * FROM t_project WHERE (start >= '${fromDate}' AND finish <= '${toDate}') and product_id = '${productId}' ORDER BY start ASC`;
   return db.execute(sql);
 };

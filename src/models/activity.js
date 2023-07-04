@@ -29,6 +29,11 @@ export const deleteActivityByProjectId = (id) => {
   return db.execute(sql);
 };
 
+export const deleteActivityByActivityId = (id) => {
+  const sql = `DELETE from t_activity WHERE id = '${id}'`;
+  return db.execute(sql);
+};
+
 export const getAllActivity = () => {
   const sql = `SELECT * FROM t_activity`;
   return db.execute(sql);
@@ -36,5 +41,15 @@ export const getAllActivity = () => {
 
 export const getActivityByActivityIdModels = (id) => {
   const sql = `SELECT * FROM t_activity WHERE id='${id}'`;
+  return db.execute(sql);
+};
+
+export const getActivityByProjectIdModels = (projectId) => {
+  const sql = `SELECT * from t_activity WHERE project_id = '${projectId}'`;
+  return db.execute(sql);
+};
+
+export const avgActivityByProjectIdModels = (projectId) => {
+  const sql = `SELECT AVG(progress) as progress FROM t_activity WHERE project_id = '${projectId}'`;
   return db.execute(sql);
 };

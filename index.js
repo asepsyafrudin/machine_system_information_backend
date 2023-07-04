@@ -26,6 +26,7 @@ import ftaLv1Route from "./src/routes/ftaLv1.js";
 import ftaLv2route from "./src/routes/ftaLv2.js";
 import projectRoute from "./src/routes/project.js";
 import actvityRoute from "./src/routes/activity.js";
+import todoRoute from "./src/routes/todo.js";
 
 dotenv.config();
 
@@ -63,6 +64,7 @@ app.use("/api/ftaLv2", ftaLv2route);
 app.use("/api/activity", actvityRoute);
 app.use("/api/fileUpload", fileUploadGeneralRoute);
 app.use("/api/project", projectRoute);
+app.use("/api/todo", todoRoute);
 app.use("/prosysta", (req, res) => {
   res.sendFile(
     path.join(

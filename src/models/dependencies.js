@@ -13,3 +13,8 @@ export const deleteDependenciesModels = (activityId) => {
   const sql = `DELETE from t_activity_dependencies WHERE activity_id = '${activityId}'`;
   return db.execute(sql);
 };
+
+export const getDependenciesByActivityIdModels = (activityId) => {
+  const sql = `SELECT * FROM t_activity_dependencies WHERE activity_id = '${activityId}'`;
+  return db.execute(sql);
+};
