@@ -34,7 +34,7 @@ export const getTodoByIdModels = (id) => {
 };
 
 export const getTodoByProjectIdModels = (projectId) => {
-  const sql = `SELECT * FROM t_todo where project_id = '${projectId}' ORDER by create_date ASC`;
+  const sql = `SELECT * FROM t_todo where project_id = '${projectId}' ORDER by due_date ASC`;
   return db.execute(sql);
 };
 
