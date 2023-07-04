@@ -6,7 +6,7 @@ export const createTodoModels = (data) => {
     project_id = '${data.project_id}',
     item = '${data.item}',
     due_date = '${data.due_date}',
-    pic = ${data.pic},
+    pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
     status = '${data.status}'`;
@@ -19,7 +19,7 @@ export const updateTodoModels = (data) => {
     project_id = '${data.project_id}',
     item = '${data.item}',
     due_date = '${data.due_date}',
-    pic = ${data.pic},
+    pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
     status = '${data.status}' WHERE 
