@@ -15,7 +15,8 @@ export const createCapabilityModels = (data, id) => {
     standard_max = '${data.standard_max}',
     standard_min = '${data.standard_min}',
     description = '${data.description}',
-    status = '${data.status}'
+    status = '${data.status}',
+    project_id = '${data.project_id}'
     `;
   return db.execute(sql);
 };
@@ -34,7 +35,8 @@ export const updateCapabilityModels = (data) => {
     standard_max = '${data.standard_max}',
     standard_min = '${data.standard_min}',
     description = '${data.description}',
-    status = '${data.status}'
+    status = '${data.status}',
+    project_id = '${data.project_id}'
     where id = '${data.id}'`;
   return db.execute(sql);
 };
@@ -54,6 +56,7 @@ export const getAllCapabilityForRecent = () => {
   t_capability.description,
   t_capability.user_id,
   t_capability.status,
+  t_capability.project_id,
   t_users.username,
   t_capability.machine_id,
   t_machine.machine_name,
@@ -85,6 +88,7 @@ export const getAllCapabilityModels = (limit, offset) => {
     t_capability.description,
     t_capability.user_id,
     t_capability.status,
+    t_capability.project_id,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,
@@ -117,6 +121,7 @@ export const getCapabilityByUserIdModels = (limit, offset, userId) => {
       t_capability.description,
       t_capability.user_id,
       t_capability.status,
+      t_capability.project_id,
       t_users.username,
       t_capability.machine_id,
       t_machine.machine_name,
@@ -150,6 +155,7 @@ export const getCapabilityByIdModels = (id) => {
     t_capability.description,
     t_capability.user_id,
     t_capability.status,
+    t_capability.project_id,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,
@@ -162,6 +168,39 @@ export const getCapabilityByIdModels = (id) => {
     t_capability.machine_id = t_machine.id JOIN t_line ON 
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id where t_capability.id = '${id}' 
+    and t_machine.status = 'Active' ORDER BY t_capability.create_date desc`;
+
+  return db.execute(sql);
+};
+
+export const getCapabilityByProjectIdModels = (id) => {
+  const sql = `SELECT t_capability.id,
+    t_capability.part_name, 
+    t_capability.part_number,
+    t_capability.create_date,
+    t_capability.item_check,
+    t_capability.file_type,
+    t_capability.type,
+    t_capability.sigma,
+    t_capability.standard,
+    t_capability.standard_max,
+    t_capability.standard_min,
+    t_capability.description,
+    t_capability.user_id,
+    t_capability.status,
+    t_capability.project_id,
+    t_users.username,
+    t_capability.machine_id,
+    t_machine.machine_name,
+    t_machine.line_id,
+    t_line.line_name,
+    t_line.product_id,
+    t_product.product_name 
+    from t_capability JOIN t_users ON 
+    t_capability.user_id = t_users.id JOIN t_machine ON
+    t_capability.machine_id = t_machine.id JOIN t_line ON 
+    t_machine.line_id = t_line.id JOIN t_product ON
+    t_line.product_id = t_product.id where t_capability.project_id = '${id}' 
     and t_machine.status = 'Active' ORDER BY t_capability.create_date desc`;
 
   return db.execute(sql);
@@ -192,6 +231,7 @@ export const searchCapabilityModels = (searchValue, offset, limit) => {
     t_capability.description,
     t_capability.user_id,
     t_capability.status,
+    t_capability.project_id,
     t_users.username,
     t_capability.machine_id,
     t_machine.machine_name,

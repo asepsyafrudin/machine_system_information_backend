@@ -4,6 +4,7 @@ import {
   deleteCapabilityModels,
   getAllCapabilityModels,
   getCapabilityByIdModels,
+  getCapabilityByProjectIdModels,
   getCapabilityByUserIdModels,
   searchCapabilityModels,
   updateCapabilityModels,
@@ -302,6 +303,22 @@ export const searchCapability = async (req, res) => {
       numberStart: (page - 1) * dataPerPage + 1,
       totalPageData: totalPageData,
       data: data,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get data gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const getCapabilityByProjectId = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const [result] = await getCapabilityByProjectIdModels(projectId);
+    res.status(200).json({
+      msg: "Get Data Berhasil",
+      data: result,
     });
   } catch (error) {
     res.status(400).json({

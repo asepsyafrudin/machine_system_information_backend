@@ -3,6 +3,7 @@ import {
   deleteCapability,
   getAllCapability,
   getCapabilityById,
+  getCapabilityByProjectId,
   getCapabilityByUserId,
   searchCapability,
   updateCapability,
@@ -18,5 +19,6 @@ router.get("/getAllCapability/:page", getAllCapability);
 router.get("/getCapabilityByUserId/:user_id/:page", getCapabilityByUserId);
 router.get("/getCapabilityById/:id", getCapabilityById);
 router.get("/search/:searchValue/:page", searchCapability);
+router.get("/getCapabilityByProjectId/:projectId", getCapabilityByProjectId);
 
 export default router;

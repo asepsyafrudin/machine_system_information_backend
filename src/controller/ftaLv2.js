@@ -3,7 +3,6 @@ import { createFilesModels } from "../models/file.js";
 
 export const createFtaLv2 = async (req, res) => {
   try {
-    console.log("body", req.body);
     let filename = "";
     if (req.file) {
       filename = filename =

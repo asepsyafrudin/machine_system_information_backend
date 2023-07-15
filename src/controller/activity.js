@@ -3,6 +3,7 @@ import {
   deleteActivityByActivityId,
   getActivityByActivityIdModels,
   getActivityByProjectIdModels,
+  getAllActivity,
   updateActivityModels,
 } from "../models/activity.js";
 import {
@@ -87,9 +88,27 @@ export const getActivityByProjectId = async (req, res) => {
         dataSend.push(data);
       }
     }
+    let newData = dataSend.sort(
+      (a, b) => new Date(a.start) - new Date(b.start)
+    );
     res.status(200).json({
       msg: "get activity berhasil",
-      data: dataSend,
+      data: newData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get activity gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const getAllActivityController = async (req, res) => {
+  try {
+    const [result] = await getAllActivity();
+    res.status(200).json({
+      msg: "get activity berhasil",
+      data: result,
     });
   } catch (error) {
     res.status(400).json({

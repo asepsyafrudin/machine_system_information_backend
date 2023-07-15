@@ -27,6 +27,7 @@ import ftaLv2route from "./src/routes/ftaLv2.js";
 import projectRoute from "./src/routes/project.js";
 import actvityRoute from "./src/routes/activity.js";
 import todoRoute from "./src/routes/todo.js";
+import tokenRoute from "./src/routes/token.js";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use(
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/token", tokenRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/users", userRoute);
 app.use("/login", loginRoute);
@@ -74,20 +76,20 @@ app.use("/prosysta", (req, res) => {
   );
 });
 
-const cert = fs.readFileSync(
-  path.join(
-    __dirname,
-    "../machine_system_information_backend/src/cert/localhost.crt"
-  )
-);
-const key = fs.readFileSync(
-  path.join(
-    __dirname,
-    "../machine_system_information_backend/src/cert/localhost.decrypted.key"
-  )
-);
+// const cert = fs.readFileSync(
+//   path.join(
+//     __dirname,
+//     "../machine_system_information_backend/src/cert/localhost.crt"
+//   )
+// );
+// const key = fs.readFileSync(
+//   path.join(
+//     __dirname,
+//     "../machine_system_information_backend/src/cert/localhost.decrypted.key"
+//   )
+// );
 
-const server = https.createServer({ cert, key }, app);
-server.listen(port, () => {
+// const server = https.createServer({ cert, key }, app);
+app.listen(port, () => {
   console.log("Server Run On Port " + port);
 });

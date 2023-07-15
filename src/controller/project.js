@@ -1,4 +1,8 @@
-import { avgActivityByProjectIdModels } from "../models/activity.js";
+import moment from "moment/moment.js";
+import {
+  avgActivityByProjectIdModels,
+  getActivityByProjectIdModels,
+} from "../models/activity.js";
 import {
   createMembers,
   deleteMembers,
@@ -16,6 +20,7 @@ import {
   updateProjectModels,
   updateStatusProjectModels,
 } from "../models/project.js";
+import { getActivityByProjectId } from "./activity.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -61,22 +66,63 @@ export const updateProject = async (req, res) => {
   }
 };
 
-const statusFunction = (status, startDate, SOPDate) => {
-  if (status === "finish") {
-    return "Finish";
-  } else {
-    let currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() - 1);
-    let start = new Date(startDate);
-    let sop = new Date(SOPDate);
-    if (startDate - currentDate > 0) {
-      return "Not Yet Started";
-    } else if (sop - currentDate < 0) {
-      return "Delay";
-    } else if (currentDate - start > 0) {
-      return "On Progress";
+const statusFunction = (arrayDataActivity, startDate, SOPDate, progress) => {
+  let totalActivityDelay = 0;
+  let currentDate = new Date();
+  let start = new Date(startDate);
+  currentDate.setDate(currentDate.getDate() - 1);
+
+  if (arrayDataActivity.length > 0) {
+    if (progress) {
+      if (progress === 100) {
+        return "Finish";
+      } else if (start - currentDate > 0) {
+        return "Not Yet Started";
+      } else {
+        for (let index = 0; index < arrayDataActivity.length; index++) {
+          let endDateActivity = new Date(
+            moment(arrayDataActivity[index].finish)
+          );
+
+          if (
+            currentDate - endDateActivity > 0 &&
+            parseInt(arrayDataActivity[index].progress) < 100
+          ) {
+            totalActivityDelay += 1;
+          }
+        }
+        if (totalActivityDelay === 0) {
+          return "On Progress";
+        } else {
+          return `${totalActivityDelay} Activity Delay`;
+        }
+      }
+    } else {
+      return "Waiting Detail Activity";
     }
+  } else {
+    return "Waiting Detail Activity";
   }
+
+  // if (progress) {
+  //   if (progress === 100) {
+  //     return "Finish";
+  //   } else {
+  //     let currentDate = new Date();
+  //     currentDate.setDate(currentDate.getDate() - 1);
+  //     let start = new Date(startDate);
+  //     let sop = new Date(SOPDate);
+  //     if (startDate - currentDate > 0) {
+  //       return "Not Yet Started";
+  //     } else if (sop - currentDate < 0) {
+  //       return "Delay";
+  //     } else if (currentDate - start > 0) {
+  //       return "On Progress";
+  //     }
+  //   }
+  // } else {
+  //   return "Waiting Detail Activity";
+  // }
 };
 
 const getDataResult = async (result) => {
@@ -85,6 +131,7 @@ const getDataResult = async (result) => {
     for (let index = 0; index < result.length; index++) {
       let [member] = await getMemberByProjectId(result[index].id);
       let [progress] = await avgActivityByProjectIdModels(result[index].id);
+      let [activityData] = await getActivityByProjectIdModels(result[index].id);
       let data = {
         id: result[index].id,
         product_id: result[index].product_id,
@@ -98,9 +145,10 @@ const getDataResult = async (result) => {
         member: member,
         user_id: result[index].user_id,
         status: statusFunction(
-          result[index].status,
+          activityData,
           result[index].start,
-          result[index].finish
+          result[index].finish,
+          progress[0].progress
         ),
         progress: progress[0].progress,
       };
