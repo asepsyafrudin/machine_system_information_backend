@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const diskStorageProfile = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, path.join(__dirname, "../assets/profile"));
+    callback(null, path.join(__dirname, "../../../assets/profile"));
   },
   filename: (req, file, callback) => {
     callback(
@@ -21,7 +21,7 @@ export const diskStorageProfile = multer.diskStorage({
 
 export const diskStorageFile = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, path.join(__dirname, "../assets/files"));
+    callback(null, path.join(__dirname, "../../../assets/files"));
   },
   filename: (req, file, callback) => {
     callback(
@@ -36,7 +36,7 @@ export const diskStorageFile = multer.diskStorage({
 
 export const diskStorageVideo = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, path.join(__dirname, "../assets/video"));
+    callback(null, path.join(__dirname, "../../../assets/video"));
   },
   filename: (req, file, callback) => {
     callback(
@@ -51,7 +51,7 @@ export const diskStorageVideo = multer.diskStorage({
 
 export const diskStorageGeneral = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, path.join(__dirname, "../assets/general"));
+    callback(null, path.join(__dirname, "../../../assets/general"));
   },
   filename: (req, file, callback) => {
     callback(

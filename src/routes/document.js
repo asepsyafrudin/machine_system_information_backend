@@ -11,6 +11,7 @@ import {
   getDocumentById,
   updateDocumentById,
   getDocumentForGeneralByPage,
+  getDocumentByProjectId,
 } from "../controller/document.js";
 import multer from "multer";
 import { diskStorageFile } from "../config/multer.js";
@@ -24,6 +25,7 @@ router.get(
   "/getDocumentByUserIdAndPage/:userId/:page",
   getDocumentByUserIdAndPage
 );
+router.get("/getDocumentByProjectId/:projectId", getDocumentByProjectId);
 
 //search for searchEngine Page
 router.get("/search/:searchValue/:page", searchDocumentByPage);

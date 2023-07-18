@@ -6,6 +6,7 @@ import {
   getAllDocumentForGeneralModels,
   getAllDocumentModels,
   getDocumentByIdModels,
+  getDocumentByProjectIdModels,
   searchAllDocumentModels,
   searchDocumentForAdminModels,
   searchDocumentForUserModels,
@@ -116,6 +117,7 @@ export const getDocumentForGeneralByPage = async (req, res) => {
         product_name: result[index].product_name,
         status: result[index].status,
         file_type: result[index].file_type,
+        project_id: result[index].project_id,
         file: fileResult,
       });
     }
@@ -163,6 +165,7 @@ export const getDocumentByPage = async (req, res) => {
         product_id: result[index].product_id,
         product_name: result[index].product_name,
         status: result[index].status,
+        project_id: result[index].project_id,
         file_type: result[index].file_type,
         file: fileResult,
       });
@@ -212,6 +215,7 @@ export const getDocumentByUserIdAndPage = async (req, res) => {
         product_id: result[index].product_id,
         product_name: result[index].product_name,
         status: result[index].status,
+        project_id: result[index].project_id,
         file_type: result[index].file_type,
         file: fileResult,
       });
@@ -262,6 +266,7 @@ export const searchDocumentByPage = async (req, res) => {
         product_id: result[index].product_id,
         product_name: result[index].product_name,
         status: result[index].status,
+        project_id: result[index].project_id,
         file_type: result[index].file_type,
         file: fileResult,
       });
@@ -318,6 +323,7 @@ export const searchDocumentForDashboardMenu = async (req, res) => {
         product_id: result[index].product_id,
         product_name: result[index].product_name,
         status: result[index].status,
+        project_id: result[index].project_id,
         file_type: result[index].file_type,
         file: fileResult,
       });
@@ -397,6 +403,57 @@ export const getDocumentById = async (req, res) => {
         product_id: result[index].product_id,
         product_name: result[index].product_name,
         status: result[index].status,
+        project_id: result[index].project_id,
+        file_type: result[index].file_type,
+        file: fileResult,
+      });
+    }
+    res.status(200).json({
+      msg: "get data berhasil di ambil",
+      dataPerPage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
+      data: listData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Get Data Gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const getDocumentByProjectId = async (req, res) => {
+  try {
+    const page = 1;
+    const dataPerPage = 10;
+    const [result] = await getDocumentByProjectIdModels(req.params.projectId);
+    const totalPageData = Math.ceil(result.length / dataPerPage);
+    let listData = [];
+    for (
+      let index = (page - 1) * dataPerPage;
+      index < page * dataPerPage && index < result.length;
+      index++
+    ) {
+      const [fileResult] = await getFileByDocumentId(result[index].id);
+      listData.push({
+        id: result[index].id,
+        project_id: result[index].project_id,
+        title: result[index].title,
+        create_date: result[index].create_date,
+        description: result[index].description,
+        user_id: result[index].user_id,
+        username: result[index].username,
+        photo: result[index].photo,
+        email: result[index].email,
+        machine_id: result[index].machine_id,
+        machine_name: result[index].machine_name,
+        line_id: result[index].line_id,
+        line_name: result[index].line_name,
+        product_id: result[index].product_id,
+        product_name: result[index].product_name,
+        status: result[index].status,
+        project_id: result[index].project_id,
         file_type: result[index].file_type,
         file: fileResult,
       });

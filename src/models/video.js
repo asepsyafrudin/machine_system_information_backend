@@ -8,6 +8,7 @@ export const createVideoModels = (data, filename, id) => {
     user_id = ${data.user_id},
     video_url ='${filename}',
     description = '${data.description}',
+    project_id = '${data.project_id}',
     status ='${data.status}'`;
 
   return db.execute(sql);
@@ -28,6 +29,7 @@ export const getAllVideoModels = () => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -52,7 +54,8 @@ export const updateVideoModels = (data, filename) => {
     user_id = ${data.user_id},
     video_url ='${filename}',
     description = '${data.description}',
-    status ='${data.status}'
+    status ='${data.status}',
+    project_id = '${data.project_id}'
     where id='${data.id}'`;
 
   return db.execute(sql);
@@ -83,6 +86,7 @@ export const getVideoByIdModels = (id) => {
   t_video.create_date,
   t_video.machine_id,
   t_video.video_url,
+  t_video.project_id,
   t_machine.machine_name,
   t_machine.line_id,
   t_line.line_name,
@@ -111,6 +115,7 @@ export const getVideoByUserIdModels = (userId) => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -140,6 +145,7 @@ export const getAllVideoForAdminModels = () => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -170,6 +176,7 @@ export const searchVideoModels = (searchValue) => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -204,6 +211,7 @@ export const searchVideoForUserModels = (userId, searchValue) => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -237,6 +245,7 @@ export const searchVideoForAdminModels = (searchValue) => {
     t_video.create_date,
     t_video.machine_id,
     t_video.video_url,
+    t_video.project_id,
     t_machine.machine_name,
     t_machine.line_id,
     t_line.line_name,
@@ -252,5 +261,34 @@ export const searchVideoForAdminModels = (searchValue) => {
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%' ORDER BY t_video.create_date desc`;
 
+  return db.execute(sql);
+};
+
+export const getVideoByProjectIdModels = (id) => {
+  const sql = `SELECT 
+  t_video.id,
+  t_video.user_id,
+  t_users.username,
+    t_users.photo,
+    t_users.npk,
+    t_users.email,
+  t_video.video_name ,
+  t_video.description,
+  t_video.status,
+  t_video.create_date,
+  t_video.machine_id,
+  t_video.video_url,
+  t_video.project_id,
+  t_machine.machine_name,
+  t_machine.line_id,
+  t_line.line_name,
+  t_line.product_id,
+  t_product.product_name
+  FROM t_video JOIN t_machine ON 
+  t_video.machine_id = t_machine.id JOIN t_line ON
+  t_machine.line_id = t_line.id JOIN t_product ON
+  t_line.product_id = t_product.id JOIN t_users ON
+  t_users.id = t_video.user_id
+  where t_video.project_id='${id}'`;
   return db.execute(sql);
 };

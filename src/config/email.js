@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const sendingEmail = async (toUserMail, subject, message) => {
+export const sendingEmail = async (toUserMail, subject, message, sender) => {
   let transporter = nodemailer.createTransport({
     host: "",
     port: "",
@@ -18,7 +18,7 @@ export const sendingEmail = async (toUserMail, subject, message) => {
     from: '"Asep" <asep.syafrudin.a5g@ap.denso.com>',
     to: toUserMail,
     subject: subject,
-    html: message,
+    html: `<p>Hai you have message from ${sender}</p> <br/> <p> Your Message are : ${message} </p>`,
   });
 
   console.log("Message sent: %s", info.messageId);

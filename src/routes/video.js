@@ -11,6 +11,7 @@ import {
   getVideoByPage,
   getVideoByPageAdmin,
   searchVideoForDashbordMenu,
+  getVideoByProjectId,
 } from "../controller/video.js";
 import multer from "multer";
 import { diskStorageVideo } from "../config/multer.js";
@@ -31,5 +32,6 @@ router.get(
   "/searchVideoDashboard/:searchValue/:page/:userId",
   searchVideoForDashbordMenu
 );
+router.get("/getVideoByProjectId/:projectId", getVideoByProjectId);
 
 export default router;

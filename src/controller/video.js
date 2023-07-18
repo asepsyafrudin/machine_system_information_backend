@@ -5,6 +5,7 @@ import {
   getAllVideoForAdminModels,
   getAllVideoModels,
   getVideoByIdModels,
+  getVideoByProjectIdModels,
   getVideoByUserIdModels,
   searchVideoForAdminModels,
   searchVideoForUserModels,
@@ -117,6 +118,21 @@ export const updateStatusVideo = async (req, res) => {
 export const getVideoById = async (req, res) => {
   try {
     const [result] = await getVideoByIdModels(req.params.id);
+    res.status(200).json({
+      msg: "video berhasil di ambil",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "video gagal di ambil",
+      errMsg: error,
+    });
+  }
+};
+
+export const getVideoByProjectId = async (req, res) => {
+  try {
+    const [result] = await getVideoByProjectIdModels(req.params.projectId);
     res.status(200).json({
       msg: "video berhasil di ambil",
       data: result,
