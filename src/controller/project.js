@@ -20,7 +20,6 @@ import {
   updateProjectModels,
   updateStatusProjectModels,
 } from "../models/project.js";
-import { getActivityByProjectId } from "./activity.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -144,6 +143,7 @@ const getDataResult = async (result) => {
         create_date: result[index].create_date,
         member: member,
         user_id: result[index].user_id,
+        description: result[index].description,
         status: statusFunction(
           activityData,
           result[index].start,

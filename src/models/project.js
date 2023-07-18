@@ -11,6 +11,7 @@ export const createProjectModels = (data) => {
         start  = '${data.start}',
         finish = '${data.finish}',
         user_id = ${data.user_id},
+        description = '${data.description}',
         status = '${data.status}'
     `;
   return db.execute(sql);
@@ -25,6 +26,7 @@ export const updateProjectModels = (data) => {
     saving_cost = '${data.saving_cost}',
     start  = '${data.start}',
     finish = '${data.finish}',
+    description = '${data.description}',
     user_id = ${data.user_id} WHERE
     id = '${data.id}'
 `;

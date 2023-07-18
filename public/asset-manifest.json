@@ -1,11 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.62c0ff98.css",
-    "main.js": "/static/js/main.cb31a2ea.js",
+    "main.css": "/static/css/main.a62cd2ed.css",
+    "main.js": "/static/js/main.d15f7fd5.js",
     "static/js/787.28cb0dcd.chunk.js": "/static/js/787.28cb0dcd.chunk.js",
+    "static/media/Project.jpg": "/static/media/Project.e5b8c766e97047c89cd6.jpg",
+    "static/media/blue.jpg": "/static/media/blue.dd149c3b4b17b3c45349.jpg",
     "static/media/videodefault.jpg": "/static/media/videodefault.ed2601807d9d4cc226c6.jpg",
     "static/media/backgroundSearch.jpg": "/static/media/backgroundSearch.971ebf85d88b78a9d738.jpg",
+    "static/media/file search.jpg": "/static/media/file search.eda0a70d729fadd7ea1d.jpg",
+    "static/media/Robotics-amico.png": "/static/media/Robotics-amico.d036d6d67d7a856b3b68.png",
     "static/media/backgroundLogin.png": "/static/media/backgroundLogin.a039aea54da5ad91cbd1.png",
+    "static/media/agile-method-rafiki.png": "/static/media/agile-method-rafiki.2575247915be9a19bef6.png",
+    "static/media/Data analysis-rafiki.png": "/static/media/Data analysis-rafiki.aca9550f0d4e8edd6aaf.png",
+    "static/media/Performance overview-rafiki.png": "/static/media/Performance overview-rafiki.2502e32552501b7c4b74.png",
+    "static/media/Completed-rafiki.png": "/static/media/Completed-rafiki.e1d55a6d5f558460fda5.png",
+    "static/media/Reading list-rafiki.png": "/static/media/Reading list-rafiki.7bedcbcd500b4a38c86e.png",
     "static/media/Roboto-Medium.ttf": "/static/media/Roboto-Medium.7c8d04cd831df3033c8a.ttf",
     "static/media/Roboto-Regular.ttf": "/static/media/Roboto-Regular.fc2b5060f7accec5cf74.ttf",
     "static/media/Roboto-Black.ttf": "/static/media/Roboto-Black.cf56c1b149d0a5e8d7c6.ttf",
@@ -13,6 +22,7 @@
     "static/media/robotai.jpg": "/static/media/robotai.e6bf042d78f18fe1b3c3.jpg",
     "static/media/LOGO.png": "/static/media/LOGO.564c0719c98d820eb731.png",
     "static/media/roboto-all-400-normal.woff": "/static/media/roboto-all-400-normal.c5d001fa922fa66a147f.woff",
+    "static/media/document.JPG": "/static/media/document.e8bc54ad5cb8dacff46c.JPG",
     "static/media/profile.jpg": "/static/media/profile.dc2ba593cd37d0819c0c.jpg",
     "static/media/roboto-latin-400-normal.woff2": "/static/media/roboto-latin-400-normal.b009a76ad6afe4ebd301.woff2",
     "static/media/roboto-cyrillic-ext-400-normal.woff2": "/static/media/roboto-cyrillic-ext-400-normal.804378952da8a10faae2.woff2",
@@ -24,12 +34,12 @@
     "static/media/roboto-vietnamese-400-normal.woff2": "/static/media/roboto-vietnamese-400-normal.3230f9b040f3c630e0c3.woff2",
     "static/media/roboto-greek-ext-400-normal.woff2": "/static/media/roboto-greek-ext-400-normal.169619821ea93019d1bb.woff2",
     "index.html": "/index.html",
-    "main.62c0ff98.css.map": "/static/css/main.62c0ff98.css.map",
-    "main.cb31a2ea.js.map": "/static/js/main.cb31a2ea.js.map",
+    "main.a62cd2ed.css.map": "/static/css/main.a62cd2ed.css.map",
+    "main.d15f7fd5.js.map": "/static/js/main.d15f7fd5.js.map",
     "787.28cb0dcd.chunk.js.map": "/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.62c0ff98.css",
-    "static/js/main.cb31a2ea.js"
+    "static/css/main.a62cd2ed.css",
+    "static/js/main.d15f7fd5.js"
   ]
 }
