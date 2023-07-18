@@ -19,8 +19,8 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
-import https from "https";
-import fs from "fs";
+// import https from "https";
+// import fs from "fs";
 import problemRoute from "./src/routes/problem.js";
 import ftaLv1Route from "./src/routes/ftaLv1.js";
 import ftaLv2route from "./src/routes/ftaLv2.js";
@@ -35,7 +35,7 @@ const app = express();
 const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use("/static", express.static(path.join(__dirname, "src/assets")));
+app.use("/static", express.static(path.join(__dirname, "../assets")));
 app.use(
   express.static(
     path.join(__dirname, "../machine_system_information_backend/public")
