@@ -28,6 +28,7 @@ import projectRoute from "./src/routes/project.js";
 import actvityRoute from "./src/routes/activity.js";
 import todoRoute from "./src/routes/todo.js";
 import tokenRoute from "./src/routes/token.js";
+import sectionRoute from "./src/routes/section.js";
 
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use("/api/activity", actvityRoute);
 app.use("/api/fileUpload", fileUploadGeneralRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/todo", todoRoute);
+app.use("/api/section", sectionRoute);
 app.use("/prosysta", (req, res) => {
   res.sendFile(
     path.join(
