@@ -17,6 +17,7 @@ import {
   getProjectByIdModels,
   getProjectByProductIdAndDateRange,
   getProjectByProductIdModels,
+  getProjectBySectionId,
   updateProjectModels,
   updateStatusProjectModels,
 } from "../models/project.js";
@@ -134,6 +135,7 @@ const getDataResult = async (result) => {
       let data = {
         id: result[index].id,
         product_id: result[index].product_id,
+        product_name: result[index].product_name,
         project_name: result[index].project_name,
         manager_id: result[index].manager_id,
         budget: result[index].budget,
@@ -144,6 +146,8 @@ const getDataResult = async (result) => {
         member: member,
         user_id: result[index].user_id,
         description: result[index].description,
+        section_id: result[index].section_id,
+        section_name: result[index].section_name,
         status: statusFunction(
           activityData,
           result[index].start,
@@ -293,38 +297,53 @@ export const deleteProjectByProjectId = async (req, res) => {
 
 export const searchProject = async (req, res) => {
   try {
+    const sectionId = req.body.section_id;
     const productId = req.body.product_id;
     const fromDate = req.body.from_date;
     const toDate = req.body.to_date;
-    if (productId) {
-      if (fromDate && toDate) {
-        const [result] = await getProjectByProductIdAndDateRange(
-          fromDate,
-          toDate,
-          productId
-        );
-        const resultSubmit = await getDataResult(result);
-        res.status(200).json({
-          msg: " get project berhasil ",
-          data: resultSubmit,
-        });
+    if (sectionId) {
+      if (productId) {
+        if (fromDate && toDate) {
+          const [result] = await getProjectByProductIdAndDateRange(
+            fromDate,
+            toDate,
+            productId
+          );
+          const resultSubmit = await getDataResult(result);
+          res.status(200).json({
+            msg: " get project berhasil ",
+            data: resultSubmit,
+          });
+        } else {
+          const [result] = await getProjectByProductIdModels(productId);
+          const resultSubmit = await getDataResult(result);
+          res.status(200).json({
+            msg: " get project berhasil ",
+            data: resultSubmit,
+          });
+        }
       } else {
-        const [result] = await getProjectByProductIdModels(productId);
+        const [result] = await getProjectBySectionId(sectionId);
         const resultSubmit = await getDataResult(result);
         res.status(200).json({
           msg: " get project berhasil ",
           data: resultSubmit,
         });
       }
+    } else if (fromDate && toDate) {
+      const [result] = await getProjectByDateRangeModels(fromDate, toDate);
+      const resultSubmit = await getDataResult(result);
+      res.status(200).json({
+        msg: "get data berhasil",
+        data: resultSubmit,
+      });
     } else {
-      if (fromDate && toDate) {
-        const [result] = await getProjectByDateRangeModels(fromDate, toDate);
-        const resultSubmit = await getDataResult(result);
-        res.status(200).json({
-          msg: "get data berhasil",
-          data: resultSubmit,
-        });
-      }
+      const [result] = await countGetAllProjectModels();
+      const resultSubmit = await getDataResult(result);
+      res.status(200).json({
+        msg: "get data berhasil",
+        data: resultSubmit,
+      });
     }
   } catch (error) {
     res.status(400).json({

@@ -34,18 +34,68 @@ export const updateProjectModels = (data) => {
 };
 
 export const getAllProjectModels = (limit, offset) => {
-  const sql = `SELECT * FROM t_project ORDER BY start ASC LIMIT ${offset},${limit}
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  ORDER BY t_project.start ASC LIMIT ${offset},${limit}
     `;
   return db.execute(sql);
 };
 
 export const getProjectByIdModels = (id) => {
-  const sql = `SELECT * FROM t_project WHERE id = '${id}'`;
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE t_project.id = '${id}'`;
   return db.execute(sql);
 };
 
 export const countGetAllProjectModels = () => {
-  const sql = `SELECT * FROM t_project
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
       `;
   return db.execute(sql);
 };
@@ -61,12 +111,46 @@ export const deleteProjectByProjectIdModels = (id) => {
 };
 
 export const getProjectByProductIdModels = (productId) => {
-  const sql = `SELECT * FROM t_project WHERE product_id = '${productId}' ORDER BY start ASC`;
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE t_project.product_id = '${productId}' ORDER BY t_project.start ASC`;
   return db.execute(sql);
 };
 
 export const getProjectByDateRangeModels = (fromDate, toDate) => {
-  const sql = `SELECT * FROM t_project WHERE start >= '${fromDate}' AND finish <= '${toDate}' ORDER BY start ASC`;
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}' ORDER BY t_project.start ASC`;
   return db.execute(sql);
 };
 
@@ -75,6 +159,46 @@ export const getProjectByProductIdAndDateRange = (
   toDate,
   productId
 ) => {
-  const sql = `SELECT * FROM t_project WHERE (start >= '${fromDate}' AND finish <= '${toDate}') and product_id = '${productId}' ORDER BY start ASC`;
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') and t_project.product_id = '${productId}' ORDER BY t_project.start ASC`;
+  return db.execute(sql);
+};
+
+export const getProjectBySectionId = (id) => {
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE t_product.section_id = ${id} `;
+
   return db.execute(sql);
 };

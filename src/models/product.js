@@ -1,12 +1,16 @@
 import db from "../config/db.js";
 
 export const createProductModels = (data) => {
-  const sql = `INSERT INTO t_product SET product_name = '${data.product_name}', status = '${data.status}'`;
+  const sql = `INSERT INTO t_product SET product_name = '${data.product_name}', 
+  status = '${data.status}',
+  section_id = ${data.section_id}`;
   return db.execute(sql);
 };
 
 export const updateProductNameModels = (data) => {
-  const sql = `UPDATE t_product SET product_name = '${data.product_name}' where id = ${data.id}`;
+  const sql = `UPDATE t_product SET product_name = '${data.product_name}',
+  section_id = ${data.section_id}
+  where id = ${data.id}`;
   return db.execute(sql);
 };
 
