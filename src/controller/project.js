@@ -145,6 +145,7 @@ const getDataResult = async (result) => {
         create_date: result[index].create_date,
         member: member,
         user_id: result[index].user_id,
+        category: result[index].category,
         description: result[index].description,
         section_id: result[index].section_id,
         section_name: result[index].section_name,
