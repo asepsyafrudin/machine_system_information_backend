@@ -5,6 +5,7 @@ import { comparePassword } from "../config/hashPassword.js";
 export const loginModels = async (userName, password) => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,

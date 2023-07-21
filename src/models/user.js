@@ -8,7 +8,7 @@ export const createUserModels = (data, filename) => {
     npk = '${data.npk}',
     email = '${data.email.toLowerCase()}',
     password ='${password}',
-    product_id = ${data.product},
+    product_id = ${data.product_id},
     position = '${data.position}', 
     photo = '${filename}'`;
   return db.execute(sql);
@@ -17,6 +17,7 @@ export const createUserModels = (data, filename) => {
 export const getAllUsersModels = () => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,
@@ -41,14 +42,14 @@ export const updateUsersModels = (data, filename) => {
   const sql = `UPDATE t_users SET username = '${data.username.toLowerCase()}',
     email = '${data.email.toLowerCase()}',
     password ='${password}', 
-    product_id = ${data.product},
+    product_id = ${data.product_id},
     position = '${data.position}', 
     photo = '${filename}' where npk = '${data.npk}'`;
 
   const sql2 = `UPDATE t_users SET username = '${data.username.toLowerCase()}',
     email = '${data.email.toLowerCase()}',
     password ='${password}',
-    product_id = ${data.product},
+    product_id = ${data.product_id},
     position = '${data.position}' where npk = '${data.npk}'`;
 
   if (filename === "") {
@@ -60,6 +61,7 @@ export const updateUsersModels = (data, filename) => {
 export const findUserModels = (searchValue) => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,
@@ -78,6 +80,7 @@ export const findUserModels = (searchValue) => {
 export const getUserByUserIdModels = (userId) => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,
@@ -96,6 +99,7 @@ export const getUserByUserIdModels = (userId) => {
 export const getUserByNPKModels = (npk) => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,
@@ -113,6 +117,7 @@ export const getUserByNPKModels = (npk) => {
 export const getUserByEmailModels = (email) => {
   const sql = `SELECT
   t_users.id,
+  t_users.username,
   t_users.email, 
   t_users.password,
   t_users.product_id,
