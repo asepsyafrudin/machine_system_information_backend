@@ -250,6 +250,37 @@ export const getProjectByPageAndUser = async (req, res) => {
   }
 };
 
+export const getProjectByUser = async (req, res) => {
+  try {
+    const user = req.params.userId;
+    const [result] = await countGetAllProjectModels();
+    const resultSubmit = await getDataResult(result);
+    const filterByMember = [];
+    if (resultSubmit.length > 0) {
+      for (let index = 0; index < resultSubmit.length; index++) {
+        for (
+          let index2 = 0;
+          index2 < resultSubmit[index].member.length;
+          index2++
+        ) {
+          if (resultSubmit[index].member[index2].user_id === parseInt(user)) {
+            filterByMember.push(resultSubmit[index]);
+          }
+        }
+      }
+    }
+    res.status(200).json({
+      msg: "get project berhasil",
+      data: filterByMember,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get project gagal",
+      errMsg: error,
+    });
+  }
+};
+
 export const updateStatusProject = async (req, res) => {
   try {
     await updateStatusProjectModels(req.body.id, req.body.status);
