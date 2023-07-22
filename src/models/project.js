@@ -28,9 +28,8 @@ export const updateProjectModels = (data) => {
     start  = '${data.start}',
     finish = '${data.finish}',
     category = '${data.category}',
-    description = '${data.description}',
-    user_id = ${data.user_id} WHERE
-    id = '${data.id}'
+    description = '${data.description}'
+    WHERE id = '${data.id}'
 `;
   return db.execute(sql);
 };

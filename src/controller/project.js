@@ -46,12 +46,19 @@ export const createProject = async (req, res) => {
 
 export const updateProject = async (req, res) => {
   try {
-    await deleteMembers(req.body.id);
+    // await deleteMembers(req.body.id);
     await updateProjectModels(req.body);
     const members = req.body.member;
+    const [getMemberByProject] = await getMemberByProjectId(req.body.id);
+
     if (members.length > 0) {
       for (let index = 0; index < members.length; index++) {
-        await createMembers(req.body.id, members[index]);
+        const findMember = getMemberByProject.find(
+          (value) => value.user_id === parseInt(members[index])
+        );
+        if (!findMember) {
+          await createMembers(req.body.id, members[index]);
+        }
       }
     }
     res.status(200).json({
