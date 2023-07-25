@@ -30,7 +30,7 @@ export const updateProjectModels = (data) => {
     finish = '${data.finish}',
     category = '${data.category}',
     description = '${data.description}',
-    sub_category = '${data.sub_category}',
+    sub_category = '${data.sub_category}'
     WHERE id = '${data.id}'
 `;
   return db.execute(sql);
