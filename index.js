@@ -19,8 +19,7 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
-// import https from "https";
-// import fs from "fs";
+import emailRoute from "./src/routes/email.js";
 import problemRoute from "./src/routes/problem.js";
 import ftaLv1Route from "./src/routes/ftaLv1.js";
 import ftaLv2route from "./src/routes/ftaLv2.js";
@@ -29,7 +28,6 @@ import actvityRoute from "./src/routes/activity.js";
 import todoRoute from "./src/routes/todo.js";
 import tokenRoute from "./src/routes/token.js";
 import sectionRoute from "./src/routes/section.js";
-
 dotenv.config();
 
 const app = express();
@@ -69,6 +67,7 @@ app.use("/api/fileUpload", fileUploadGeneralRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/todo", todoRoute);
 app.use("/api/section", sectionRoute);
+app.use("/api/email", emailRoute);
 app.use("/prosysta", (req, res) => {
   res.sendFile(
     path.join(
@@ -78,20 +77,6 @@ app.use("/prosysta", (req, res) => {
   );
 });
 
-// const cert = fs.readFileSync(
-//   path.join(
-//     __dirname,
-//     "../machine_system_information_backend/src/cert/localhost.crt"
-//   )
-// );
-// const key = fs.readFileSync(
-//   path.join(
-//     __dirname,
-//     "../machine_system_information_backend/src/cert/localhost.decrypted.key"
-//   )
-// );
-
-// const server = https.createServer({ cert, key }, app);
 app.listen(port, () => {
   console.log("Server Run On Port " + port);
 });

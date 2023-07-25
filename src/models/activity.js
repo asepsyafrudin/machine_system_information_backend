@@ -8,7 +8,8 @@ export const createActivityModels = (data) => {
     type = '${data.type}',
     project_id = '${data.project}',
     start = '${data.start}',
-    finish ='${data.end}'`;
+    finish ='${data.end}',
+    remark = '${data.remark}'`;
 
   return db.execute(sql);
 };
@@ -20,7 +21,9 @@ export const updateActivityModels = (data) => {
       type = '${data.type}',
       project_id = '${data.project}',
       start = '${data.start}',
-      finish ='${data.end}' WHERE  id = '${data.id}'`;
+      finish ='${data.end}',
+      remark = '${data.remark}'
+      WHERE  id = '${data.id}'`;
   return db.execute(sql);
 };
 

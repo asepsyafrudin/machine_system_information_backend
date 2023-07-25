@@ -84,6 +84,7 @@ export const getActivityByProjectId = async (req, res) => {
           dependencies: dependencies.length > 0 ? [dependencies[0].name] : [],
           type: result[index].type,
           project: result[index].project_id,
+          remark: result[index].remark,
         };
         dataSend.push(data);
       }

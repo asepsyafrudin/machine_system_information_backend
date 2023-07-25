@@ -13,6 +13,8 @@ import {
   createProjectModels,
   deleteProjectByProjectIdModels,
   getAllProjectModels,
+  getProjectByAllModels,
+  getProjectByAllWithoutDateRangeModels,
   getProjectByDateRangeModels,
   getProjectByIdModels,
   getProjectByProductIdAndDateRange,
@@ -73,63 +75,53 @@ export const updateProject = async (req, res) => {
   }
 };
 
-const statusFunction = (arrayDataActivity, startDate, SOPDate, progress) => {
+const statusFunction = (
+  arrayDataActivity,
+  startDate,
+  SOPDate,
+  progress,
+  status
+) => {
   let totalActivityDelay = 0;
   let currentDate = new Date();
   let start = new Date(startDate);
   currentDate.setDate(currentDate.getDate() - 1);
 
-  if (arrayDataActivity.length > 0) {
-    if (progress) {
-      if (progress === 100) {
-        return "Finish";
-      } else if (start - currentDate > 0) {
-        return "Not Yet Started";
-      } else {
-        for (let index = 0; index < arrayDataActivity.length; index++) {
-          let endDateActivity = new Date(
-            moment(arrayDataActivity[index].finish)
-          );
+  if (status !== "cancel") {
+    if (arrayDataActivity.length > 0) {
+      if (progress) {
+        if (progress === 100) {
+          return "Finish";
+        } else if (start - currentDate > 0) {
+          return "Not Yet Started";
+        } else {
+          for (let index = 0; index < arrayDataActivity.length; index++) {
+            let endDateActivity = new Date(
+              moment(arrayDataActivity[index].finish)
+            );
 
-          if (
-            currentDate - endDateActivity > 0 &&
-            parseInt(arrayDataActivity[index].progress) < 100
-          ) {
-            totalActivityDelay += 1;
+            if (
+              currentDate - endDateActivity > 0 &&
+              parseInt(arrayDataActivity[index].progress) < 100
+            ) {
+              totalActivityDelay += 1;
+            }
+          }
+          if (totalActivityDelay === 0) {
+            return "On Progress";
+          } else {
+            return `${totalActivityDelay} Activity Delay`;
           }
         }
-        if (totalActivityDelay === 0) {
-          return "On Progress";
-        } else {
-          return `${totalActivityDelay} Activity Delay`;
-        }
+      } else {
+        return "Waiting Detail Activity";
       }
     } else {
       return "Waiting Detail Activity";
     }
   } else {
-    return "Waiting Detail Activity";
+    return "cancel";
   }
-
-  // if (progress) {
-  //   if (progress === 100) {
-  //     return "Finish";
-  //   } else {
-  //     let currentDate = new Date();
-  //     currentDate.setDate(currentDate.getDate() - 1);
-  //     let start = new Date(startDate);
-  //     let sop = new Date(SOPDate);
-  //     if (startDate - currentDate > 0) {
-  //       return "Not Yet Started";
-  //     } else if (sop - currentDate < 0) {
-  //       return "Delay";
-  //     } else if (currentDate - start > 0) {
-  //       return "On Progress";
-  //     }
-  //   }
-  // } else {
-  //   return "Waiting Detail Activity";
-  // }
 };
 
 const getDataResult = async (result) => {
@@ -153,6 +145,7 @@ const getDataResult = async (result) => {
         member: member,
         user_id: result[index].user_id,
         category: result[index].category,
+        sub_category: result[index].sub_category,
         description: result[index].description,
         section_id: result[index].section_id,
         section_name: result[index].section_name,
@@ -160,7 +153,8 @@ const getDataResult = async (result) => {
           activityData,
           result[index].start,
           result[index].finish,
-          progress[0].progress
+          progress[0].progress,
+          result[index].status
         ),
         progress: progress[0].progress,
       };
@@ -340,9 +334,36 @@ export const searchProject = async (req, res) => {
     const productId = req.body.product_id;
     const fromDate = req.body.from_date;
     const toDate = req.body.to_date;
+    const category = req.body.category;
+
     if (sectionId) {
       if (productId) {
-        if (fromDate && toDate) {
+        if (category) {
+          if (fromDate && toDate) {
+            const [result] = await getProjectByAllModels(
+              fromDate,
+              toDate,
+              productId,
+              category
+            );
+            const resultSubmit = await getDataResult(result);
+            res.status(200).json({
+              msg: " get project berhasil ",
+              data: resultSubmit,
+            });
+          } else {
+            const [result] = await getProjectByAllWithoutDateRangeModels(
+              productId,
+              category
+            );
+            const resultSubmit = await getDataResult(result);
+            res.status(200).json({
+              msg: " get project berhasil ",
+              data: resultSubmit,
+            });
+          }
+          // make function for sectionId, productId, and category only
+        } else if (fromDate && toDate) {
           const [result] = await getProjectByProductIdAndDateRange(
             fromDate,
             toDate,
