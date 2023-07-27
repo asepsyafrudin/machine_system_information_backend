@@ -140,7 +140,6 @@ export const reminderNotificationDelaytoPic = async () => {
         });
       }
 
-      console.log(date.toLocaleTimeString());
       if (date.toLocaleTimeString() === reminderDate) {
         for (let index = 0; index < contentEmail.length; index++) {
           reminderProjectDelayToPic(
