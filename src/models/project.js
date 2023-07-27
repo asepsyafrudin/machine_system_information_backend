@@ -60,11 +60,12 @@ export const getAllProjectModels = (limit, offset) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  ORDER BY t_project.start ASC LIMIT ${offset},${limit}
+  ORDER BY t_project.create_date DESC LIMIT ${offset},${limit}
     `;
   return db.execute(sql);
 };
@@ -86,7 +87,8 @@ export const getProjectByIdModels = (id) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
@@ -112,11 +114,12 @@ export const countGetAllProjectModels = () => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  ORDER BY t_project.start ASC
+  ORDER BY t_project.create_date DESC
       `;
   return db.execute(sql);
 };
@@ -148,11 +151,12 @@ export const getProjectByProductIdModels = (productId) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  WHERE t_project.product_id = '${productId}' ORDER BY t_project.start ASC`;
+  WHERE t_project.product_id = '${productId}' ORDER BY t_project.create_date DESC`;
   return db.execute(sql);
 };
 
@@ -173,11 +177,12 @@ export const getProjectByDateRangeModels = (fromDate, toDate) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  WHERE t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}' ORDER BY t_project.start ASC`;
+  WHERE t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}' ORDER BY t_project.create_date DESC`;
   return db.execute(sql);
 };
 
@@ -202,11 +207,12 @@ export const getProjectByProductIdAndDateRange = (
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') and t_project.product_id = '${productId}' ORDER BY t_project.start ASC`;
+  WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') and t_project.product_id = '${productId}' ORDER BY t_project.create_date DESC`;
   return db.execute(sql);
 };
 
@@ -227,12 +233,13 @@ export const getProjectBySectionId = (id) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
   WHERE t_product.section_id = ${id} 
-  ORDER BY t_project.start ASC
+  ORDER BY t_project.create_date DESC
   `;
 
   return db.execute(sql);
@@ -260,14 +267,15 @@ export const getProjectByAllModels = (
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id 
   WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') 
   and t_project.product_id = '${productId}' 
   and t_project.category = '${category}'
-  ORDER BY t_project.start ASC
+  ORDER BY t_project.create_date DESC
   `;
 
   return db.execute(sql);
@@ -290,13 +298,14 @@ export const getProjectByAllWithoutDateRangeModels = (productId, category) => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.status
+  t_project.status,
+  t_project.create_date
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id 
   WHERE t_project.product_id = '${productId}' 
   and t_project.category = '${category}'
-  ORDER BY t_project.start ASC
+  ORDER BY t_project.create_date DESC
   `;
 
   return db.execute(sql);
