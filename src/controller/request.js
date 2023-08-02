@@ -1,14 +1,22 @@
+import { sendTokenForChangePassword } from "../config/email.js";
 import {
   createRequestModels,
   getRequestByToken,
   deleteRequestModels,
 } from "../models/request.js";
 import { v4 as uuidv4 } from "uuid";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const createRequest = async (req, res) => {
   try {
     const token = uuidv4();
     await createRequestModels(req.body, token);
+    sendTokenForChangePassword(
+      req.body.email,
+      `${process.env.IP_ADDRESS_LOCALHOST}/${token}`
+    );
     res.status(200).json({
       msg: "request berhasil di kirim",
       data: req.body,

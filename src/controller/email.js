@@ -1,4 +1,11 @@
-import { reminderProjectDelayToPic, sendingEmail } from "../config/email.js";
+import moment from "moment";
+import {
+  reminderProjectDelayToPic,
+  sendingEmail,
+  sendingEmailForFeedback,
+  shareFinishProjectCommon,
+  shareFinishProjectForElectronicNewModel,
+} from "../config/email.js";
 import { getActivityByProjectIdModels } from "../models/activity.js";
 import {
   countGetAllProjectModels,
@@ -6,8 +13,10 @@ import {
 } from "../models/project.js";
 import { getAllUsersModels, getUserByUserIdModels } from "../models/user.js";
 import { getDataResult } from "./project.js";
-import { getAllUser } from "./user.js";
+import { getProblemByIdModels } from "../models/problem.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 function capitalCaseFirstWord(word) {
   if (word) {
     let newWord = word
@@ -29,13 +38,21 @@ const userFunction = async (id) => {
 const reminderDate = "7:30:00 AM";
 
 export const sendEmail = async (req, res) => {
-  const { sender, toEmail, subject, message } = req.body;
+  const { sender, toEmail, subject, message, ccEmail } = req.body;
   try {
     const senderName = await userFunction(sender);
-    const toEmailList = [];
+    let toEmailList = [];
     if (toEmail.length > 0) {
       for (let index = 0; index < toEmail.length; index++) {
         const user = await userFunction(toEmail[index]);
+        toEmailList.push(user[0].email);
+      }
+    }
+
+    let ccEmailList = [];
+    if (ccEmail.length > 0) {
+      for (let index = 0; index < ccEmail.length; index++) {
+        const user = await userFunction(ccEmail[index]);
         toEmailList.push(user[0].email);
       }
     }
@@ -44,7 +61,9 @@ export const sendEmail = async (req, res) => {
       toEmailList,
       subject,
       message,
-      capitalCaseFirstWord(senderName[0].username)
+      capitalCaseFirstWord(senderName[0].username),
+      ccEmailList,
+      sender[0].email
     );
 
     res.status(200).json({
@@ -152,13 +171,61 @@ export const reminderNotificationDelaytoPic = async () => {
         }
       }
     }
-
-    // console.log(date.toLocaleTimeString() === reminderDate);
   } catch (error) {
     console.log(error);
   }
 };
 
+const statusFunction = (
+  arrayDataActivity,
+  startDate,
+  SOPDate,
+  progress,
+  status
+) => {
+  let totalActivityDelay = 0;
+  let currentDate = new Date();
+  let start = new Date(startDate);
+  currentDate.setDate(currentDate.getDate() - 1);
+
+  if (status !== "cancel") {
+    if (arrayDataActivity.length > 0) {
+      if (progress) {
+        if (progress === 100) {
+          return "Finish";
+        } else if (start - currentDate > 0) {
+          return "Not Yet Started";
+        } else {
+          for (let index = 0; index < arrayDataActivity.length; index++) {
+            let endDateActivity = new Date(
+              moment(arrayDataActivity[index].finish)
+            );
+
+            if (
+              currentDate - endDateActivity > 0 &&
+              parseInt(arrayDataActivity[index].progress) < 100
+            ) {
+              totalActivityDelay += 1;
+            }
+          }
+          if (totalActivityDelay === 0) {
+            return "On Progress";
+          } else {
+            return `${totalActivityDelay} Activity Delay`;
+          }
+        }
+      } else {
+        return "Waiting Detail Activity";
+      }
+    } else {
+      return "Waiting Detail Activity";
+    }
+  } else {
+    return "cancel";
+  }
+};
+
+//Waiting Email Role :
 export const reminderNotificationDelayToManager = async () => {
   try {
     const userListToEmail = await getProjectDelayFunction();
@@ -199,6 +266,7 @@ export const reminderNotificationDelayToManager = async () => {
             );
             if (!checkEmailListToManager) {
               emailListToManager.push({
+                pic_id: contentEmail[index].pic_id,
                 manager_id: manager[index2].id,
                 project_delay: contentEmail[index].project_delay,
                 project_id: contentEmail[index].project_id,
@@ -210,6 +278,7 @@ export const reminderNotificationDelayToManager = async () => {
               const newSetData = [
                 ...removeData,
                 {
+                  pic_id: contentEmail[index].pic_id,
                   manager_id: manager[index2].id,
                   project_delay: [
                     ...checkEmailListToManager.project_delay,
@@ -230,7 +299,7 @@ export const reminderNotificationDelayToManager = async () => {
         const [activityData] = await getActivityByProjectIdModels(
           emailListToManager[index].project_id
         );
-        console.log(activityData);
+        const date = new Date();
       }
     }
   } catch (error) {
@@ -239,3 +308,121 @@ export const reminderNotificationDelayToManager = async () => {
 };
 
 // reminderNotificationDelayToManager();
+
+export const sendFeedback = async (req, res) => {
+  try {
+    const problem_id = req.body.problem_id;
+    const userFeedback = req.body.user_id;
+    const [dataProblem] = await getProblemByIdModels(problem_id);
+    const { user_id, problem_name } = dataProblem[0];
+    const [user] = await getUserByUserIdModels(user_id);
+    const [sender] = await getUserByUserIdModels(userFeedback);
+    const message = req.body.message;
+
+    sendingEmailForFeedback(
+      user[0].email,
+      problem_name,
+      message,
+      capitalCaseFirstWord(sender[0].username, sender[0].email)
+    );
+
+    res.status(200).json({
+      msg: "send email berhasil",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "send email gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const shareFinishProjectForElctronictSMDNewModel = async (req, res) => {
+  try {
+    const { project_id, toEmail, ccEmail, user_id } = req.body;
+    const [project] = await getProjectByIdModels(project_id);
+    const subject = `Project Finish Notification of ${project[0].project_name}`;
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/projectActivity/${project_id}`;
+    let toEmailList = [];
+    if (toEmail.length > 0) {
+      for (let index = 0; index < toEmail.length; index++) {
+        const user = await userFunction(toEmail[index]);
+        toEmailList.push(user[0].email);
+      }
+    }
+
+    let ccEmailList = [];
+    if (ccEmail.length > 0) {
+      for (let index = 0; index < ccEmail.length; index++) {
+        const user = await userFunction(ccEmail[index]);
+        ccEmailList.push(user[0].email);
+      }
+    }
+
+    const user = await userFunction(user_id);
+    shareFinishProjectForElectronicNewModel(
+      toEmailList,
+      ccEmailList,
+      subject,
+      capitalCaseFirstWord(project[0].project_name),
+      linkProject,
+      capitalCaseFirstWord(user[0].username)
+    );
+
+    res.status(200).json({
+      msg: "send email success",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "send email failed",
+      errMsg: error,
+    });
+  }
+};
+
+export const shareFinishProjectForCommon = async (req, res) => {
+  try {
+    const { project_id, toEmail, ccEmail, user_id } = req.body;
+    const [project] = await getProjectByIdModels(project_id);
+    const subject = `Project Finish Notification of ${project[0].project_name}`;
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/projectActivity/${project_id}`;
+
+    let toEmailList = [];
+    if (toEmail.length > 0) {
+      for (let index = 0; index < toEmail.length; index++) {
+        const user = await userFunction(toEmail[index]);
+        toEmailList.push(user[0].email);
+      }
+    }
+
+    let ccEmailList = [];
+    if (ccEmail.length > 0) {
+      for (let index = 0; index < ccEmail.length; index++) {
+        const user = await userFunction(ccEmail[index]);
+        ccEmailList.push(user[0].email);
+      }
+    }
+
+    const user = await userFunction(user_id);
+    shareFinishProjectCommon(
+      toEmailList,
+      ccEmailList,
+      subject,
+      capitalCaseFirstWord(project[0].project_name),
+      linkProject,
+      capitalCaseFirstWord(user[0].username)
+    );
+
+    res.status(200).json({
+      msg: "send email success",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "send email failed",
+      errMsg: error,
+    });
+  }
+};
