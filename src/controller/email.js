@@ -54,7 +54,7 @@ export const sendEmail = async (req, res) => {
     if (ccEmail.length > 0) {
       for (let index = 0; index < ccEmail.length; index++) {
         const user = await userFunction(ccEmail[index]);
-        toEmailList.push(user[0].email);
+        ccEmailList.push(user[0].email);
       }
     }
 
@@ -64,7 +64,7 @@ export const sendEmail = async (req, res) => {
       message,
       capitalCaseFirstWord(senderName[0].username),
       ccEmailList,
-      sender[0].email,
+      senderName[0].email,
       linkProject
     );
 

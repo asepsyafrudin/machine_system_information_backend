@@ -24,6 +24,15 @@ export const sendingEmail = async (
   senderEmail,
   linkProject
 ) => {
+  console.log(
+    toUserMail,
+    subject,
+    message,
+    senderName,
+    ccMail,
+    senderEmail,
+    linkProject
+  );
   let info = await transporter.sendMail({
     from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
     to: toUserMail,
