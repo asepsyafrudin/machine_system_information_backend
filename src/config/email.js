@@ -205,7 +205,7 @@ export const shareFinishProjectForElectronicNewModel = async (
          
         
         We would like to inform you Circuit Assy sample already finished. <br/>
-        "<a href='${projectLink}'>${projectTitle}</a>" --> please Login at Prosysta App & click for detail <br/>
+        "<a href='${projectLink}'>${projectTitle}</a>" --> click for detail (Login to Prosysta App) <br/>
         Please proceed continue making sample at Final Assy line following New Model schedule <br/>
         <br/>
         <br/>
@@ -245,7 +245,7 @@ export const shareFinishProjectCommon = async (
          
         
         We would like to inform you that our project already finished. <br/>
-        "<a href='${projectLink}'>${projectTitle}</a>" --> please Login at Prosysta App & click for detail <br/>
+        "<a href='${projectLink}'>${projectTitle}</a>" --> click for detail (Login to Prosysta App) <br/>
         Thank you very much for your effort. <br/>
         <br/>
         <br/>
