@@ -21,7 +21,8 @@ export const sendingEmail = async (
   message,
   senderName,
   ccMail,
-  senderEmail
+  senderEmail,
+  linkProject
 ) => {
   let info = await transporter.sendMail({
     from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
@@ -38,8 +39,10 @@ export const sendingEmail = async (
     
             ${message}
     
-
+            
             <br/>
+            For detail activity you can click to login and access this project : <br/>
+            ${linkProject}
             <br/>
             Best Regard
 
@@ -242,7 +245,7 @@ export const shareFinishProjectCommon = async (
          
         
         We would like to inform you that our project already finished. <br/>
-        "<a href='${projectLink}'>${projectTitle}</a>" --> click for detail <br/>
+        "<a href='${projectLink}'>${projectTitle}</a>" --> please Login at Prosysta App & click for detail <br/>
         Thank you very much for your effort. <br/>
         <br/>
         <br/>
@@ -253,7 +256,7 @@ export const shareFinishProjectCommon = async (
          
         
         PROSYSTA administrator <br/>
-        If you have any concern or confirmation please contact to PIC project (${pic} - PE SMD)
+        If you have any concern or confirmation please contact to PIC project (${pic})
           
         </div>
     `,

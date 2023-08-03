@@ -35,11 +35,12 @@ const userFunction = async (id) => {
   return user;
 };
 
-const reminderDate = "7:30:00 AM";
+const reminderDate = "07:30:00";
 
 export const sendEmail = async (req, res) => {
-  const { sender, toEmail, subject, message, ccEmail } = req.body;
+  const { sender, toEmail, subject, message, ccEmail, project_id } = req.body;
   try {
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
     const senderName = await userFunction(sender);
     let toEmailList = [];
     if (toEmail.length > 0) {
@@ -63,7 +64,8 @@ export const sendEmail = async (req, res) => {
       message,
       capitalCaseFirstWord(senderName[0].username),
       ccEmailList,
-      sender[0].email
+      sender[0].email,
+      linkProject
     );
 
     res.status(200).json({
@@ -343,7 +345,7 @@ export const shareFinishProjectForElctronictSMDNewModel = async (req, res) => {
     const { project_id, toEmail, ccEmail, user_id } = req.body;
     const [project] = await getProjectByIdModels(project_id);
     const subject = `Project Finish Notification of ${project[0].project_name}`;
-    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/projectActivity/${project_id}`;
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
     let toEmailList = [];
     if (toEmail.length > 0) {
       for (let index = 0; index < toEmail.length; index++) {
@@ -387,7 +389,7 @@ export const shareFinishProjectForCommon = async (req, res) => {
     const { project_id, toEmail, ccEmail, user_id } = req.body;
     const [project] = await getProjectByIdModels(project_id);
     const subject = `Project Finish Notification of ${project[0].project_name}`;
-    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/projectActivity/${project_id}`;
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
 
     let toEmailList = [];
     if (toEmail.length > 0) {
