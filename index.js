@@ -43,6 +43,9 @@ app.use(
     path.join(__dirname, "../machine_system_information_backend/public")
   )
 );
+
+const date = new Date();
+console.log(date.getDay());
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
