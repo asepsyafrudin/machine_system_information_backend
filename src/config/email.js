@@ -51,7 +51,7 @@ export const sendingEmail = async (
             
             <br/>
             For detail activity you can click to login and access this project : <br/>
-            ${linkProject}
+            <a href='${linkProject}'>${subject}</a>
             <br/>
             Best Regard
 
