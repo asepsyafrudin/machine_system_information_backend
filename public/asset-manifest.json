@@ -1,16 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.a62cd2ed.css",
-    "main.js": "/static/js/main.8e83dbeb.js",
+    "main.css": "/static/css/main.5bc95975.css",
+    "main.js": "/static/js/main.2a436de8.js",
     "static/js/787.28cb0dcd.chunk.js": "/static/js/787.28cb0dcd.chunk.js",
     "static/media/Project.jpg": "/static/media/Project.e5b8c766e97047c89cd6.jpg",
     "static/media/blue.jpg": "/static/media/blue.dd149c3b4b17b3c45349.jpg",
     "static/media/videodefault.jpg": "/static/media/videodefault.ed2601807d9d4cc226c6.jpg",
     "static/media/backgroundSearch.jpg": "/static/media/backgroundSearch.971ebf85d88b78a9d738.jpg",
+    "static/media/Add tasks-amico.png": "/static/media/Add tasks-amico.15c5bfc6110611275461.png",
+    "static/media/Work time-amico.png": "/static/media/Work time-amico.4b297e3afd1c60ebb41c.png",
+    "static/media/Digital personal files-amico.png": "/static/media/Digital personal files-amico.3fa6dbba4eebab058de4.png",
     "static/media/file search.jpg": "/static/media/file search.eda0a70d729fadd7ea1d.jpg",
     "static/media/Robotics-amico.png": "/static/media/Robotics-amico.d036d6d67d7a856b3b68.png",
     "static/media/backgroundLogin.png": "/static/media/backgroundLogin.a039aea54da5ad91cbd1.png",
     "static/media/agile-method-rafiki.png": "/static/media/agile-method-rafiki.2575247915be9a19bef6.png",
+    "static/media/New team members-rafiki.png": "/static/media/New team members-rafiki.1219ce33b058905a9f75.png",
     "static/media/Data analysis-rafiki.png": "/static/media/Data analysis-rafiki.aca9550f0d4e8edd6aaf.png",
     "static/media/Performance overview-rafiki.png": "/static/media/Performance overview-rafiki.2502e32552501b7c4b74.png",
     "static/media/Completed-rafiki.png": "/static/media/Completed-rafiki.e1d55a6d5f558460fda5.png",
@@ -34,12 +38,12 @@
     "static/media/roboto-vietnamese-400-normal.woff2": "/static/media/roboto-vietnamese-400-normal.3230f9b040f3c630e0c3.woff2",
     "static/media/roboto-greek-ext-400-normal.woff2": "/static/media/roboto-greek-ext-400-normal.169619821ea93019d1bb.woff2",
     "index.html": "/index.html",
-    "main.a62cd2ed.css.map": "/static/css/main.a62cd2ed.css.map",
-    "main.8e83dbeb.js.map": "/static/js/main.8e83dbeb.js.map",
+    "main.5bc95975.css.map": "/static/css/main.5bc95975.css.map",
+    "main.2a436de8.js.map": "/static/js/main.2a436de8.js.map",
     "787.28cb0dcd.chunk.js.map": "/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a62cd2ed.css",
-    "static/js/main.8e83dbeb.js"
+    "static/css/main.5bc95975.css",
+    "static/js/main.2a436de8.js"
   ]
 }
