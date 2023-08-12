@@ -25,7 +25,7 @@ router.get("/getProjectByPageAndUser/:page/:user", getProjectByPageAndUser);
 router.post("/search", searchProject);
 router.get("/getProjectByUser/:userId", getProjectByUser);
 router.get(
-  "getProjectBySectionIdAndPage/:page/:sectionId",
+  "/getProjectBySectionIdAndPage/:page/:sectionId",
   getProjectBySectioIdAndPageController
 );
 export default router;
