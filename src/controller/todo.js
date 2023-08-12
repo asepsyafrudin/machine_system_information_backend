@@ -19,7 +19,7 @@ export const createTodo = async (req, res) => {
           await createTodoModels(dataSave[index]);
         }
 
-        const [newDataAfterCreate] = await getTodoByProjectIdModels(
+        const [newDataAfterCreate] = await countTotalDataTodoList(
           dataSave[0].project_id
         );
         if (newDataAfterCreate.length > 0) {
