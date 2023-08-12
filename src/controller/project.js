@@ -20,6 +20,7 @@ import {
   getProjectByProductIdAndDateRange,
   getProjectByProductIdModels,
   getProjectBySectionId,
+  getProjectBySectionIdAndPage,
   updateProjectModels,
   updateStatusProjectModels,
 } from "../models/project.js";
@@ -408,6 +409,35 @@ export const searchProject = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "get project gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const getProjectBySectioIdAndPageController = async (req, res) => {
+  try {
+    const sectionId = req.params.sectionId;
+    const page = req.params.page;
+    const dataPerPage = 10;
+    const offset = (page - 1) * dataPerPage;
+    const [result] = await getProjectBySectionIdAndPage(
+      sectionId,
+      dataPerPage,
+      offset
+    );
+    const [totalData] = await getProjectBySectionId(sectionId);
+    const totalPageData = Math.ceil(totalData.length / dataPerPage);
+    const resultSubmit = await getDataResult(result);
+    res.status(200).json({
+      msg: "todo berhasil di get",
+      data: resultSubmit,
+      dataPerPage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "todo gagal di get",
       errMsg: error,
     });
   }

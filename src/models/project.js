@@ -245,6 +245,36 @@ export const getProjectBySectionId = (id) => {
   return db.execute(sql);
 };
 
+export const getProjectBySectionIdAndPage = (id, limit, offset) => {
+  const sql = `SELECT 
+  t_project.id, 
+  t_project.product_id,
+  t_project.project_name,
+  t_project.manager_id,
+  t_project.budget,
+  t_project.saving_cost,
+  t_project.start,
+  t_project.finish,
+  t_project.category,
+  t_project.sub_category,
+  t_project.description,
+  t_project.user_id,
+  t_product.product_name,
+  t_product.section_id,
+  t_section.section_name,
+  t_project.status,
+  t_project.create_date
+  FROM t_project 
+  JOIN t_product ON t_project.product_id = t_product.id
+  JOIN t_section ON t_product.section_id = t_section.id
+  WHERE t_product.section_id = ${id} 
+  ORDER BY t_project.create_date DESC
+  LIMIT ${offset},${limit}
+  `;
+
+  return db.execute(sql);
+};
+
 export const getProjectByAllModels = (
   fromDate,
   toDate,

@@ -6,6 +6,7 @@ import {
   getAllProjectByPage,
   getProjectById,
   getProjectByPageAndUser,
+  getProjectBySectioIdAndPageController,
   getProjectByUser,
   searchProject,
   updateProject,
@@ -23,5 +24,8 @@ router.delete("/delete/:id", deleteProjectByProjectId);
 router.get("/getProjectByPageAndUser/:page/:user", getProjectByPageAndUser);
 router.post("/search", searchProject);
 router.get("/getProjectByUser/:userId", getProjectByUser);
-
+router.get(
+  "getProjectBySectionIdAndPage/:page/:sectionId",
+  getProjectBySectioIdAndPageController
+);
 export default router;
