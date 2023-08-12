@@ -235,7 +235,7 @@ export const reminderNotificationWaitingtoPic = async () => {
     const date = new Date();
     const userListToEmail = await getProjectWaitingActivityFunction();
     let contentEmail = [];
-    let subject = "Waiting Detail Actoivity Project Reminder From Prosysta";
+    let subject = "Waiting Detail Actiivity Project Reminder From Prosysta";
     if (userListToEmail.length > 0) {
       for (let index = 0; index < userListToEmail.length; index++) {
         const userObject = await userFunction(
