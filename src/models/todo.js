@@ -33,8 +33,14 @@ export const getTodoByIdModels = (id) => {
   return db.execute(sql);
 };
 
-export const getTodoByProjectIdModels = (projectId) => {
-  const sql = `SELECT * FROM t_todo where project_id = '${projectId}' ORDER by due_date ASC`;
+export const getTodoByProjectIdModels = (projectId, limit, offset) => {
+  const sql = `SELECT * FROM t_todo where project_id = '${projectId}' 
+  ORDER by due_date DESC LIMIT ${offset},${limit}`;
+  return db.execute(sql);
+};
+
+export const countTotalDataTodoList = (projectId) => {
+  const sql = `SELECT * FROM t_todo where project_id = '${projectId}'`;
   return db.execute(sql);
 };
 

@@ -191,7 +191,7 @@ export const getAllProjectByPage = async (req, res) => {
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
     res.status(200).json({
       msg: "get project berhasil",
-      dataPerage: dataPerPage,
+      dataPerPage: dataPerPage,
       numberStart: (page - 1) * dataPerPage + 1,
       totalPageData: totalPageData,
       data: resultSubmit,

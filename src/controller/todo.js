@@ -1,4 +1,5 @@
 import {
+  countTotalDataTodoList,
   createTodoModels,
   deleteTodoByIdModels,
   getTodoByIdModels,
@@ -49,10 +50,22 @@ export const createTodo = async (req, res) => {
 export const getTodoByProjectId = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const [result] = await getTodoByProjectIdModels(projectId);
+    const page = req.params.page;
+    const dataPerPage = 10;
+    const offset = (page - 1) * dataPerPage;
+    const [totalData] = await countTotalDataTodoList(projectId);
+    const totalPageData = Math.ceil(totalData.length / dataPerPage);
+    const [result] = await getTodoByProjectIdModels(
+      projectId,
+      dataPerPage,
+      offset
+    );
     res.status(200).json({
       msg: "todo berhasil di get",
       data: result,
+      dataPerPage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
     });
   } catch (error) {
     res.status(400).json({
