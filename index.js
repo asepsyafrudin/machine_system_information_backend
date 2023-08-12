@@ -28,7 +28,10 @@ import actvityRoute from "./src/routes/activity.js";
 import todoRoute from "./src/routes/todo.js";
 import tokenRoute from "./src/routes/token.js";
 import sectionRoute from "./src/routes/section.js";
-import { reminderNotificationDelaytoPic } from "./src/controller/email.js";
+import {
+  reminderNotificationDelaytoPic,
+  reminderNotificationWaitingtoPic,
+} from "./src/controller/email.js";
 dotenv.config();
 
 const app = express();
@@ -36,6 +39,7 @@ const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 setInterval(reminderNotificationDelaytoPic, 1000);
+setInterval(reminderNotificationWaitingtoPic, 1000);
 
 app.use("/static", express.static(path.join(__dirname, "../assets")));
 app.use(
@@ -44,8 +48,6 @@ app.use(
   )
 );
 
-const date = new Date();
-console.log(date.getDay());
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));

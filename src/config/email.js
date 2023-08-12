@@ -24,15 +24,6 @@ export const sendingEmail = async (
   senderEmail,
   linkProject
 ) => {
-  console.log(
-    toUserMail,
-    subject,
-    message,
-    senderName,
-    ccMail,
-    senderEmail,
-    linkProject
-  );
   let info = await transporter.sendMail({
     from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
     to: toUserMail,
@@ -127,6 +118,46 @@ export const reminderProjectDelayToPic = async (
       {
         filename: "image.png",
         path: path.join(__dirname, "../image/self reminder.jpg"),
+        cid: "unique@kreata.ee", //same cid value as in the html img src
+      },
+    ],
+  });
+
+  console.log("Message sent: %s", info.messageId);
+};
+
+export const reminderProjectWaitingActivityToPic = async (
+  toUserMail,
+  subject,
+  projectWaiting,
+  picId,
+  projectId
+) => {
+  let info = await transporter.sendMail({
+    from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
+    to: toUserMail,
+    subject: subject,
+    html: `
+        <div>
+            Hello Gaes <br/>
+            I am Prosysta, <br/>
+            Your Project has been created.</br>
+            We Will Waiting Detail Activity for Your Project <br/>
+            
+            Your Project List : <br/>
+            ${projectList(projectWaiting, picId, projectId)}
+            <br/><br/>
+            <img src="cid:unique@kreata.ee"/>'
+            Best Regard
+            <br/><br/><br/>
+
+            Prosysta Admin
+        </div>
+    `,
+    attachments: [
+      {
+        filename: "image.png",
+        path: path.join(__dirname, "../image/good morning quote.JPG"),
         cid: "unique@kreata.ee", //same cid value as in the html img src
       },
     ],

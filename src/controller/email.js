@@ -1,6 +1,7 @@
 import moment from "moment";
 import {
   reminderProjectDelayToPic,
+  reminderProjectWaitingActivityToPic,
   sendingEmail,
   sendingEmailForFeedback,
   shareFinishProjectCommon,
@@ -167,6 +168,95 @@ export const reminderNotificationDelaytoPic = async () => {
             contentEmail[index].pic,
             subject,
             contentEmail[index].project_delay,
+            contentEmail[index].pic_id,
+            contentEmail[index].project_id
+          );
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getProjectWaitingActivityFunction = async () => {
+  const [result] = await countGetAllProjectModels();
+
+  let projectWaitingActivity = [];
+  if (result.length > 0) {
+    const resultSubmit = await getDataResult(result);
+    if (resultSubmit.length > 0) {
+      for (let index = 0; index < resultSubmit.length; index++) {
+        if (resultSubmit[index].status === "Waiting Detail Activity") {
+          projectWaitingActivity.push(resultSubmit[index]);
+        }
+      }
+    }
+  }
+
+  let userListToEmail = [];
+  if (projectWaitingActivity.length > 0) {
+    for (let index = 0; index < projectWaitingActivity.length; index++) {
+      const checkUserListEmail = userListToEmail.find(
+        (value) => value.manager_id === projectWaitingActivity[index].manager_id
+      );
+
+      if (!checkUserListEmail) {
+        userListToEmail.push({
+          manager_id: projectWaitingActivity[index].manager_id,
+          project_waiting: [projectWaitingActivity[index].project_name],
+          project_id: projectWaitingActivity[index].id,
+        });
+      } else {
+        const removeData = userListToEmail.filter(
+          (value) =>
+            value.manager_id !== projectWaitingActivity[index].manager_id
+        );
+        const newSetData = [
+          ...removeData,
+          {
+            manager_id: projectWaitingActivity[index].manager_id,
+            project_waiting: [
+              ...checkUserListEmail.project_waiting,
+              projectWaitingActivity[index].project_name,
+            ],
+            project_id: projectWaitingActivity[index].id,
+          },
+        ];
+        userListToEmail = newSetData;
+      }
+    }
+  }
+  return userListToEmail;
+};
+
+export const reminderNotificationWaitingtoPic = async () => {
+  try {
+    const date = new Date();
+    const userListToEmail = await getProjectWaitingActivityFunction();
+    let contentEmail = [];
+    let subject = "Waiting Detail Actoivity Project Reminder From Prosysta";
+    if (userListToEmail.length > 0) {
+      for (let index = 0; index < userListToEmail.length; index++) {
+        const userObject = await userFunction(
+          userListToEmail[index].manager_id
+        );
+        const picEmail = userObject[0].email;
+
+        contentEmail.push({
+          pic_id: userListToEmail[index].manager_id,
+          pic: picEmail,
+          project_waiting: userListToEmail[index].project_waiting,
+          project_id: userListToEmail[index].project_id,
+        });
+      }
+
+      if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
+        for (let index = 0; index < contentEmail.length; index++) {
+          reminderProjectWaitingActivityToPic(
+            contentEmail[index].pic,
+            subject,
+            contentEmail[index].project_waiting,
             contentEmail[index].pic_id,
             contentEmail[index].project_id
           );
