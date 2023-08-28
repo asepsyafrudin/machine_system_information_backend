@@ -32,6 +32,8 @@ import {
   reminderNotificationDelaytoPic,
   reminderNotificationWaitingtoPic,
 } from "./src/controller/email.js";
+import settingRoute from "./src/routes/setting.js";
+
 dotenv.config();
 
 const app = express();
@@ -76,6 +78,7 @@ app.use("/api/project", projectRoute);
 app.use("/api/todo", todoRoute);
 app.use("/api/section", sectionRoute);
 app.use("/api/email", emailRoute);
+app.use("/api/setting", settingRoute);
 app.use("/prosysta", (req, res) => {
   res.sendFile(
     path.join(
