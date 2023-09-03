@@ -115,7 +115,7 @@ const statusFunction = (
           }
         }
       } else {
-        return "Waiting Detail Activity";
+        return "On Progress";
       }
     } else {
       return "Waiting Detail Activity";
