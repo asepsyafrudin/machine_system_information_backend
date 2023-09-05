@@ -182,7 +182,8 @@ export const getProjectByDateRangeModels = (fromDate, toDate) => {
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  WHERE t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}' ORDER BY t_project.create_date DESC`;
+  WHERE t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}' 
+  ORDER BY t_project.create_date DESC`;
   return db.execute(sql);
 };
 
@@ -212,7 +213,8 @@ export const getProjectByProductIdAndDateRange = (
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
-  WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') and t_project.product_id = '${productId}' ORDER BY t_project.create_date DESC`;
+  WHERE (t_project.start >= '${fromDate}' AND t_project.finish <= '${toDate}') and t_project.product_id = '${productId}'
+  ORDER BY t_project.create_date DESC`;
   return db.execute(sql);
 };
 
