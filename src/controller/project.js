@@ -90,32 +90,28 @@ const statusFunction = (
 
   if (status !== "cancel") {
     if (arrayDataActivity.length > 0) {
-      if (progress) {
-        if (progress === 100) {
-          return "Finish";
-        } else if (start - currentDate > 0) {
-          return "Not Yet Started";
-        } else {
-          for (let index = 0; index < arrayDataActivity.length; index++) {
-            let endDateActivity = new Date(
-              moment(arrayDataActivity[index].finish)
-            );
+      if (progress === 100) {
+        return "Finish";
+      } else if (start - currentDate > 0) {
+        return "Not Yet Started";
+      } else {
+        for (let index = 0; index < arrayDataActivity.length; index++) {
+          let endDateActivity = new Date(
+            moment(arrayDataActivity[index].finish)
+          );
 
-            if (
-              currentDate - endDateActivity > 0 &&
-              parseInt(arrayDataActivity[index].progress) < 100
-            ) {
-              totalActivityDelay += 1;
-            }
-          }
-          if (totalActivityDelay === 0) {
-            return "On Progress";
-          } else {
-            return `${totalActivityDelay} Activity Delay`;
+          if (
+            currentDate - endDateActivity > 0 &&
+            parseInt(arrayDataActivity[index].progress) < 100
+          ) {
+            totalActivityDelay += 1;
           }
         }
-      } else {
-        return "On Progress";
+        if (totalActivityDelay === 0) {
+          return "On Progress";
+        } else {
+          return `${totalActivityDelay} Activity Delay`;
+        }
       }
     } else {
       return "Waiting Detail Activity";
