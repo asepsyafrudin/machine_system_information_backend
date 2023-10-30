@@ -3,6 +3,7 @@ import {
   createProject,
   deleteProjectByProjectId,
   getAllProject,
+  getAllProjectByFilterAndPage,
   getAllProjectByPage,
   getProjectById,
   getProjectByPageAndUser,
@@ -28,4 +29,7 @@ router.get(
   "/getProjectBySectionIdAndPage/:page/:sectionId",
   getProjectBySectioIdAndPageController
 );
+router.post("/getAllProjectByPageAndFilter", getAllProjectByFilterAndPage);
+// router.post("/getProjectBySectionAndFilter", getProjectBySectionAndFilter);
+// router.post("/getProjectByUserAndFilter", getProjectByUserAndFilter);
 export default router;

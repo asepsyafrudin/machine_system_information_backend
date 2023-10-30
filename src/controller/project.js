@@ -438,3 +438,92 @@ export const getProjectBySectioIdAndPageController = async (req, res) => {
     });
   }
 };
+
+export const getAllProjectByFilterAndPage = async (req, res) => {
+  try {
+    const { page, filterBy, detailFilter } = req.body;
+    const dataPerPage = 10;
+    let listData = [];
+    const [totalProject] = await countGetAllProjectModels();
+    if (totalProject.length > 0) {
+      if (filterBy === "category") {
+        const filterData = totalProject.filter(
+          (value) => value.category === detailFilter
+        );
+
+        for (
+          let index = (page - 1) * dataPerPage;
+          index < page * dataPerPage && index < filterData.length;
+          index++
+        ) {
+          listData.push(filterData[index]);
+        }
+      } else if (filterBy === "pic") {
+        const filterData = totalProject.filter(
+          (value) => value.manager_id === parseInt(detailFilter)
+        );
+        for (
+          let index = (page - 1) * dataPerPage;
+          index < page * dataPerPage && index < filterData.length;
+          index++
+        ) {
+          listData.push(filterData[index]);
+        }
+      } else {
+        if (detailFilter === "Delay") {
+          let notCryteria = [
+            "Not Yet Started",
+            "On Progress",
+            "Finish",
+            "Waiting Detail Activity",
+            "cancel",
+          ];
+
+          let result = [];
+          for (let index = 0; index < totalProject.length; index++) {
+            let checkData = notCryteria.find(
+              (value) => value === totalProject[index].status
+            );
+            if (!checkData) {
+              result.push(totalProject[index]);
+            }
+          }
+
+          if (result.length > 0) {
+            for (
+              let index = (page - 1) * dataPerPage;
+              index < page * dataPerPage && index < result.length;
+              index++
+            ) {
+              listData.push(result[index]);
+            }
+          }
+        } else {
+          const filterData = totalProject.filter(
+            (value) => value.status === detailFilter
+          );
+          for (
+            let index = (page - 1) * dataPerPage;
+            index < page * dataPerPage && index < filterData.length;
+            index++
+          ) {
+            listData.push(filterData[index]);
+          }
+        }
+      }
+    }
+
+    res.status(200).json({
+      msg: "get data success",
+      data: listData,
+      dataPerPage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get data failed",
+      errMsg: error,
+    });
+  }
+};

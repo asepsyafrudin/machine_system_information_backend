@@ -9,6 +9,7 @@ export const createTodoModels = (data) => {
     pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
+    pic_id = ${data.pic_id},
     status = '${data.status}'`;
 
   return db.execute(sql);
@@ -22,7 +23,8 @@ export const updateTodoModels = (data) => {
     pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
-    status = '${data.status}' WHERE 
+    status = '${data.status}',
+    pic_id = ${data.pic_id} WHERE 
     id = '${data.id}'`;
 
   return db.execute(sql);
