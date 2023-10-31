@@ -50,3 +50,21 @@ export const deleteTodoByIdModels = (id) => {
   const sql = `DELETE FROM t_todo where id = '${id}'`;
   return db.execute(sql);
 };
+
+export const getTodoListByUserIdModels = (userId) => {
+  const sql = `select 
+  t_todo.id,
+  t_todo.project_id,
+  t_todo.item,
+  t_todo.due_date, 
+  t_todo.create_date,
+  t_todo.user_id,
+  t_todo.actual_finish,
+  t_todo.pic,
+  t_todo.pic_id,
+  t_todo.status,
+  t_project.project_name
+  from t_todo join t_project on t_todo.project_id = t_project.id
+  where pic_id = ${userId} order by t_todo.due_date desc`;
+  return db.execute(sql);
+};

@@ -416,14 +416,14 @@ export const getProjectBySectioIdAndPageController = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await getProjectBySectionIdAndPage(
-      sectionId,
-      dataPerPage,
-      offset
-    );
+    // const [result] = await getProjectBySectionIdAndPage(
+    //   sectionId,
+    //   dataPerPage,
+    //   offset
+    // );
     const [totalData] = await getProjectBySectionId(sectionId);
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
-    const resultSubmit = await getDataResult(result);
+    const resultSubmit = await getDataResult(totalData);
     res.status(200).json({
       msg: "todo berhasil di get",
       data: resultSubmit,
@@ -520,6 +520,26 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
       numberStart: (page - 1) * dataPerPage + 1,
       totalPageData: totalPageData,
     });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get data failed",
+      errMsg: error,
+    });
+  }
+};
+
+export const getProjectBySectionAndFilter = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      msg: "get data failed",
+      errMsg: error,
+    });
+  }
+};
+
+export const getProjectByUserAndFilter = async (req, res) => {
+  try {
   } catch (error) {
     res.status(400).json({
       msg: "get data failed",

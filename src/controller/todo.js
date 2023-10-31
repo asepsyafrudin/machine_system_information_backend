@@ -4,6 +4,7 @@ import {
   deleteTodoByIdModels,
   getTodoByIdModels,
   getTodoByProjectIdModels,
+  getTodoListByUserIdModels,
   updateTodoModels,
 } from "../models/todo.js";
 
@@ -68,6 +69,21 @@ export const getTodoByProjectId = async (req, res) => {
       dataPerPage: dataPerPage,
       numberStart: (page - 1) * dataPerPage + 1,
       totalPageData: totalPageData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "todo gagal di get",
+      errMsg: error,
+    });
+  }
+};
+
+export const getTodoListByUserId = async (req, res) => {
+  try {
+    const [result] = await getTodoListByUserIdModels(req.params.userId);
+    res.status(200).json({
+      msg: "get data success",
+      data: result,
     });
   } catch (error) {
     res.status(400).json({
