@@ -147,3 +147,18 @@ export const deleteComment = async (req, res) => {
     });
   }
 };
+
+export const getCommentBySelectedIdOnly = async (req, res) => {
+  try {
+    const [result] = await getCommentBySelectedIdModels(req.params.id);
+    res.status(200).json({
+      msg: "get data success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "get comment failed",
+      errMsg: error,
+    });
+  }
+};

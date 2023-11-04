@@ -6,7 +6,6 @@ export const createTodoModels = (data) => {
     project_id = '${data.project_id}',
     item = '${data.item}',
     due_date = '${data.due_date}',
-    pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
     pic_id = ${data.pic_id},
@@ -20,7 +19,6 @@ export const updateTodoModels = (data) => {
     project_id = '${data.project_id}',
     item = '${data.item}',
     due_date = '${data.due_date}',
-    pic = '${data.pic}',
     user_id = ${data.user_id},
     actual_finish = '${data.actual_finish}',
     status = '${data.status}',
@@ -51,7 +49,25 @@ export const deleteTodoByIdModels = (id) => {
   return db.execute(sql);
 };
 
-export const getTodoListByUserIdModels = (userId) => {
+export const getTodoListByUserIdModels = (userId, limit, offset) => {
+  const sql = `select 
+  t_todo.id,
+  t_todo.project_id,
+  t_todo.item,
+  t_todo.due_date, 
+  t_todo.create_date,
+  t_todo.user_id,
+  t_todo.actual_finish,
+  t_todo.pic,
+  t_todo.pic_id,
+  t_todo.status,
+  t_project.project_name
+  from t_todo join t_project on t_todo.project_id = t_project.id
+  where pic_id = ${userId} order by t_todo.due_date desc LIMIT ${offset},${limit}`;
+  return db.execute(sql);
+};
+
+export const countGetTodoListByUserIdModels = (userId) => {
   const sql = `select 
   t_todo.id,
   t_todo.project_id,

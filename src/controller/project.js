@@ -527,23 +527,3 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
     });
   }
 };
-
-export const getProjectBySectionAndFilter = async (req, res) => {
-  try {
-  } catch (error) {
-    res.status(400).json({
-      msg: "get data failed",
-      errMsg: error,
-    });
-  }
-};
-
-export const getProjectByUserAndFilter = async (req, res) => {
-  try {
-  } catch (error) {
-    res.status(400).json({
-      msg: "get data failed",
-      errMsg: error,
-    });
-  }
-};

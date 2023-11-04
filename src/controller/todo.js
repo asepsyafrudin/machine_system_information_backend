@@ -1,4 +1,5 @@
 import {
+  countGetTodoListByUserIdModels,
   countTotalDataTodoList,
   createTodoModels,
   deleteTodoByIdModels,
@@ -80,14 +81,43 @@ export const getTodoByProjectId = async (req, res) => {
 
 export const getTodoListByUserId = async (req, res) => {
   try {
-    const [result] = await getTodoListByUserIdModels(req.params.userId);
+    const page = req.params.page;
+    const userId = req.params.userId;
+    const dataPerPage = 10;
+    const offset = (page - 1) * dataPerPage;
+    const [result] = await getTodoListByUserIdModels(
+      userId,
+      dataPerPage,
+      offset
+    );
+
+    const [totalData] = await countGetTodoListByUserIdModels(userId);
+    const totalPageData = Math.ceil(totalData.length / dataPerPage);
     res.status(200).json({
       msg: "get data success",
       data: result,
+      dataPerPage: dataPerPage,
+      numberStart: (page - 1) * dataPerPage + 1,
+      totalPageData: totalPageData,
     });
   } catch (error) {
     res.status(400).json({
       msg: "todo gagal di get",
+      errMsg: error,
+    });
+  }
+};
+
+export const updateTodoList = async (req, res) => {
+  try {
+    await updateTodoModels(req.body);
+    res.status(200).json({
+      msg: "update data success",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "todo gagal di update",
       errMsg: error,
     });
   }
