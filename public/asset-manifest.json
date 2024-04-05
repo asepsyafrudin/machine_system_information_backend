@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.5bc95975.css",
-    "main.js": "/static/js/main.b0dbe088.js",
+    "main.css": "/static/css/main.f05db95e.css",
+    "main.js": "/static/js/main.0b230902.js",
     "static/js/787.28cb0dcd.chunk.js": "/static/js/787.28cb0dcd.chunk.js",
     "static/media/Project.jpg": "/static/media/Project.e5b8c766e97047c89cd6.jpg",
     "static/media/blue.jpg": "/static/media/blue.dd149c3b4b17b3c45349.jpg",
@@ -11,6 +11,7 @@
     "static/media/Work time-amico.png": "/static/media/Work time-amico.4b297e3afd1c60ebb41c.png",
     "static/media/Digital personal files-amico.png": "/static/media/Digital personal files-amico.3fa6dbba4eebab058de4.png",
     "static/media/file search.jpg": "/static/media/file search.eda0a70d729fadd7ea1d.jpg",
+    "static/media/Capability Form V3.0.4.xlsx": "/static/media/Capability Form V3.0.4.044c44d0769192f258cc.xlsx",
     "static/media/Robotics-amico.png": "/static/media/Robotics-amico.d036d6d67d7a856b3b68.png",
     "static/media/backgroundLogin.png": "/static/media/backgroundLogin.a039aea54da5ad91cbd1.png",
     "static/media/agile-method-rafiki.png": "/static/media/agile-method-rafiki.2575247915be9a19bef6.png",
@@ -33,17 +34,16 @@
     "static/media/roboto-latin-ext-400-normal.woff2": "/static/media/roboto-latin-ext-400-normal.861b791f9de857a6e7bc.woff2",
     "static/media/roboto-cyrillic-400-normal.woff2": "/static/media/roboto-cyrillic-400-normal.71a33b6b50457b2c903a.woff2",
     "static/media/Format Excel Import Capability Comparison.xlsx": "/static/media/Format Excel Import Capability Comparison.3c00f081dabef3709b2d.xlsx",
-    "static/media/Format Excel Import Capability.xlsx": "/static/media/Format Excel Import Capability.f54b351adb44b780fbf2.xlsx",
     "static/media/roboto-greek-400-normal.woff2": "/static/media/roboto-greek-400-normal.c35e4c3958e209d17b31.woff2",
     "static/media/roboto-vietnamese-400-normal.woff2": "/static/media/roboto-vietnamese-400-normal.3230f9b040f3c630e0c3.woff2",
     "static/media/roboto-greek-ext-400-normal.woff2": "/static/media/roboto-greek-ext-400-normal.169619821ea93019d1bb.woff2",
     "index.html": "/index.html",
-    "main.5bc95975.css.map": "/static/css/main.5bc95975.css.map",
-    "main.b0dbe088.js.map": "/static/js/main.b0dbe088.js.map",
+    "main.f05db95e.css.map": "/static/css/main.f05db95e.css.map",
+    "main.0b230902.js.map": "/static/js/main.0b230902.js.map",
     "787.28cb0dcd.chunk.js.map": "/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5bc95975.css",
-    "static/js/main.b0dbe088.js"
+    "static/css/main.f05db95e.css",
+    "static/js/main.0b230902.js"
   ]
 }

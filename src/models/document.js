@@ -1,20 +1,43 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js"
 
 export const createDocumentModels = (data, id) => {
-  const sql = `INSERT INTO t_document SET 
-    id = '${id}',
-    title = '${data.title}',
-    machine_id = '${data.machine_id}',
-    user_id=${parseInt(data.user_id)},
-    file_type ='${data.file_type}',
-    description='${data.description}',
-    status ='${data.status}',
-    project_id ='${data.project_id}'`;
-  return db.execute(sql);
+  const query = `
+  INSERT INTO [dbo].[t_document]
+             ([id]
+             ,[machine_id]
+             ,[user_id]
+             ,[file_type]
+             ,[description]
+             ,[title]
+             ,[status]
+             ,[project_id])
+       VALUES
+             ('${id}'
+             ,'${data.machine_id}'
+             ,${parseInt(data.user_id)}
+             ,'${data.file_type}'
+             ,'${data.description}'
+             ,'${data.title}'
+             ,'${data.status}'
+             ,'${data.project_id}')`;
+  return sql.query(query);
 };
+// export const createDocumentModels = (data, id) => {
+//   const query = `INSERT INTO t_document SET 
+//     id = '${id}',
+//     title = '${data.title}',
+//     machine_id = '${data.machine_id}',
+//     user_id=${parseInt(data.user_id)},
+//     file_type ='${data.file_type}',
+//     description='${data.description}',
+//     status ='${data.status}',
+//     project_id ='${data.project_id}'`;
+//   return sql.query(query);
+// };
 
 export const updateDocumentByIdModels = (data) => {
-  const sql = `UPDATE t_document SET
+  const query = `UPDATE t_document SET
     title = '${data.title}',
     machine_id = '${data.machine_id}',
     user_id=${parseInt(data.user_id)},
@@ -22,12 +45,12 @@ export const updateDocumentByIdModels = (data) => {
     description='${data.description}',
     project_id ='${data.project_id}'
     WHERE id = '${data.id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 // document for general
 export const getAllDocumentForGeneralModels = () => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_document.id,
     t_document.title,
     t_document.create_date,
@@ -52,12 +75,12 @@ export const getAllDocumentForGeneralModels = () => {
     where t_document.status = 'Active'
     ORDER BY t_document.create_date DESC
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //dcoument for dashboard menu Admin
 export const getAllDocumentModels = () => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_document.id,
     t_document.title,
     t_document.create_date,
@@ -81,11 +104,11 @@ export const getAllDocumentModels = () => {
     JOIN t_product ON t_product.id = t_line.product_id 
     ORDER BY t_document.create_date DESC
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getAllDocumentByUserIdModels = (userId) => {
-  const sql = `SELECT 
+  const query = `SELECT 
   t_document.id,
   t_document.title,
   t_document.create_date,
@@ -109,12 +132,12 @@ export const getAllDocumentByUserIdModels = (userId) => {
   JOIN t_product ON t_product.id = t_line.product_id
   WHERE t_document.user_id = ${userId} ORDER BY t_document.create_date DESC`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search document for searchEngine
 export const searchAllDocumentModels = (searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_document.id,
     t_document.title,
     t_document.create_date,
@@ -145,12 +168,12 @@ export const searchAllDocumentModels = (searchValue) => {
     and t_document.status='Active'    
     ORDER BY t_document.create_date DESC
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search document for user menu
 export const searchDocumentForUserModels = (userId, searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_document.id,
     t_document.title,
     t_document.create_date,
@@ -182,12 +205,12 @@ export const searchDocumentForUserModels = (userId, searchValue) => {
     t_document.user_id=${userId} 
     ORDER BY t_document.create_date DESC
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search document for admin menu
 export const searchDocumentForAdminModels = (searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_document.id,
     t_document.title,
     t_document.create_date,
@@ -218,22 +241,22 @@ export const searchDocumentForAdminModels = (searchValue) => {
     t_document.status like '%${searchValue}%'
     ORDER BY t_document.create_date DESC
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteDocumentByIdModels = (id) => {
-  const sql = `Delete from t_document where id = '${id}'`;
-  return db.execute(sql);
+  const query = `Delete from t_document where id = '${id}'`;
+  return sql.query(query);
 };
 
 export const changeStatusDocumentModels = (data) => {
-  const sql = `UPDATE t_document SET 
+  const query = `UPDATE t_document SET 
   status = '${data.status}' WHERE id = '${data.id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getDocumentByIdModels = (id) => {
-  const sql = `SELECT 
+  const query = `SELECT 
   t_document.id,
   t_document.title,
   t_document.create_date,
@@ -256,11 +279,11 @@ export const getDocumentByIdModels = (id) => {
   JOIN t_line ON t_line.id = t_machine.line_id 
   JOIN t_product ON t_product.id = t_line.product_id 
   where t_document.id = '${id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getDocumentByProjectIdModels = (id) => {
-  const sql = `SELECT 
+  const query = `SELECT 
   t_document.id,
   t_document.title,
   t_document.create_date,
@@ -283,5 +306,5 @@ export const getDocumentByProjectIdModels = (id) => {
   JOIN t_line ON t_line.id = t_machine.line_id 
   JOIN t_product ON t_product.id = t_line.product_id 
   where t_document.project_id = '${id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };

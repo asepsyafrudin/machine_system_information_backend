@@ -12,11 +12,13 @@ import {
   searchProject,
   updateProject,
   updateStatusProject,
+  updateProjectByDate
 } from "../controller/project.js";
 
 const router = express.Router();
 router.post("/create", createProject);
 router.put("/update", updateProject);
+router.put("/updateDate", updateProjectByDate);
 router.get("/getAllProject", getAllProject);
 router.get("/getAllProjectByPage/:page", getAllProjectByPage);
 router.put("/updateStatus", updateStatusProject);

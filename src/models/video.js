@@ -1,21 +1,44 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js";
 
 export const createVideoModels = (data, filename, id) => {
-  const sql = `INSERT INTO t_video SET
-    id ='${id}',
-    video_name = '${data.video_name}',
-    machine_id = '${data.machine_id}',
-    user_id = ${data.user_id},
-    video_url ='${filename}',
-    description = '${data.description}',
-    project_id = '${data.project_id}',
-    status ='${data.status}'`;
+  const query = `INSERT INTO [dbo].[t_video]
+  ([id]
+  ,[machine_id]
+  ,[user_id]
+  ,[video_name]
+  ,[video_url]
+  ,[description]
+  ,[status]
+  ,[project_id])
+VALUES
+  ('${id}'
+  ,'${data.machine_id}'
+  ,${data.user_id}
+  ,'${data.video_name}'
+  ,'${filename}'
+  ,'${data.description}'
+  ,'${data.status}'
+  ,'${data.project_id}')`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
+// export const createVideoModels = (data, filename, id) => {
+//   const query = `INSERT INTO t_video SET
+//     id ='${id}',
+//     video_name = '${data.video_name}',
+//     machine_id = '${data.machine_id}',
+//     user_id = ${data.user_id},
+//     video_url ='${filename}',
+//     description = '${data.description}',
+//     project_id = '${data.project_id}',
+//     status ='${data.status}'`;
+
+//   return sql.query(query);
+// };
 
 export const getAllVideoModels = () => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -44,11 +67,11 @@ export const getAllVideoModels = () => {
     ORDER BY t_video.create_date desc 
     
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const updateVideoModels = (data, filename) => {
-  const sql = `UPDATE t_video SET 
+  const query = `UPDATE t_video SET 
     video_name = '${data.video_name}',
     machine_id = '${data.machine_id}',
     user_id = ${data.user_id},
@@ -58,22 +81,22 @@ export const updateVideoModels = (data, filename) => {
     project_id = '${data.project_id}'
     where id='${data.id}'`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteVideoModels = (id) => {
-  const sql = `DELETE from t_video where id = '${id}'`;
-  return db.execute(sql);
+  const query = `DELETE from t_video where id = '${id}'`;
+  return sql.query(query);
 };
 
 export const updateStatusVideoModels = (data) => {
-  const sql = `UPDATE t_video SET 
+  const query = `UPDATE t_video SET 
     status = '${data.status}' where id = '${data.id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getVideoByIdModels = (id) => {
-  const sql = `SELECT 
+  const query = `SELECT 
   t_video.id,
   t_video.user_id,
   t_users.username,
@@ -98,11 +121,11 @@ export const getVideoByIdModels = (id) => {
   t_line.product_id = t_product.id JOIN t_users ON
   t_users.id = t_video.user_id
   where t_video.id='${id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getVideoByUserIdModels = (userId) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -127,11 +150,11 @@ export const getVideoByUserIdModels = (userId) => {
     t_line.product_id = t_product.id JOIN t_users ON
     t_users.id = t_video.user_id
     where t_video.user_id=${userId} ORDER BY t_video.create_date desc`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getAllVideoForAdminModels = () => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -158,12 +181,12 @@ export const getAllVideoForAdminModels = () => {
     t_users.id = t_video.user_id
     ORDER BY t_video.create_date desc
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search Video for SearchEngine
 export const searchVideoModels = (searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -193,12 +216,12 @@ export const searchVideoModels = (searchValue) => {
     or t_product.product_name like '%${searchValue}%')
     and t_video.status = 'Active' ORDER BY t_video.create_date desc `;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search Video for User Menu
 export const searchVideoForUserModels = (userId, searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -227,12 +250,12 @@ export const searchVideoForUserModels = (userId, searchValue) => {
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%')
     and t_video.user_id = ${userId} ORDER BY t_video.create_date desc`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 //search Video for Admin Menu
 export const searchVideoForAdminModels = (searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_video.id,
     t_video.user_id,
     t_users.username,
@@ -261,11 +284,11 @@ export const searchVideoForAdminModels = (searchValue) => {
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%' ORDER BY t_video.create_date desc`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getVideoByProjectIdModels = (id) => {
-  const sql = `SELECT 
+  const query = `SELECT 
   t_video.id,
   t_video.user_id,
   t_users.username,
@@ -290,5 +313,5 @@ export const getVideoByProjectIdModels = (id) => {
   t_line.product_id = t_product.id JOIN t_users ON
   t_users.id = t_video.user_id
   where t_video.project_id='${id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };

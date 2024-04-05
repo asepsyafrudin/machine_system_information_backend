@@ -31,7 +31,7 @@ export const createRequest = async (req, res) => {
 
 export const getRequest = async (req, res) => {
   try {
-    const [result] = await getRequestByToken(req.params.token);
+    const result = (await getRequestByToken(req.params.token)).recordset;
     res.status(200).json({
       msg: "request berhasil di kirim",
       data: result,

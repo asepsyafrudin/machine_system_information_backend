@@ -17,14 +17,14 @@ export const createFeedbackComment = async (req, res) => {
     await createFeedbackModels(req.body);
     let newArrayListUserNotif = [];
     if (req.body.selected_item === "document") {
-      const [document] = await getDocumentByIdModels(req.body.selected_id);
+      const document = (await getDocumentByIdModels(req.body.selected_id)).recordset;
       newArrayListUserNotif.push({
         user_id: document[0].user_id,
         username: document[0].username,
         email: document[0].email,
       });
     } else if (req.body.selected_item === "video") {
-      const [video] = await getVideoByIdModels(req.body.selected_id);
+      const video = (await getVideoByIdModels(req.body.selected_id)).recordset;
       newArrayListUserNotif.push({
         user_id: video[0].user_id,
         username: video[0].username,
@@ -32,14 +32,14 @@ export const createFeedbackComment = async (req, res) => {
       });
     }
 
-    const [comment] = await getCommentByCommentId(req.body.comment_id);
+    const comment = (await getCommentByCommentId(req.body.comment_id)).recordset;
     newArrayListUserNotif.push({
       user_id: comment[0].user_id,
       username: comment[0].username,
       email: comment[0].email,
     });
 
-    const [feedbackComment] = await getFeedbackByCommentId(req.body.comment_id);
+    const feedbackComment = (await getFeedbackByCommentId(req.body.comment_id)).recordset;
     if (feedbackComment.length !== 0) {
       for (let index = 0; index < feedbackComment.length; index++) {
         newArrayListUserNotif.push({
@@ -118,7 +118,7 @@ export const deleteFeedback = async (req, res) => {
 
 export const getFeedbackById = async (req, res) => {
   try {
-    const [result] = await getFeedbackByIdModels(req.params.id);
+    const result = (await getFeedbackByIdModels(req.params.id)).recordset;
     res.status(200).json({
       msg: "get data berhasil",
       data: result,

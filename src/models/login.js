@@ -1,9 +1,8 @@
-import res from "express/lib/response.js";
-import db from "../config/db.js";
+import sql from "../config/sqlServerConfig.js";
 import { comparePassword } from "../config/hashPassword.js";
 
-export const loginModels = async (userName, password) => {
-  const sql = `SELECT
+export const loginModels = async (userName) => {
+  const query = `SELECT
   t_users.id,
   t_users.username,
   t_users.email, 
@@ -17,13 +16,5 @@ export const loginModels = async (userName, password) => {
   t_section.section_name
   FROM t_users JOIN t_product ON t_users.product_id = t_product.id 
   JOIN t_section ON t_product.section_id = t_section.id where t_users.npk = '${userName}'`;
-  const [result] = await db.execute(sql);
-  if (result) {
-    const checkPassword = comparePassword(password, result[0].password);
-    if (checkPassword) {
-      return result;
-    } else {
-      return "";
-    }
-  }
+  return sql.query(query);
 };

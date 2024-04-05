@@ -6,8 +6,8 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 let transporter = nodemailer.createTransport({
-  host: "172.24.46.52",
-  port: 25,
+  host: process.env.HOSTEMAIL,
+  port: process.env.HOSTPORT,
   secure: false,
   auth: {
     user: process.env.USER_EMAIL,
@@ -62,9 +62,11 @@ const projectList = (item, picId, projectId) => {
       array += `<tr>
           <td>${index + 1}</td>
           <td>${item[index]}</td>
-          <td>${
+          <td><a href='${
             process.env.IP_ADDRESS_LOCALHOST
-          }/redirectPage/projectActivity/${projectId}/${picId}</td>
+          }/redirectPage/projectActivity/${
+        projectId[index]
+      }/${picId}'>click here</a></td>
         </tr>`;
     }
 
@@ -85,6 +87,15 @@ const projectList = (item, picId, projectId) => {
 };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// export const reminderProjectDelayToManager = async () => {
+//   let info = await transporter.sendEmail({
+//     from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
+//     html: `<div>
+
+//     </div>`,
+//   });
+// };
 
 export const reminderProjectDelayToPic = async (
   toUserMail,
@@ -123,7 +134,10 @@ export const reminderProjectDelayToPic = async (
     ],
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };
 
 export const reminderProjectWaitingActivityToPic = async (
@@ -163,7 +177,10 @@ export const reminderProjectWaitingActivityToPic = async (
     ],
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };
 
 export const sendTokenForChangePassword = async (toUserMail, link) => {
@@ -187,7 +204,10 @@ export const sendTokenForChangePassword = async (toUserMail, link) => {
       `,
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };
 
 export const sendingEmailForFeedback = async (
@@ -221,7 +241,10 @@ export const sendingEmailForFeedback = async (
     `,
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };
 
 export const shareFinishProjectForElectronicNewModel = async (
@@ -262,7 +285,10 @@ export const shareFinishProjectForElectronicNewModel = async (
     `,
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };
 
 export const shareFinishProjectCommon = async (
@@ -302,5 +328,48 @@ export const shareFinishProjectCommon = async (
     `,
   });
 
-  console.log("Message sent: %s", info.messageId);
+  console.log(
+    `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
+};
+
+export const sendNotificationToPicModel = async (
+  toPicMail,
+  subject,
+  projectTitle,
+  activityTitle,
+  projectLink
+) => {
+  let info = await transporter.sendMail({
+    from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
+    to: toPicMail,
+    subject: subject,
+
+    html: `
+    <div>
+    Dear PIC,<br/>
+    <br/><br/>
+     
+    
+    We would like to inform you that your team has added a new activity <br/>
+    "<a href='${projectLink}'>${projectTitle}</a>" --> click for detail (Login to Prosysta App) <br/>
+    And here are the latest activities added :<br/>
+    ${activityTitle}
+    <br/>
+    <br/>
+    <br/>
+    
+    Best Regards, 
+    <br/> <br/> <br/>
+     
+    
+    PROSYSTA administrator <br/>
+    </div>
+`,
+  });
+  console.log(
+    `Message sent: to ${(toPicMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
 };

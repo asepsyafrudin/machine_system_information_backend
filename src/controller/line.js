@@ -24,7 +24,7 @@ export const createLine = async (req, res) => {
 
 export const getAllLine = async (req, res) => {
   try {
-    const [result] = await getAllLineModels();
+    const result = (await getAllLineModels()).recordset;
     res.status(200).json({
       msg: "Get All Line Berhasil",
       data: result,
@@ -69,7 +69,7 @@ export const updateStatusLine = async (req, res) => {
 
 export const searchLine = async (req, res) => {
   try {
-    const [result] = await searchLineModels(req.params.searchValue);
+    const result = (await searchLineModels(req.params.searchValue)).recordset;
     res.status(200).json({
       msg: "line berhasil di cari",
       data: result,

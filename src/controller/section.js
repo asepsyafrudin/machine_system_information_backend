@@ -13,7 +13,7 @@ export const createSection = async (req, res) => {
       id = req.body.id;
     }
 
-    const [result] = await getSectionByIdModels(id);
+    const result = (await getSectionByIdModels(id)).recordset;
     if (result.length > 0) {
       await updateSectionModels(req.body);
     } else {
@@ -34,7 +34,7 @@ export const createSection = async (req, res) => {
 
 export const getSection = async (req, res) => {
   try {
-    const [result] = await getSectionModels();
+    const result = (await getSectionModels()).recordset;
     res.status(200).json({
       msg: "get data berhasil",
       data: result,

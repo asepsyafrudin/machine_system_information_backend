@@ -21,7 +21,7 @@ export const createNotification = async (req, res) => {
 
 export const getNotificationByUserId = async (req, res) => {
   try {
-    const [result] = await getNotificationByUserIdModels(req.params.userId);
+    const result = (await getNotificationByUserIdModels(req.params.userId)).recordset;
     res.status(200).json({
       msg: "Berhasil create notif",
       data: result,

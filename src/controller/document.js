@@ -91,7 +91,7 @@ export const getDocumentForGeneralByPage = async (req, res) => {
   try {
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await getAllDocumentForGeneralModels();
+    const result = (await getAllDocumentForGeneralModels()).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -99,7 +99,8 @@ export const getDocumentForGeneralByPage = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -140,7 +141,7 @@ export const getDocumentByPage = async (req, res) => {
   try {
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await getAllDocumentModels();
+    const result = (await getAllDocumentModels()).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -148,7 +149,8 @@ export const getDocumentByPage = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -190,7 +192,7 @@ export const getDocumentByUserIdAndPage = async (req, res) => {
     const userId = req.params.userId;
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await getAllDocumentByUserIdModels(userId);
+    const result = (await getAllDocumentByUserIdModels(userId)).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -198,7 +200,8 @@ export const getDocumentByUserIdAndPage = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -241,7 +244,7 @@ export const searchDocumentByPage = async (req, res) => {
     const search = req.params.searchValue;
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await searchAllDocumentModels(search);
+    const result = (await searchAllDocumentModels(search)).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -249,7 +252,8 @@ export const searchDocumentByPage = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -292,11 +296,11 @@ export const searchDocumentForDashboardMenu = async (req, res) => {
     const search = req.params.searchValue;
     const page = req.params.page;
     const userId = req.params.userId;
-    const [dataUser] = await getUserByUserIdModels(userId);
-    const [result] =
+    const dataUser = (await getUserByUserIdModels(userId)).recordset;
+    const result =
       dataUser[0].position === "Administrator"
-        ? await searchDocumentForAdminModels(search)
-        : await searchDocumentForUserModels(dataUser[0].id, search);
+        ? (await searchDocumentForAdminModels(search)).recordset
+        : (await searchDocumentForUserModels(dataUser[0].id, search)).recordset;
 
     const dataPerPage = 10;
     const totalPageData = Math.ceil(result.length / dataPerPage);
@@ -306,7 +310,8 @@ export const searchDocumentForDashboardMenu = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -378,7 +383,7 @@ export const getDocumentById = async (req, res) => {
   try {
     const page = 1;
     const dataPerPage = 10;
-    const [result] = await getDocumentByIdModels(req.params.id);
+    const result = (await getDocumentByIdModels(req.params.id)).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -386,7 +391,8 @@ export const getDocumentById = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         title: result[index].title,
@@ -427,7 +433,8 @@ export const getDocumentByProjectId = async (req, res) => {
   try {
     const page = 1;
     const dataPerPage = 10;
-    const [result] = await getDocumentByProjectIdModels(req.params.projectId);
+    const result = (await getDocumentByProjectIdModels(req.params.projectId))
+      .recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -435,7 +442,8 @@ export const getDocumentByProjectId = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [fileResult] = await getFileByDocumentId(result[index].id);
+      const fileResult = (await getFileByDocumentId(result[index].id))
+        .recordset;
       listData.push({
         id: result[index].id,
         project_id: result[index].project_id,

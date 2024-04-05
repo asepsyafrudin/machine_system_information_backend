@@ -48,7 +48,7 @@ export const deleteFileById = async (req, res) => {
 
 export const getFile = async (req, res) => {
   try {
-    const [result] = await getFileByDocumentId(req.params.id);
+    const result = (await getFileByDocumentId(req.params.id)).recordset;
     res.status(200).json({
       msg: "get File Berhasil",
       data: result,

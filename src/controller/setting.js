@@ -6,7 +6,13 @@ import {
 
 export const saveSettingProjectActivity = async (req, res) => {
   try {
-    const [result] = await getSettingByProjectIdModels(req.body.projectId);
+    let switch_mode = 0;
+    if (req.body.switch_mode === true) {
+      switch_mode = 1;
+    }
+    req.body.switchMode = switch_mode;
+    const result = (await getSettingByProjectIdModels(req.body.projectId))
+      .recordset;
     if (result.length > 0) {
       await updateSettingProjectActivityModel(req.body);
     } else {
@@ -26,7 +32,7 @@ export const saveSettingProjectActivity = async (req, res) => {
 
 export const getSettingByProjectId = async (req, res) => {
   try {
-    const [result] = await getSettingByProjectIdModels(req.params.id);
+    const result = (await getSettingByProjectIdModels(req.params.id)).recordset;
     res.status(200).json({
       msg: "setting berhasil di get",
       data: result,

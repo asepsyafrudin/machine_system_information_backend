@@ -31,6 +31,7 @@ export const postOpenai = async (req, res) => {
       frequency_penalty: 0,
       presence_penalty: 0,
     });
+    
 
     res.status(200).json({
       msg: "succees to get answere from openapi",

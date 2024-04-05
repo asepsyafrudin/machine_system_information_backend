@@ -23,6 +23,7 @@ import {
   getProjectBySectionIdAndPage,
   updateProjectModels,
   updateStatusProjectModels,
+  updateProjectByDateModels,
 } from "../models/project.js";
 
 export const createProject = async (req, res) => {
@@ -32,7 +33,7 @@ export const createProject = async (req, res) => {
     const members = req.body.member;
     if (members.length > 0) {
       for (let index = 0; index < members.length; index++) {
-        await createMembers(req.body.id, members[index]);
+        (await createMembers(req.body.id, members[index])).recordset;
       }
     }
     res.status(200).json({
@@ -52,7 +53,8 @@ export const updateProject = async (req, res) => {
     // await deleteMembers(req.body.id);
     await updateProjectModels(req.body);
     const members = req.body.member;
-    const [getMemberByProject] = await getMemberByProjectId(req.body.id);
+    const getMemberByProject = (await getMemberByProjectId(req.body.id))
+      .recordset;
 
     if (members.length > 0) {
       for (let index = 0; index < members.length; index++) {
@@ -60,10 +62,25 @@ export const updateProject = async (req, res) => {
           (value) => value.user_id === parseInt(members[index])
         );
         if (!findMember) {
-          await createMembers(req.body.id, members[index]);
+          (await createMembers(req.body.id, members[index])).recordset;
         }
       }
     }
+    res.status(200).json({
+      msg: "update project berhasil di submit",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "update project gagal",
+      errMsg: error,
+    });
+  }
+};
+
+export const updateProjectByDate = async (req, res) => {
+  try {
+    await updateProjectByDateModels(req.body.id, req.body.start, req.body.end);
     res.status(200).json({
       msg: "update project berhasil di submit",
       data: req.body,
@@ -125,13 +142,16 @@ export const getDataResult = async (result) => {
   let resultSubmit = [];
   if (result.length > 0) {
     for (let index = 0; index < result.length; index++) {
-      let [member] = await getMemberByProjectId(result[index].id);
-      let [progress] = await avgActivityByProjectIdModels(result[index].id);
-      let [activityData] = await getActivityByProjectIdModels(result[index].id);
+      let member = (await getMemberByProjectId(result[index].id)).recordset;
+      let progress = (await avgActivityByProjectIdModels(result[index].id))
+        .recordset;
+      let activityData = (await getActivityByProjectIdModels(result[index].id))
+        .recordset;
       let data = {
         id: result[index].id,
         product_id: result[index].product_id,
         product_name: result[index].product_name,
+        rank: result[index].rank,
         project_name: result[index].project_name,
         manager_id: result[index].manager_id,
         budget: result[index].budget,
@@ -163,7 +183,8 @@ export const getDataResult = async (result) => {
 
 export const getAllProject = async (req, res) => {
   try {
-    const [result] = await countGetAllProjectModels();
+    const result = (await countGetAllProjectModels()).recordset;
+
     const resultSubmit = await getDataResult(result);
     res.status(200).json({
       msg: "get data berhasil",
@@ -182,9 +203,9 @@ export const getAllProjectByPage = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await getAllProjectModels(dataPerPage, offset);
+    const result = (await getAllProjectModels(dataPerPage, offset)).recordset;
     const resultSubmit = await getDataResult(result);
-    const [totalData] = await countGetAllProjectModels();
+    const totalData = (await countGetAllProjectModels()).recordset;
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
     res.status(200).json({
       msg: "get project berhasil",
@@ -206,7 +227,7 @@ export const getProjectByPageAndUser = async (req, res) => {
     const user = req.params.user;
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await countGetAllProjectModels();
+    const result = (await countGetAllProjectModels()).recordset;
     const resultSubmit = await getDataResult(result);
     const filterByMember = [];
     if (resultSubmit.length > 0) {
@@ -251,9 +272,10 @@ export const getProjectByPageAndUser = async (req, res) => {
 export const getProjectByUser = async (req, res) => {
   try {
     const user = req.params.userId;
-    const [result] = await countGetAllProjectModels();
+    const result = (await countGetAllProjectModels()).recordset;
     const resultSubmit = await getDataResult(result);
-    const filterByMember = [];
+    let filterByMember = [];
+
     if (resultSubmit.length > 0) {
       for (let index = 0; index < resultSubmit.length; index++) {
         for (
@@ -267,6 +289,7 @@ export const getProjectByUser = async (req, res) => {
         }
       }
     }
+
     res.status(200).json({
       msg: "get project berhasil",
       data: filterByMember,
@@ -274,7 +297,7 @@ export const getProjectByUser = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "get project gagal",
-      errMsg: error,
+      errMsg: error.message,
     });
   }
 };
@@ -296,7 +319,7 @@ export const updateStatusProject = async (req, res) => {
 
 export const getProjectById = async (req, res) => {
   try {
-    const [result] = await getProjectByIdModels(req.params.id);
+    const result = (await getProjectByIdModels(req.params.id)).recordset;
     const resultSubmit = await getDataResult(result);
     res.status(200).json({
       msg: " get project berhasil ",
@@ -337,22 +360,18 @@ export const searchProject = async (req, res) => {
       if (productId) {
         if (category) {
           if (fromDate && toDate) {
-            const [result] = await getProjectByAllModels(
-              fromDate,
-              toDate,
-              productId,
-              category
-            );
+            const result = (
+              await getProjectByAllModels(fromDate, toDate, productId, category)
+            ).recordset;
             const resultSubmit = await getDataResult(result);
             res.status(200).json({
               msg: " get project berhasil ",
               data: resultSubmit,
             });
           } else {
-            const [result] = await getProjectByAllWithoutDateRangeModels(
-              productId,
-              category
-            );
+            const result = (
+              await getProjectByAllWithoutDateRangeModels(productId, category)
+            ).recordset;
             const resultSubmit = await getDataResult(result);
             res.status(200).json({
               msg: " get project berhasil ",
@@ -361,18 +380,17 @@ export const searchProject = async (req, res) => {
           }
           // make function for sectionId, productId, and category only
         } else if (fromDate && toDate) {
-          const [result] = await getProjectByProductIdAndDateRange(
-            fromDate,
-            toDate,
-            productId
-          );
+          const result = (
+            await getProjectByProductIdAndDateRange(fromDate, toDate, productId)
+          ).recordset;
           const resultSubmit = await getDataResult(result);
           res.status(200).json({
             msg: " get project berhasil ",
             data: resultSubmit,
           });
         } else {
-          const [result] = await getProjectByProductIdModels(productId);
+          const result = (await getProjectByProductIdModels(productId))
+            .recordset;
           const resultSubmit = await getDataResult(result);
           res.status(200).json({
             msg: " get project berhasil ",
@@ -380,7 +398,7 @@ export const searchProject = async (req, res) => {
           });
         }
       } else {
-        const [result] = await getProjectBySectionId(sectionId);
+        const result = (await getProjectBySectionId(sectionId)).recordset;
         const resultSubmit = await getDataResult(result);
         res.status(200).json({
           msg: " get project berhasil ",
@@ -388,14 +406,15 @@ export const searchProject = async (req, res) => {
         });
       }
     } else if (fromDate && toDate) {
-      const [result] = await getProjectByDateRangeModels(fromDate, toDate);
+      const result = (await getProjectByDateRangeModels(fromDate, toDate))
+        .recordset;
       const resultSubmit = await getDataResult(result);
       res.status(200).json({
         msg: "get data berhasil",
         data: resultSubmit,
       });
     } else {
-      const [result] = await countGetAllProjectModels();
+      const result = (await countGetAllProjectModels()).recordset;
       const resultSubmit = await getDataResult(result);
       res.status(200).json({
         msg: "get data berhasil",
@@ -421,7 +440,7 @@ export const getProjectBySectioIdAndPageController = async (req, res) => {
     //   dataPerPage,
     //   offset
     // );
-    const [totalData] = await getProjectBySectionId(sectionId);
+    const totalData = (await getProjectBySectionId(sectionId)).recordset;
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
     const resultSubmit = await getDataResult(totalData);
     res.status(200).json({
@@ -444,11 +463,23 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
     const { page, filterBy, detailFilter } = req.body;
     const dataPerPage = 10;
     let listData = [];
-    const [totalProject] = await countGetAllProjectModels();
+    const totalProject = (await countGetAllProjectModels()).recordset;
     if (totalProject.length > 0) {
       if (filterBy === "category") {
         const filterData = totalProject.filter(
           (value) => value.category === detailFilter
+        );
+
+        for (
+          let index = (page - 1) * dataPerPage;
+          index < page * dataPerPage && index < filterData.length;
+          index++
+        ) {
+          listData.push(filterData[index]);
+        }
+      } else if (filterBy === "rank") {
+        const filterData = totalProject.filter(
+          (value) => value.rank === detailFilter
         );
 
         for (

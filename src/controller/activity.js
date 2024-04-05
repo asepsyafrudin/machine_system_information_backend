@@ -15,14 +15,17 @@ import {
 export const createActivity = async (req, res) => {
   try {
     const dataSave = req.body;
+
     if (dataSave.length > 0) {
       for (let index = 0; index < dataSave.length; index++) {
-        const [checkData] = await getActivityByActivityIdModels(
-          dataSave[index].id
-        );
+        const checkData = (
+          await getActivityByActivityIdModels(dataSave[index].id)
+        ).recordset;
+
         if (checkData.length > 0) {
           await updateActivityModels(dataSave[index]);
           await deleteDependenciesModels(dataSave[index].id);
+
           await createDependenciesModels(
             dataSave[index].id,
             dataSave[index].dependencies[0]
@@ -37,10 +40,9 @@ export const createActivity = async (req, res) => {
           }
         }
       }
-
-      const [newDataAfterCreate] = await getActivityByProjectIdModels(
-        dataSave[0].project
-      );
+      const newDataAfterCreate = (
+        await getActivityByProjectIdModels(dataSave[0].project)
+      ).recordset;
       if (newDataAfterCreate.length > 0) {
         for (let index = 0; index < newDataAfterCreate.length; index++) {
           const checkData = dataSave.find(
@@ -67,14 +69,16 @@ export const createActivity = async (req, res) => {
 
 export const getActivityByProjectId = async (req, res) => {
   try {
-    const [result] = await getActivityByProjectIdModels(req.params.projectId);
+    const result = (await getActivityByProjectIdModels(req.params.projectId))
+      .recordset;
 
     let dataSend = [];
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
-        const [dependencies] = await getDependenciesByActivityIdModels(
-          result[index].id
-        );
+        const dependencies = (
+          await getDependenciesByActivityIdModels(result[index].id)
+        ).recordset;
+
         let data = {
           id: result[index].id,
           start: result[index].start,
@@ -85,6 +89,8 @@ export const getActivityByProjectId = async (req, res) => {
           type: result[index].type,
           project: result[index].project_id,
           remark: result[index].remark,
+          linkToProject: result[index].link_to_project,
+          pic: result[index].pic,
         };
         dataSend.push(data);
       }
@@ -106,7 +112,7 @@ export const getActivityByProjectId = async (req, res) => {
 
 export const getAllActivityController = async (req, res) => {
   try {
-    const [result] = await getAllActivity();
+    const result = (await getAllActivity()).recordset;
     res.status(200).json({
       msg: "get activity berhasil",
       data: result,

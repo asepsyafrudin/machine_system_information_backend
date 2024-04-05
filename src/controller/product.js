@@ -70,7 +70,7 @@ export const updateProductStatus = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
   try {
-    const [result] = await getAllProductModels();
+    const result = (await getAllProductModels()).recordset;
     res.status(200).json({
       msg: "Get All Product Berhasil",
       data: result,
@@ -85,7 +85,7 @@ export const getAllProduct = async (req, res) => {
 
 export const searchProduct = async (req, res) => {
   try {
-    const [result] = await searchProductModels(req.params.searchValue);
+    const result = (await searchProductModels(req.params.searchValue)).recordset;
     res.status(200).json({
       msg: "Search Product Berhasil",
       data: result,
@@ -100,7 +100,7 @@ export const searchProduct = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const [result] = await getProductByIdModels(req.params.id);
+    const result = (await getProductByIdModels(req.params.id)).recordset;
     res.status(200).json({
       msg: "get product berhasil",
       data: result,

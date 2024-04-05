@@ -1,14 +1,14 @@
-import db from "../config/db.js";
+import sql from "../config/sqlServerConfig.js"
 
 export const createfileUploadGeneralModels = (data, filename) => {
-  const sql = `INSERT INTO t_file_general SET 
+  const query = `INSERT INTO t_file_general SET 
     file_name = '${data.file_name}',
     file_url = '${filename}'
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteFileUploadGeneralModels = (id) => {
-  const sql = `DELETE from t_file_general where id = ${id}`;
-  return db.execute(sql);
+  const query = `DELETE from t_file_general where id = ${id}`;
+  return sql.query(query);
 };

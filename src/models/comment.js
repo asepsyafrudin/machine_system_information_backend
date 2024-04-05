@@ -1,17 +1,32 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js"
 
 export const createCommentModels = (data) => {
-  const sql = `INSERT INTO t_comment SET 
-    user_id = ${data.user_id},
-    selected_item = '${data.selected_item}',
-    selected_id = '${data.selected_id}',
-    comment ='${data.comment}'`;
+  const query = `INSERT INTO [dbo].[t_comment]
+  ([user_id]
+  ,[selected_item]
+  ,[selected_id]
+  ,[comment])
+VALUES
+  (${data.user_id}
+  ,'${data.selected_item}'
+  ,'${data.selected_id}'
+  ,'${data.comment}'`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
+// export const createCommentModels = (data) => {
+//   const query = `INSERT INTO t_comment SET 
+//     user_id = ${data.user_id},
+//     selected_item = '${data.selected_item}',
+//     selected_id = '${data.selected_id}',
+//     comment ='${data.comment}'`;
+
+//   return sql.query(query);
+// };
 
 export const getCommentBySelectedIdModels = (id) => {
-  const sql = `SELECT t_comment.id, 
+  const query = `SELECT t_comment.id, 
     t_comment.create_date,
     t_comment.comment,
     t_comment.user_id,
@@ -23,16 +38,16 @@ export const getCommentBySelectedIdModels = (id) => {
     t_comment.user_id = t_users.id where 
     t_comment.selected_id = '${id}' ORDER BY id DESC 
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteCommentModels = (id) => {
-  const sql = `DELETE from t_comment where id='${id}'`;
-  return db.execute(sql);
+  const query = `DELETE from t_comment where id='${id}'`;
+  return sql.query(query);
 };
 
 export const getCommentByCommentId = (id) => {
-  const sql = `SELECT t_comment.id, 
+  const query = `SELECT t_comment.id, 
     t_comment.create_date,
     t_comment.comment,
     t_comment.user_id,
@@ -44,5 +59,5 @@ export const getCommentByCommentId = (id) => {
     t_comment.user_id = t_users.id where 
     t_comment.id = ${id} ORDER BY id DESC 
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };

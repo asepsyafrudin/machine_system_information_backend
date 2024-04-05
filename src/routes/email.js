@@ -4,6 +4,7 @@ import {
   sendFeedback,
   shareFinishProjectForCommon,
   shareFinishProjectForElctronictSMDNewModel,
+  sendNotificationToPic
 } from "../controller/email.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.post(
   shareFinishProjectForElctronictSMDNewModel
 );
 router.post("/shareFinishProjectCommon", shareFinishProjectForCommon);
+router.post("/sendNotificationToPic", sendNotificationToPic)
 
 export default router;

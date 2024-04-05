@@ -67,7 +67,7 @@ export const editUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   try {
-    const [result] = await getAllUsersModels();
+    const result = (await getAllUsersModels()).recordset;
     res.status(200).json({
       msg: "Data Berhasil di Ambil",
       data: result,
@@ -104,7 +104,7 @@ export const deleteUser = async (req, res) => {
 
 export const findUser = async (req, res) => {
   try {
-    const [result] = await findUserModels(req.params.searchValue);
+    const result = (await findUserModels(req.params.searchValue)).recordset;
     const page = req.params.page;
     const dataPerPage = 10;
     const totalPageData = Math.ceil(result.length / dataPerPage);
@@ -144,7 +144,7 @@ export const findUser = async (req, res) => {
 
 export const getUserByUserId = async (req, res) => {
   try {
-    const [result] = await getUserByUserIdModels(req.params.userId);
+    const result = (await getUserByUserIdModels(req.params.userId)).recordset;
     res.status(200).json({
       msg: "data berhasil di cari",
       data: result,
@@ -161,7 +161,7 @@ export const getUserByPage = async (req, res) => {
   try {
     const page = req.params.page;
     const dataPerPage = 10;
-    const [result] = await getAllUsersModels();
+    const result = (await getAllUsersModels()).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -216,7 +216,7 @@ export const userCheckPassword = (req, res) => {
 
 export const getUserByNPK = async (req, res) => {
   try {
-    const [result] = await getUserByNPKModels(req.params.npk);
+    const result = (await getUserByNPKModels(req.params.npk)).recordset;
     res.status(200).json({
       msg: "result get user by npk ",
       data: result,
@@ -231,7 +231,7 @@ export const getUserByNPK = async (req, res) => {
 
 export const getUserByEmail = async (req, res) => {
   try {
-    const [result] = await getUserByEmailModels(req.params.email);
+    const result = (await getUserByEmailModels(req.params.email)).recordset;
     res.status(200).json({
       msg: "result get user by email ",
       data: result,

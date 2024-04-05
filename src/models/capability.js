@@ -1,28 +1,64 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js";
 
 export const createCapabilityModels = (data, id) => {
-  const sql = `INSERT INTO t_capability SET 
-    id = '${id}',
-    user_id = '${data.user_id}',
-    machine_id = '${data.machine_id}',
-    part_name = '${data.part_name}',
-    part_number = '${data.part_number}',
-    item_check = '${data.item_check}',
-    file_type = 'capability',
-    type = '${data.type}',
-    sigma = '${data.sigma}',
-    standard = '${data.standard}',
-    standard_max = '${data.standard_max}',
-    standard_min = '${data.standard_min}',
-    description = '${data.description}',
-    status = '${data.status}',
-    project_id = '${data.project_id}'
+  const query = `INSERT INTO [dbo].[t_capability]
+  ([id]
+  ,[user_id]
+  ,[machine_id]
+  ,[part_name]
+  ,[part_number]
+  ,[item_check]
+  ,[file_type]
+  ,[type]
+  ,[sigma]
+  ,[standard]
+  ,[standard_max]
+  ,[standard_min]
+  ,[description]
+  ,[status]
+  ,[project_id])
+VALUES
+  ('${id}'
+  ,'${data.user_id}'
+  ,'${data.machine_id}'
+  ,'${data.part_name}'
+  ,'${data.part_number}'
+  ,'${data.item_check}'
+  ,'capability'
+  ,'${data.type}'
+  ,'${data.sigma}'
+  ,'${data.standard}'
+  ,'${data.standard_max}'
+  ,'${data.standard_min}'
+  ,'${data.description}'
+  ,'${data.status}'
+  ,'${data.project_id}')
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
+// export const updateCapabilityModels = (data) => {
+//   const query = `UPDATE t_capability SET 
+//     user_id = '${data.user_id}',
+//     machine_id = '${data.machine_id}',  
+//     part_name = '${data.part_name}',
+//     part_number = '${data.part_number}',
+//     item_check = '${data.item_check}',
+//     file_type = 'capability',
+//     type = '${data.type}',
+//     sigma = '${data.sigma}',
+//     standard = '${data.standard}',
+//     standard_max = '${data.standard_max}',
+//     standard_min = '${data.standard_min}',
+//     description = '${data.description}',
+//     status = '${data.status}',
+//     project_id = '${data.project_id}'
+//     where id = '${data.id}'`;
+//   return sql.query(query);
+// };
 export const updateCapabilityModels = (data) => {
-  const sql = `UPDATE t_capability SET 
+  const query = `UPDATE t_capability SET 
     user_id = '${data.user_id}',
     machine_id = '${data.machine_id}',  
     part_name = '${data.part_name}',
@@ -38,11 +74,11 @@ export const updateCapabilityModels = (data) => {
     status = '${data.status}',
     project_id = '${data.project_id}'
     where id = '${data.id}'`;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getAllCapabilityForRecent = () => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
   t_capability.part_name, 
   t_capability.part_number,
   t_capability.create_date,
@@ -70,11 +106,11 @@ export const getAllCapabilityForRecent = () => {
   t_machine.line_id = t_line.id JOIN t_product ON
   t_line.product_id = t_product.id where t_machine.status = 'Active'`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getAllCapabilityModels = (limit, offset) => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
     t_capability.part_name, 
     t_capability.part_number,
     t_capability.create_date,
@@ -101,13 +137,14 @@ export const getAllCapabilityModels = (limit, offset) => {
     t_capability.machine_id = t_machine.id JOIN t_line ON 
     t_machine.line_id = t_line.id JOIN t_product ON
     t_line.product_id = t_product.id where t_machine.status = 'Active' 
-    ORDER BY t_capability.create_date desc LIMIT ${offset},${limit}
+    ORDER BY t_capability.create_date desc OFFSET ${offset} ROWS
+    FETCH NEXT ${limit} ROWS ONLY
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getCapabilityByUserIdModels = (limit, offset, userId) => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
       t_capability.part_name, 
       t_capability.part_number,
       t_capability.create_date,
@@ -135,13 +172,14 @@ export const getCapabilityByUserIdModels = (limit, offset, userId) => {
       t_machine.line_id = t_line.id JOIN t_product ON
       t_line.product_id = t_product.id 
       where t_machine.status = 'Active' and t_users.id = ${userId} 
-      ORDER BY t_capability.create_date desc LIMIT ${offset},${limit} 
+      ORDER BY t_capability.create_date desc OFFSET ${offset} ROWS
+      FETCH NEXT ${limit} ROWS ONLY
       `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getCapabilityByIdModels = (id) => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
     t_capability.part_name, 
     t_capability.part_number,
     t_capability.create_date,
@@ -170,11 +208,11 @@ export const getCapabilityByIdModels = (id) => {
     t_line.product_id = t_product.id where t_capability.id = '${id}' 
     and t_machine.status = 'Active' ORDER BY t_capability.create_date desc`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getCapabilityByProjectIdModels = (id) => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
     t_capability.part_name, 
     t_capability.part_number,
     t_capability.create_date,
@@ -203,21 +241,21 @@ export const getCapabilityByProjectIdModels = (id) => {
     t_line.product_id = t_product.id where t_capability.project_id = '${id}' 
     and t_machine.status = 'Active' ORDER BY t_capability.create_date desc`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteCapabilityModels = (capabilityId) => {
-  const sql = `DELETE from t_capability where id = '${capabilityId}'`;
-  return db.execute(sql);
+  const query = `DELETE from t_capability where id = '${capabilityId}'`;
+  return sql.query(query);
 };
 
 export const countCapabilityModels = () => {
-  const sql = `SELECT COUNT(id) as count FROM t_capability`;
-  return db.execute(sql);
+  const query = `SELECT COUNT(id) as count FROM t_capability`;
+  return sql.query(query);
 };
 
 export const searchCapabilityModels = (searchValue, offset, limit) => {
-  const sql = `SELECT t_capability.id,
+  const query = `SELECT t_capability.id,
     t_capability.part_name, 
     t_capability.part_number,
     t_capability.create_date,
@@ -254,8 +292,9 @@ export const searchCapabilityModels = (searchValue, offset, limit) => {
     or t_users.username like '%${searchValue}%'
     and
     t_machine.status = 'Active' 
-    ORDER BY t_capability.create_date desc LIMIT ${offset},${limit}
+    ORDER BY t_capability.create_date desc OFFSET ${offset} ROWS
+    FETCH NEXT ${limit} ROWS ONLY
     `;
 
-  return db.execute(sql);
+  return sql.query(query);
 };

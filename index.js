@@ -33,22 +33,21 @@ import {
   reminderNotificationWaitingtoPic,
 } from "./src/controller/email.js";
 import settingRoute from "./src/routes/setting.js";
-
+import patternRoute from "./src/routes/pattern.js";
+import patternActivityRoute from "./src/routes/pattern_activity.js";
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-setInterval(reminderNotificationDelaytoPic, 1000);
-setInterval(reminderNotificationWaitingtoPic, 1000);
-
 app.use("/static", express.static(path.join(__dirname, "../assets")));
-app.use(
-  express.static(
-    path.join(__dirname, "../machine_system_information_backend/public")
-  )
-);
+app.use(express.static(path.join(__dirname, "./public")));
+
+setInterval(() => {
+  reminderNotificationDelaytoPic();
+  reminderNotificationWaitingtoPic();
+}, 1000);
 
 app.use(express.json());
 app.use(cors());
@@ -79,13 +78,11 @@ app.use("/api/todo", todoRoute);
 app.use("/api/section", sectionRoute);
 app.use("/api/email", emailRoute);
 app.use("/api/setting", settingRoute);
+app.use("/api/pattern", patternRoute);
+app.use("/api/patternActivity", patternActivityRoute);
+
 app.use("/prosysta", (req, res) => {
-  res.sendFile(
-    path.join(
-      __dirname,
-      "../machine_system_information_backend/public/index.html"
-    )
-  );
+  res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 app.listen(port, () => {

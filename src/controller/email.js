@@ -6,16 +6,22 @@ import {
   sendingEmailForFeedback,
   shareFinishProjectCommon,
   shareFinishProjectForElectronicNewModel,
+  sendNotificationToPicModel
 } from "../config/email.js";
-import { getActivityByProjectIdModels } from "../models/activity.js";
+import { getActivityByProjectIdModels, getActivityByActivityIdModels } from "../models/activity.js";
 import {
   countGetAllProjectModels,
   getProjectByIdModels,
 } from "../models/project.js";
-import { getAllUsersModels, getUserByUserIdModels } from "../models/user.js";
+import {
+  getAllUsersModels,
+  getUserByUserIdModels,
+  getUserByNPKModels,
+} from "../models/user.js";
 import { getDataResult } from "./project.js";
 import { getProblemByIdModels } from "../models/problem.js";
 import dotenv from "dotenv";
+import { getDataManagerListModels } from "../models/approval.js";
 
 dotenv.config();
 function capitalCaseFirstWord(word) {
@@ -32,8 +38,13 @@ function capitalCaseFirstWord(word) {
 }
 
 const userFunction = async (id) => {
-  const [user] = await getUserByUserIdModels(id);
+  const user = (await getUserByUserIdModels(id)).recordset;
   return user;
+};
+
+const managerFunction = async (npk) => {
+  const manager = (await getUserByNPKModels(npk)).recordset;
+  return manager;
 };
 
 const reminderDate = "07:30:00";
@@ -82,7 +93,7 @@ export const sendEmail = async (req, res) => {
 };
 
 const getProjectDelayFunction = async () => {
-  const [result] = await countGetAllProjectModels();
+  const result = (await countGetAllProjectModels()).recordset;
   let notCryteria = [
     "Not Yet Started",
     "On Progress",
@@ -117,7 +128,7 @@ const getProjectDelayFunction = async () => {
         userListToEmail.push({
           manager_id: projectDelayList[index].manager_id,
           project_delay: [projectDelayList[index].project_name],
-          project_id: projectDelayList[index].id,
+          project_id: [projectDelayList[index].id],
         });
       } else {
         const removeData = userListToEmail.filter(
@@ -131,7 +142,10 @@ const getProjectDelayFunction = async () => {
               ...checkUserListEmail.project_delay,
               projectDelayList[index].project_name,
             ],
-            project_id: projectDelayList[index].id,
+            project_id: [
+              ...checkUserListEmail.project_id,
+              projectDelayList[index].id,
+            ],
           },
         ];
         userListToEmail = newSetData;
@@ -144,6 +158,18 @@ const getProjectDelayFunction = async () => {
 export const reminderNotificationDelaytoPic = async () => {
   try {
     const date = new Date();
+    const getDataManagerList = (await getDataManagerListModels()).recordset;
+
+    const listDataManagerAndProduct = [];
+    if (getDataManagerList.length > 0) {
+      for (let index = 0; index < getDataManagerList.length; index++) {
+        listDataManagerAndProduct.push({
+          ...getDataManagerList[index],
+          product_id: getDataManagerList[index].product_id.split(","),
+        });
+      }
+    }
+
     const userListToEmail = await getProjectDelayFunction();
     let contentEmail = [];
     let subject = "Delay Project Reminder From Prosysta";
@@ -154,14 +180,89 @@ export const reminderNotificationDelaytoPic = async () => {
         );
         const picEmail = userObject[0].email;
 
+        let idProductPic = userObject[0].product_id;
+
+        let bosId = "";
+        if (listDataManagerAndProduct.length > 0) {
+          for (
+            let index = 0;
+            index < listDataManagerAndProduct.length;
+            index++
+          ) {
+            let check = listDataManagerAndProduct[index].product_id.find(
+              (value) => parseInt(value) === parseInt(idProductPic)
+            );
+            if (check) {
+              bosId = listDataManagerAndProduct[index].manager_id;
+            }
+          }
+        }
         contentEmail.push({
+          bos_id: bosId,
           pic_id: userListToEmail[index].manager_id,
+          product_id: userObject[0].product_id,
           pic: picEmail,
           project_delay: userListToEmail[index].project_delay,
           project_id: userListToEmail[index].project_id,
         });
       }
+      // reminder manager
+      let groupDataBaseOnBosId = [];
+      if (contentEmail.length > 0) {
+        for (let index = 0; index < contentEmail.length; index++) {
+          const checkData = groupDataBaseOnBosId.find(
+            (value) => value.bos_id === contentEmail[index].bos_id
+          );
+          if (checkData) {
+            for (
+              let index2 = 0;
+              index2 < groupDataBaseOnBosId.length;
+              index2++
+            ) {
+              if (
+                groupDataBaseOnBosId[index2].bos_id ===
+                contentEmail[index].bos_id
+              ) {
+                groupDataBaseOnBosId[index2].project_delay = [
+                  ...groupDataBaseOnBosId[index2].project_delay,
+                  ...contentEmail[index].project_delay,
+                ];
+                groupDataBaseOnBosId[index2].project_id = [
+                  ...groupDataBaseOnBosId[index2].project_id,
+                  ...contentEmail[index].project_id,
+                ];
+              }
+            }
+          } else {
+            groupDataBaseOnBosId.push(contentEmail[index]);
+          }
+        }
+      }
 
+      // reminder manager
+      for (let index = 0; index < groupDataBaseOnBosId.length; index++) {
+        const bosId = groupDataBaseOnBosId[index].bos_id;
+        const bosObject = await managerFunction(bosId);
+        groupDataBaseOnBosId[index] = {
+          ...groupDataBaseOnBosId[index],
+          ...bosObject[0],
+        };
+      }
+
+      // reminder manager
+      if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
+        for (let index = 0; index < groupDataBaseOnBosId.length; index++) {
+          reminderProjectDelayToPic(
+            groupDataBaseOnBosId[index].email,
+            subject,
+            groupDataBaseOnBosId[index].project_delay,
+            groupDataBaseOnBosId[index].bos_id,
+            groupDataBaseOnBosId[index].project_id
+          );
+        }
+      }
+
+      // reminder pic
       if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
         for (let index = 0; index < contentEmail.length; index++) {
           reminderProjectDelayToPic(
@@ -180,7 +281,7 @@ export const reminderNotificationDelaytoPic = async () => {
 };
 
 const getProjectWaitingActivityFunction = async () => {
-  const [result] = await countGetAllProjectModels();
+  const result = (await countGetAllProjectModels()).recordset;
 
   let projectWaitingActivity = [];
   if (result.length > 0) {
@@ -205,7 +306,7 @@ const getProjectWaitingActivityFunction = async () => {
         userListToEmail.push({
           manager_id: projectWaitingActivity[index].manager_id,
           project_waiting: [projectWaitingActivity[index].project_name],
-          project_id: projectWaitingActivity[index].id,
+          project_id: [projectWaitingActivity[index].id],
         });
       } else {
         const removeData = userListToEmail.filter(
@@ -220,7 +321,10 @@ const getProjectWaitingActivityFunction = async () => {
               ...checkUserListEmail.project_waiting,
               projectWaitingActivity[index].project_name,
             ],
-            project_id: projectWaitingActivity[index].id,
+            project_id: [
+              ...checkUserListEmail.project_id,
+              projectWaitingActivity[index].id,
+            ],
           },
         ];
         userListToEmail = newSetData;
@@ -246,6 +350,7 @@ export const reminderNotificationWaitingtoPic = async () => {
         contentEmail.push({
           pic_id: userListToEmail[index].manager_id,
           pic: picEmail,
+          product_id: userObject[0].product_id,
           project_waiting: userListToEmail[index].project_waiting,
           project_id: userListToEmail[index].project_id,
         });
@@ -268,62 +373,12 @@ export const reminderNotificationWaitingtoPic = async () => {
   }
 };
 
-const statusFunction = (
-  arrayDataActivity,
-  startDate,
-  SOPDate,
-  progress,
-  status
-) => {
-  let totalActivityDelay = 0;
-  let currentDate = new Date();
-  let start = new Date(startDate);
-  currentDate.setDate(currentDate.getDate() - 1);
-
-  if (status !== "cancel") {
-    if (arrayDataActivity.length > 0) {
-      if (progress) {
-        if (progress === 100) {
-          return "Finish";
-        } else if (start - currentDate > 0) {
-          return "Not Yet Started";
-        } else {
-          for (let index = 0; index < arrayDataActivity.length; index++) {
-            let endDateActivity = new Date(
-              moment(arrayDataActivity[index].finish)
-            );
-
-            if (
-              currentDate - endDateActivity > 0 &&
-              parseInt(arrayDataActivity[index].progress) < 100
-            ) {
-              totalActivityDelay += 1;
-            }
-          }
-          if (totalActivityDelay === 0) {
-            return "On Progress";
-          } else {
-            return `${totalActivityDelay} Activity Delay`;
-          }
-        }
-      } else {
-        return "Waiting Detail Activity";
-      }
-    } else {
-      return "Waiting Detail Activity";
-    }
-  } else {
-    return "cancel";
-  }
-};
-
 //Waiting Email Role :
 export const reminderNotificationDelayToManager = async () => {
   try {
     const userListToEmail = await getProjectDelayFunction();
-    const [user] = await getAllUsersModels();
+    const user = (await getAllUsersModels()).recordset;
     let contentEmail = [];
-    let subject = "Delay Project Reminder From Prosysta";
     if (userListToEmail.length > 0) {
       for (let index = 0; index < userListToEmail.length; index++) {
         const userObject = await userFunction(
@@ -387,12 +442,7 @@ export const reminderNotificationDelayToManager = async () => {
     }
 
     if (emailListToManager.length > 0) {
-      for (let index = 0; index < emailListToManager.length; index++) {
-        const [activityData] = await getActivityByProjectIdModels(
-          emailListToManager[index].project_id
-        );
-        const date = new Date();
-      }
+      for (let index = 0; index < emailListToManager.length; index++) {}
     }
   } catch (error) {
     console.log(error);
@@ -405,10 +455,10 @@ export const sendFeedback = async (req, res) => {
   try {
     const problem_id = req.body.problem_id;
     const userFeedback = req.body.user_id;
-    const [dataProblem] = await getProblemByIdModels(problem_id);
+    const dataProblem = (await getProblemByIdModels(problem_id)).recordset;
     const { user_id, problem_name } = dataProblem[0];
-    const [user] = await getUserByUserIdModels(user_id);
-    const [sender] = await getUserByUserIdModels(userFeedback);
+    const user = (await getUserByUserIdModels(user_id)).recordset;
+    const sender = (await getUserByUserIdModels(userFeedback)).recordset;
     const message = req.body.message;
 
     sendingEmailForFeedback(
@@ -433,7 +483,7 @@ export const sendFeedback = async (req, res) => {
 export const shareFinishProjectForElctronictSMDNewModel = async (req, res) => {
   try {
     const { project_id, toEmail, ccEmail, user_id } = req.body;
-    const [project] = await getProjectByIdModels(project_id);
+    const project = (await getProjectByIdModels(project_id)).recordset;
     const subject = `Project Finish Notification of ${project[0].project_name}`;
     const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
     let toEmailList = [];
@@ -476,8 +526,8 @@ export const shareFinishProjectForElctronictSMDNewModel = async (req, res) => {
 
 export const shareFinishProjectForCommon = async (req, res) => {
   try {
-    const { project_id, toEmail, ccEmail, user_id } = req.body;
-    const [project] = await getProjectByIdModels(project_id);
+    const { project_id, toEmail, ccEmail } = req.body;
+    const project = (await getProjectByIdModels(project_id)).recordset;
     const subject = `Project Finish Notification of ${project[0].project_name}`;
     const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
 
@@ -497,7 +547,7 @@ export const shareFinishProjectForCommon = async (req, res) => {
       }
     }
 
-    const user = await userFunction(user_id);
+    const user = await userFunction(project[0].manager_id);
     shareFinishProjectCommon(
       toEmailList,
       ccEmailList,
@@ -518,3 +568,32 @@ export const shareFinishProjectForCommon = async (req, res) => {
     });
   }
 };
+
+// notif pic
+export const sendNotificationToPic = async(req, res) => {
+  try {
+    const {project_id, picEmail, activity_id} = req.body;
+    const project = (await getProjectByIdModels(project_id)).recordset;
+    const activity = (await getActivityByActivityIdModels(activity_id)).recordset;
+    const subject = `New activity added on ${project[0].project_name}`;
+    const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
+
+    sendNotificationToPicModel(
+      picEmail,
+      subject,
+      capitalCaseFirstWord(project[0].project_name),
+      capitalCaseFirstWord(activity[0].name),
+      linkProject
+    );
+
+    res.status(200).json({
+      msg: "send email success",
+      data: req.body,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "send email failed",
+      errMsg: error,
+    });
+  }
+}

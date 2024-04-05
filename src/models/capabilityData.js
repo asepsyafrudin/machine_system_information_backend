@@ -1,20 +1,25 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js"
 
 export const createDataCapabilityModels = (data, capabilityId, status) => {
-  const sql = `INSERT INTO t_capability_data SET 
-    capability_id = '${capabilityId}',
-    data = '${data}',
-    status = '${status}'
+  const query = `INSERT INTO [dbo].[t_capability_data]
+  ([capability_id]
+  ,[data]
+  ,[status])
+VALUES
+  ('${capabilityId}'
+  ,'${data}'
+  ,'${status}')
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const deleteDataCapabilityByCapabilityIdModels = (capabilityId) => {
-  const sql = `delete from t_capability_data where capability_id = '${capabilityId}'`;
-  return db.execute(sql);
+  const query = `delete from t_capability_data where capability_id = '${capabilityId}'`;
+  return sql.query(query);
 };
 
 export const getDataCapabilityByCapabilityIdModels = (capabilityId) => {
-  const sql = `SELECT * from t_capability_data where capability_id = '${capabilityId}'`;
-  return db.execute(sql);
+  const query = `SELECT * from t_capability_data where capability_id = '${capabilityId}'`;
+  return sql.query(query);
 };

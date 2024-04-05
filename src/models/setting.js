@@ -1,29 +1,51 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js";
 
 export const saveSettingProjectActivityModel = (data) => {
-  const sql = `
-    INSERT INTO t_setting_project_activity SET 
-    project_id = '${data.projectId}',
-    column_width = '${data.columnWidth}',
-    row_height = '${data.rowHeight}',
-    list_cell_width = '${data.listCellWidth}',
-    month_format = '${data.monthFormat}',
-    hidden_plan = '${data.hiddenPlan}',
-    switch_mode = ${data.switchMode}
+  const query = `
+  INSERT INTO [dbo].[t_setting_project_activity]
+  ([project_id]
+  ,[column_width]
+  ,[row_height]
+  ,[list_cell_width]
+  ,[month_format]
+  ,[hidden_plan]
+  ,[switch_mode])
+VALUES
+  ('${data.projectId}'
+  ,'${data.columnWidth}'
+  ,'${data.rowHeight}'
+  ,'${data.listCellWidth}'
+  ,'${data.monthFormat}'
+  ,'${data.hiddenPlan}'
+  ,${data.switchMode})
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
+// export const saveSettingProjectActivityModel = (data) => {
+//   const query = `
+//     INSERT INTO t_setting_project_activity SET 
+//     project_id = '${data.projectId}',
+//     column_width = '${data.columnWidth}',
+//     row_height = '${data.rowHeight}',
+//     list_cell_width = '${data.listCellWidth}',
+//     month_format = '${data.monthFormat}',
+//     hidden_plan = '${data.hiddenPlan}',
+//     switch_mode = ${data.switchMode}
+//     `;
+//   return sql.query(query);
+// };
 
 export const getSettingByProjectIdModels = (id) => {
-  const sql = `SELECT * from t_setting_project_activity WHERE 
+  const query = `SELECT * from t_setting_project_activity WHERE 
         project_id = '${id}'
     `;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const updateSettingProjectActivityModel = (data) => {
-  const sql = `UPDATE t_setting_project_activity SET 
+  const query = `UPDATE t_setting_project_activity SET 
     column_width = '${data.columnWidth}',
     row_height = '${data.rowHeight}',
     list_cell_width = '${data.listCellWidth}',
@@ -32,5 +54,5 @@ export const updateSettingProjectActivityModel = (data) => {
     switch_mode = ${data.switchMode}
     WHERE project_id = '${data.projectId}'`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };

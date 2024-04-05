@@ -1,33 +1,59 @@
-import db from "../config/db.js";
+
+import sql from "../config/sqlServerConfig.js";
 
 export const createMachineModels = (data) => {
-  const sql = `INSERT INTO t_machine SET
-    id = '${data.id}',
-    machine_name = '${data.machine_name}', 
-    cycletime = '${data.cycletime}', 
-    operation_ratio = '${data.operation_ratio}',
-    masspro_date = '${data.masspro_date}',
-    asset_id ='${data.asset_id}',
-    status = '${data.status}',
-    description = '${data.description}',
-    line_id = ${data.line_id}
+  const query = `INSERT INTO [dbo].[t_machine]
+  ([id]
+  ,[machine_name]
+  ,[cycletime]
+  ,[operation_ratio]
+  ,[masspro_date]
+  ,[description]
+  ,[status]
+  ,[line_id]
+  ,[asset_id])
+VALUES
+  ('${data.id}'
+  ,'${data.machine_name}'
+  ,'${data.cycletime}'
+  ,'${data.operation_ratio}'
+  ,'${data.masspro_date}'
+  ,'${data.description}'
+  ,'${data.status}'
+  ,${data.line_id}
+  ,'${data.asset_id}')
     `;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
+// export const createMachineModels = (data) => {
+//   const query = `INSERT INTO t_machine SET
+//     id = '${data.id}',
+//     machine_name = '${data.machine_name}', 
+//     cycletime = '${data.cycletime}', 
+//     operation_ratio = '${data.operation_ratio}',
+//     masspro_date = '${data.masspro_date}',
+//     asset_id ='${data.asset_id}',
+//     status = '${data.status}',
+//     description = '${data.description}',
+//     line_id = ${data.line_id}
+//     `;
+
+//   return sql.query(query);
+// };
 
 export const deleteMachineModels = (id) => {
-  const sql = `DELETE FROM t_machine where id = '${id}'`;
-  return db.execute(sql);
+  const query = `DELETE FROM t_machine where id = '${id}'`;
+  return sql.query(query);
 };
 
 export const updateStatusMachineModels = (data) => {
-  const sql = `UPDATE t_machine SET status = '${data.status}' where id = '${data.id}'`;
-  return db.execute(sql);
+  const query = `UPDATE t_machine SET status = '${data.status}' where id = '${data.id}'`;
+  return sql.query(query);
 };
 
 export const updateMachineModels = (data) => {
-  const sql = `UPDATE t_machine SET 
+  const query = `UPDATE t_machine SET 
     machine_name = '${data.machine_name}', 
     asset_id ='${data.asset_id}',
     cycletime = '${data.cycletime}', 
@@ -37,11 +63,11 @@ export const updateMachineModels = (data) => {
     line_id = ${data.line_id}
     WHERE id = '${data.id}'
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const getAllMachineModels = () => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_machine.id , 
     t_machine.machine_name,
     t_machine.cycletime,
@@ -60,11 +86,11 @@ export const getAllMachineModels = () => {
     t_line.product_id = t_product.id
     `;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const searchMachineModel = (searchValue) => {
-  const sql = `SELECT 
+  const query = `SELECT 
     t_machine.id , 
     t_machine.machine_name,
     t_machine.cycletime,
@@ -86,5 +112,5 @@ export const searchMachineModel = (searchValue) => {
     or t_line.line_name like '%${searchValue}%'
     or t_product.product_name like '%${searchValue}%' 
     `;
-  return db.execute(sql);
+  return sql.query(query);
 };

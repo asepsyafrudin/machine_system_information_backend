@@ -28,7 +28,7 @@ export const createCapability = async (req, res) => {
       if (capabilityData.length > 0) {
         const statusData = "current";
         for (let index = 0; index < capabilityData.length; index++) {
-          await createDataCapabilityModels(
+          await createCapabilityModels(
             capabilityData[index].data,
             id,
             statusData
@@ -73,7 +73,8 @@ export const updateCapability = async (req, res) => {
     const status = req.body.status;
     const id = req.body.id;
     await updateCapabilityModels(req.body);
-    const [result] = await getDataCapabilityByCapabilityIdModels(req.body.id);
+    const result = (await getDataCapabilityByCapabilityIdModels(req.body.id))
+      .recordset;
     if (result.length > 0) {
       await deleteDataCapabilityByCapabilityIdModels(req.body.id);
     }
@@ -128,19 +129,17 @@ export const getCapabilityByUserId = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await getCapabilityByUserIdModels(
-      dataPerPage,
-      offset,
-      userId
-    );
+    const result = (
+      await getCapabilityByUserIdModels(dataPerPage, offset, userId)
+    ).recordset;
 
     let data = [];
 
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
-        const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-          result[index].id
-        );
+        const data_capability = (
+          await getDataCapabilityByCapabilityIdModels(result[index].id)
+        ).recordset;
         data.push({
           result: result[index],
           data: data_capability,
@@ -164,8 +163,9 @@ export const getAllCapability = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 20;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await getAllCapabilityModels(dataPerPage, offset);
-    const [totalData] = await countCapabilityModels();
+    const result = (await getAllCapabilityModels(dataPerPage, offset))
+      .recordset;
+    const totalData = (await countCapabilityModels()).recordset;
 
     const totalPageData = Math.ceil(totalData[0].count / dataPerPage);
     let data = [];
@@ -173,9 +173,9 @@ export const getAllCapability = async (req, res) => {
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
         if (result[index].status === "compare") {
-          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-            result[index].id
-          );
+          const data_capability = (
+            await getDataCapabilityByCapabilityIdModels(result[index].id)
+          ).recordset;
           const data1 = data_capability.filter(
             (value) => value.status === "current"
           );
@@ -188,9 +188,9 @@ export const getAllCapability = async (req, res) => {
             data2: data2,
           });
         } else {
-          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-            result[index].id
-          );
+          const data_capability = (
+            await getDataCapabilityByCapabilityIdModels(result[index].id)
+          ).recordset;
           data.push({
             ...result[index],
             data1: data_capability,
@@ -215,14 +215,14 @@ export const getAllCapability = async (req, res) => {
 
 export const getCapabilityById = async (req, res) => {
   try {
-    const [result] = await getCapabilityByIdModels(req.params.id);
+    const result = (await getCapabilityByIdModels(req.params.id)).recordset;
     let data = [];
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
         if (result[index].status === "compare") {
-          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-            result[index].id
-          );
+          const data_capability = (
+            await getDataCapabilityByCapabilityIdModels(result[index].id)
+          ).recordset;
           const data1 = data_capability.filter(
             (value) => value.status === "current"
           );
@@ -235,9 +235,9 @@ export const getCapabilityById = async (req, res) => {
             data2: data2,
           });
         } else {
-          const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-            result[index].id
-          );
+          const data_capability = (
+            await getDataCapabilityByCapabilityIdModels(result[index].id)
+          ).recordset;
           data.push({
             ...result[index],
             data1: data_capability,
@@ -280,7 +280,8 @@ export const searchCapability = async (req, res) => {
     const dataPerPage = 20;
     const offset = (page - 1) * dataPerPage;
 
-    const [result] = await searchCapabilityModels(search, offset, dataPerPage);
+    const result = (await searchCapabilityModels(search, offset, dataPerPage))
+      .recordset;
     const totalData = result.length;
 
     const totalPageData = Math.ceil(totalData / dataPerPage);
@@ -288,9 +289,9 @@ export const searchCapability = async (req, res) => {
 
     if (result.length > 0) {
       for (let index = 0; index < result.length; index++) {
-        const [data_capability] = await getDataCapabilityByCapabilityIdModels(
-          result[index].id
-        );
+        const data_capability = (
+          await getDataCapabilityByCapabilityIdModels(result[index].id)
+        ).recordset;
         data.push({
           ...result[index],
           data: data_capability,
@@ -315,7 +316,7 @@ export const searchCapability = async (req, res) => {
 export const getCapabilityByProjectId = async (req, res) => {
   try {
     const projectId = req.params.projectId;
-    const [result] = await getCapabilityByProjectIdModels(projectId);
+    const result = (await getCapabilityByProjectIdModels(projectId)).recordset;
     res.status(200).json({
       msg: "Get Data Berhasil",
       data: result,

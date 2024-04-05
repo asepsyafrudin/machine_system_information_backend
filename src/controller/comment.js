@@ -17,14 +17,14 @@ export const createComment = async (req, res) => {
     let newArrayListUserNotif = [];
 
     if (req.body.selected_item === "document") {
-      const [document] = await getDocumentByIdModels(req.body.selected_id);
+      const document = (await getDocumentByIdModels(req.body.selected_id)).recordset;
       newArrayListUserNotif.push({
         user_id: document[0].user_id,
         username: document[0].username,
         email: document[0].email,
       });
     } else if (req.body.selected_item === "video") {
-      const [video] = await getVideoByIdModels(req.body.selected_id);
+      const video = (await getVideoByIdModels(req.body.selected_id)).recordset;
       newArrayListUserNotif.push({
         user_id: video[0].user_id,
         username: video[0].username,
@@ -32,7 +32,7 @@ export const createComment = async (req, res) => {
       });
     }
 
-    const [comment] = await getCommentBySelectedIdModels(req.body.selected_id);
+    const comment = (await getCommentBySelectedIdModels(req.body.selected_id)).recordset;
     if (comment.length !== 0) {
       for (let index = 0; index < comment.length; index++) {
         newArrayListUserNotif.push({
@@ -67,7 +67,7 @@ export const createComment = async (req, res) => {
           type: "document",
           user_comment_id: req.body.user_id,
         };
-        await createNotificationModels(data);
+      await createNotificationModels(data);
       }
     } else if (req.body.selected_item === "video") {
       for (let index = 0; index < arrayList2.length; index++) {
@@ -95,7 +95,7 @@ export const createComment = async (req, res) => {
 
 export const getCommentBySelectedId = async (req, res) => {
   try {
-    const [result] = await getCommentBySelectedIdModels(req.params.id);
+    const result = (await getCommentBySelectedIdModels(req.params.id)).recordset;
     const page = req.params.page;
     const dataPerPage = 10;
 
@@ -106,7 +106,7 @@ export const getCommentBySelectedId = async (req, res) => {
       index < page * dataPerPage && index < result.length;
       index++
     ) {
-      const [feedbackResult] = await getFeedbackByCommentId(result[index].id);
+      const feedbackResult = (await getFeedbackByCommentId(result[index].id)).recordset;
       listData.push({
         id: result[index].id,
         create_date: result[index].create_date,
@@ -150,7 +150,7 @@ export const deleteComment = async (req, res) => {
 
 export const getCommentBySelectedIdOnly = async (req, res) => {
   try {
-    const [result] = await getCommentBySelectedIdModels(req.params.id);
+    const result = (await getCommentBySelectedIdModels(req.params.id)).recordset;
     res.status(200).json({
       msg: "get data success",
       data: result,

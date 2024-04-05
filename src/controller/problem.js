@@ -31,8 +31,8 @@ export const getAllProblemList = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await getAllProblemModels(dataPerPage, offset);
-    const [totalData] = await countDataProblem();
+    const result = (await getAllProblemModels(dataPerPage, offset)).recordset;
+    const totalData = (await countDataProblem()).recordset;
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
     res.status(200).json({
       msg: "get problem berhasil",
@@ -55,13 +55,13 @@ export const searchProblemByMachineId = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const [result] = await searchProblemByIdMachineModels(
+    const result = (await searchProblemByIdMachineModels(
       machineId,
       dataPerPage,
       offset
-    );
+    )).recordset
 
-    const [countData] = await getProblemModelsByMachineId(machineId);
+    const countData = (await getProblemModelsByMachineId(machineId)).recordset;
     const totalPageData = Math.ceil(countData.length / dataPerPage);
 
     res.status(200).json({
@@ -81,7 +81,7 @@ export const searchProblemByMachineId = async (req, res) => {
 
 export const getProblemByMachieId = async (req, res) => {
   try {
-    const [result] = await getProblemModelsByMachineId(req.params.machineId);
+    const result = (await getProblemModelsByMachineId(req.params.machineId)).recordset;
     res.status(200).json({
       msg: "problem berhasil di get",
       data: result,
@@ -96,13 +96,13 @@ export const getProblemByMachieId = async (req, res) => {
 
 export const getProblemById = async (req, res) => {
   try {
-    const [result] = await getProblemByIdModels(req.params.id);
-    const [ftaLv1] = await getFTaLv1ByProblemIdModels(result[0].id);
+    const result = (await getProblemByIdModels(req.params.id)).recordset;
+    const ftaLv1 = (await getFTaLv1ByProblemIdModels(result[0].id)).recordset;
     let dataFTALv1 = [];
     let dataFTALv2 = [];
     if (ftaLv1.length > 0) {
       for (let index = 0; index < ftaLv1.length; index++) {
-        const [ftaLv1FileResult] = await getFileByDocumentId(ftaLv1[index].id);
+        const ftaLv1FileResult = (await getFileByDocumentId(ftaLv1[index].id)).recordset;
         dataFTALv1.push({
           id: ftaLv1[index].id,
           type: ftaLv1[index].type,
@@ -110,12 +110,12 @@ export const getProblemById = async (req, res) => {
           attachment: ftaLv1FileResult,
         });
 
-        const [ftaLv2] = await getFtaLv2ModelsByLv1Id(ftaLv1[index].id);
+        const ftaLv2 = (await getFtaLv2ModelsByLv1Id(ftaLv1[index].id)).recordset;
         if (ftaLv2.length > 0) {
           for (let index = 0; index < ftaLv2.length; index++) {
-            const [FtaLv2FileResult] = await getFileByDocumentId(
+            const FtaLv2FileResult = (await getFileByDocumentId(
               ftaLv2[index].id
-            );
+            )).recordset;
             dataFTALv2.push({
               idAnalysis2: ftaLv2[index].id,
               type: ftaLv2[index].type,

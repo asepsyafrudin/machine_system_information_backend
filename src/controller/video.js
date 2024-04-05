@@ -45,7 +45,7 @@ export const createVideo = async (req, res) => {
 
 export const getAllVideo = async (req, res) => {
   try {
-    const [result] = await getAllVideoModels();
+    const result = (await getAllVideoModels()).recordset;
     res.status(200).json({
       msg: "video berhasil di ambil",
       data: result,
@@ -117,7 +117,7 @@ export const updateStatusVideo = async (req, res) => {
 
 export const getVideoById = async (req, res) => {
   try {
-    const [result] = await getVideoByIdModels(req.params.id);
+    const result = (await getVideoByIdModels(req.params.id)).recordset;
     res.status(200).json({
       msg: "video berhasil di ambil",
       data: result,
@@ -132,7 +132,7 @@ export const getVideoById = async (req, res) => {
 
 export const getVideoByProjectId = async (req, res) => {
   try {
-    const [result] = await getVideoByProjectIdModels(req.params.projectId);
+    const result = (await getVideoByProjectIdModels(req.params.projectId)).recordset;
     res.status(200).json({
       msg: "video berhasil di ambil",
       data: result,
@@ -147,7 +147,7 @@ export const getVideoByProjectId = async (req, res) => {
 
 export const getVideoByUserId = async (req, res) => {
   try {
-    const [result] = await getVideoByUserIdModels(req.params.userId);
+    const result = (await getVideoByUserIdModels(req.params.userId)).recordset;
     const page = req.params.page;
     const dataPerPage = 8;
     const totalPageData = Math.ceil(result.length / dataPerPage);
@@ -190,7 +190,7 @@ export const getVideoByPage = async (req, res) => {
   try {
     const page = req.params.page;
     const dataPerPage = 8;
-    const [result] = await getAllVideoModels();
+    const result = (await getAllVideoModels()).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -230,7 +230,7 @@ export const getVideoByPageAdmin = async (req, res) => {
   try {
     const page = req.params.page;
     const dataPerPage = 8;
-    const [result] = await getAllVideoForAdminModels();
+    const result = (await getAllVideoForAdminModels()).recordset;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
     for (
@@ -270,7 +270,7 @@ export const getVideoByPageAdmin = async (req, res) => {
 export const searchVideo = async (req, res) => {
   try {
     const page = req.params.page;
-    const [result] = await searchVideoModels(req.params.searchValue);
+    const result = (await searchVideoModels(req.params.searchValue)).recordset;
     const dataPerPage = 8;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];
@@ -314,11 +314,11 @@ export const searchVideoForDashbordMenu = async (req, res) => {
     const userId = req.params.userId;
     const search = req.params.searchValue;
 
-    const [userData] = await getUserByUserIdModels(userId);
+    const userData = (await getUserByUserIdModels(userId)).recordset;
     const [result] =
       userData[0].position === "Administrator"
-        ? await searchVideoForAdminModels(search)
-        : await searchVideoForUserModels(userId, search);
+        ? (await searchVideoForAdminModels(search)).recordset
+        : (await searchVideoForUserModels(userId, search)).recordset;
     const dataPerPage = 8;
     const totalPageData = Math.ceil(result.length / dataPerPage);
     let listData = [];

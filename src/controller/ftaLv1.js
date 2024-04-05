@@ -35,7 +35,7 @@ export const createFtaLv1 = async (req, res) => {
 
 export const getFTALv1ByProblemId = async (req, res) => {
   try {
-    const [result] = await getFTaLv1ByProblemIdModels(req.params.problemId);
+    const result = (await getFTaLv1ByProblemIdModels(req.params.problemId)).recordset;
     res.status(200).json({
       msg: "fta1 berhasil di get",
       data: result,

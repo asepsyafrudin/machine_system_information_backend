@@ -6,9 +6,9 @@ import dotenv from "dotenv";
 dotenv.config();
 export const getAllItem = async (req, res) => {
   try {
-    const [document] = await getAllDocumentForGeneralModels();
-    const [video] = await getAllVideoModels();
-    const [capability] = await getAllCapabilityForRecent();
+    const document = (await getAllDocumentForGeneralModels()).recordset;
+    const video = (await getAllVideoModels()).recordset;
+    const capability = (await getAllCapabilityForRecent()).recordset;
     let totalData = [];
     if (document.length > 0) {
       for (let index = 0; index < document.length; index++) {

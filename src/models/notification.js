@@ -1,14 +1,30 @@
-import db from "../config/db.js";
+import sql from "../config/sqlServerConfig.js";
 
 export const createNotificationModels = (data) => {
-  const sql = `INSERT INTO t_notification SET user_id = ${data.user_id} , 
-  link = '${data.link}' , type ="${data.type}", status = 'unread', user_comment_id = ${data.user_comment_id}`;
+  const query = `INSERT INTO [dbo].[t_notification]
+  ([user_id]
+  ,[link]
+  ,[type]
+  ,[status]
+  ,[user_comment_id])
+VALUES
+  (${data.user_id}
+  ,'${data.link}'
+  ,'${data.type}'
+  ,'unread'
+  ,${data.user_comment_id})`;
 
-  return db.execute(sql);
+  return sql.query(query);
 };
+// export const createNotificationModels = (data) => {
+//   const query = `INSERT INTO t_notification SET user_id = ${data.user_id} , 
+//   link = '${data.link}' , type ="${data.type}", status = 'unread', user_comment_id = ${data.user_comment_id}`;
+
+//   return sql.query(query);
+// };
 
 export const getNotificationByUserIdModels = (userId) => {
-  const sql = `SELECT t_notification.id,
+  const query = `SELECT t_notification.id,
   t_notification.type, 
   t_notification.link,
   t_notification.create_date,
@@ -20,10 +36,10 @@ export const getNotificationByUserIdModels = (userId) => {
   where user_id = ${userId} and t_notification.status = 'unread'
   order by id desc limit 10
   `;
-  return db.execute(sql);
+  return sql.query(query);
 };
 
 export const changeStatusNotifToReadModels = (id) => {
-  const sql = `UPDATE t_notification SET status="read" where id = ${id}`;
-  return db.execute(sql);
+  const query = `UPDATE t_notification SET status="read" where id = ${id}`;
+  return sql.query(query);
 };

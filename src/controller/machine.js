@@ -24,7 +24,7 @@ export const createMachine = async (req, res) => {
 
 export const getAllMachine = async (req, res) => {
   try {
-    const [result] = await getAllMachineModels();
+    const result = (await getAllMachineModels()).recordset;
     res.status(200).json({
       msg: "machine berhasil di submit",
       data: result,
@@ -84,7 +84,7 @@ export const updateMachine = async (req, res) => {
 
 export const searchMachine = async (req, res) => {
   try {
-    const [result] = await searchMachineModel(req.params.searchValue);
+    const result = (await searchMachineModel(req.params.searchValue)).recordset;
     res.status(200).json({
       msg: "machine berhasil di ambil",
       data: result,
