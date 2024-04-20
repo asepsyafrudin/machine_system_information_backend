@@ -19,9 +19,13 @@ const login = async (req, res) => {
       }
     }
 
+    let newData = {
+      ...data,
+      expired: new Date(new Date().getTime() + 30 * 60000),
+    };
     res.status(200).json({
       msg: "login request berhasil",
-      data: data,
+      data: newData,
     });
   } catch (error) {
     res.status(400).json({
