@@ -6,9 +6,12 @@ import {
   sendingEmailForFeedback,
   shareFinishProjectCommon,
   shareFinishProjectForElectronicNewModel,
-  sendNotificationToPicModel
+  sendNotificationToPicModel,
 } from "../config/email.js";
-import { getActivityByProjectIdModels, getActivityByActivityIdModels } from "../models/activity.js";
+import {
+  getActivityByProjectIdModels,
+  getActivityByActivityIdModels,
+} from "../models/activity.js";
 import {
   countGetAllProjectModels,
   getProjectByIdModels,
@@ -22,6 +25,11 @@ import { getDataResult } from "./project.js";
 import { getProblemByIdModels } from "../models/problem.js";
 import dotenv from "dotenv";
 import { getDataManagerListModels } from "../models/approval.js";
+import { getDocumentById, getDocumentForGeneralByPage } from "./document.js";
+import {
+  getAllDocumentModels,
+  getDocumentReportModels,
+} from "../models/document.js";
 
 dotenv.config();
 function capitalCaseFirstWord(word) {
@@ -570,11 +578,12 @@ export const shareFinishProjectForCommon = async (req, res) => {
 };
 
 // notif pic
-export const sendNotificationToPic = async(req, res) => {
+export const sendNotificationToPic = async (req, res) => {
   try {
-    const {project_id, picEmail, activity_id} = req.body;
+    const { project_id, picEmail, activity_id } = req.body;
     const project = (await getProjectByIdModels(project_id)).recordset;
-    const activity = (await getActivityByActivityIdModels(activity_id)).recordset;
+    const activity = (await getActivityByActivityIdModels(activity_id))
+      .recordset;
     const subject = `New activity added on ${project[0].project_name}`;
     const linkProject = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${project_id}`;
 
@@ -596,4 +605,56 @@ export const sendNotificationToPic = async(req, res) => {
       errMsg: error,
     });
   }
-}
+};
+
+export const approvalManagerFileReport = async () => {
+  const getDataManagerList = (await getDataManagerListModels()).recordset;
+  const listDataManagerAndProduct = [];
+  if (getDataManagerList.length > 0) {
+    for (let index = 0; index < getDataManagerList.length; index++) {
+      listDataManagerAndProduct.push({
+        ...getDataManagerList[index],
+        product_id: getDataManagerList[index].product_id.split(","),
+      });
+    }
+  }
+
+  const documentListToEmail = (await getDocumentReportModels()).recordset;
+  let contentEmail = [];
+  let subject = "Request Approval Document from Prosysta";
+
+  if (documentListToEmail.length > 0) {
+    for (let index = 0; index < documentListToEmail.length; index++) {
+      const idProductDocument = documentListToEmail[0].product_id;
+
+      let managerId = [];
+      if (listDataManagerAndProduct.length > 0) {
+        for (let index = 0; index < listDataManagerAndProduct.length; index++) {
+          let check = listDataManagerAndProduct[index].product_id.find(
+            (value) => parseInt(value) === idProductDocument
+          );
+          if (check) {
+            managerId = listDataManagerAndProduct[index].manager_id;
+          }
+        }
+      }
+
+      const managerEmail = await managerFunction(managerId);
+      contentEmail.push({
+        manager_id: managerEmail[0].email,
+        product_id: documentListToEmail[0].product_id,
+        document_id: documentListToEmail[index].id,
+        document_title: documentListToEmail[index].title,
+      });
+    }
+
+    console.log(contentEmail, "content");
+    // requestApprovalToManagerModal(
+    //   contentEmail[index].manager_id,
+    //   subject,
+    //   contentEmail[index].product_id,
+    //   contentEmail[index].document_id,
+    //   contentEmail[index].document_title
+    // );
+  }
+};

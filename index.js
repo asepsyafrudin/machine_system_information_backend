@@ -44,9 +44,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use("/static", express.static(path.join(__dirname, "../assets")));
 app.use(express.static(path.join(__dirname, "./public")));
 
+const reminderDate = "07:30:00";
+
 setInterval(() => {
-  reminderNotificationDelaytoPic();
-  reminderNotificationWaitingtoPic();
+  const date = new Date();
+  if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
+    reminderNotificationDelaytoPic();
+    reminderNotificationWaitingtoPic();
+  }
 }, 1000);
 
 app.use(express.json());

@@ -1,5 +1,4 @@
-
-import sql from "../config/sqlServerConfig.js"
+import sql from "../config/sqlServerConfig.js";
 
 export const createDocumentModels = (data, id) => {
   const query = `
@@ -24,7 +23,7 @@ export const createDocumentModels = (data, id) => {
   return sql.query(query);
 };
 // export const createDocumentModels = (data, id) => {
-//   const query = `INSERT INTO t_document SET 
+//   const query = `INSERT INTO t_document SET
 //     id = '${id}',
 //     title = '${data.title}',
 //     machine_id = '${data.machine_id}',
@@ -102,6 +101,34 @@ export const getAllDocumentModels = () => {
     JOIN t_machine ON t_document.machine_id = t_machine.id
     JOIN t_line ON t_line.id = t_machine.line_id 
     JOIN t_product ON t_product.id = t_line.product_id 
+    ORDER BY t_document.create_date DESC
+    `;
+  return sql.query(query);
+};
+export const getDocumentReportModels = () => {
+  const query = `SELECT 
+    t_document.id,
+    t_document.title,
+    t_document.create_date,
+    t_document.description,
+    t_document.user_id,
+    t_document.status,
+    t_document.file_type,
+    t_document.project_id,
+    t_users.username,
+    t_users.photo,
+    t_users.email,
+    t_document.machine_id,
+    t_machine.machine_name,
+    t_machine.line_id,
+    t_line.line_name,
+    t_line.product_id,
+    t_product.product_name
+    FROM t_document JOIN t_users ON t_document.user_id = t_users.id
+    JOIN t_machine ON t_document.machine_id = t_machine.id
+    JOIN t_line ON t_line.id = t_machine.line_id 
+    JOIN t_product ON t_product.id = t_line.product_id 
+    where t_document.file_type = 'Engineering Report'
     ORDER BY t_document.create_date DESC
     `;
   return sql.query(query);
