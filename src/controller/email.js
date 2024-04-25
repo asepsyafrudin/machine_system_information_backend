@@ -7,6 +7,7 @@ import {
   shareFinishProjectCommon,
   shareFinishProjectForElectronicNewModel,
   sendNotificationToPicModel,
+  sendDocumentApprovalModel,
 } from "../config/email.js";
 import {
   getActivityByProjectIdModels,
@@ -25,11 +26,14 @@ import { getDataResult } from "./project.js";
 import { getProblemByIdModels } from "../models/problem.js";
 import dotenv from "dotenv";
 import { getDataManagerListModels } from "../models/approval.js";
+import { v4 as uuidv4 } from "uuid";
 import { getDocumentById, getDocumentForGeneralByPage } from "./document.js";
 import {
+  createDocumentModels,
   getAllDocumentModels,
   getDocumentReportModels,
 } from "../models/document.js";
+import { createFilesModels } from "../models/file.js";
 
 dotenv.config();
 function capitalCaseFirstWord(word) {
@@ -54,8 +58,6 @@ const managerFunction = async (npk) => {
   const manager = (await getUserByNPKModels(npk)).recordset;
   return manager;
 };
-
-const reminderDate = "07:30:00";
 
 export const sendEmail = async (req, res) => {
   const { sender, toEmail, subject, message, ccEmail, project_id } = req.body;
@@ -258,29 +260,27 @@ export const reminderNotificationDelaytoPic = async () => {
       }
 
       // reminder manager
-      if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
-        for (let index = 0; index < groupDataBaseOnBosId.length; index++) {
-          reminderProjectDelayToPic(
-            groupDataBaseOnBosId[index].email,
-            subject,
-            groupDataBaseOnBosId[index].project_delay,
-            groupDataBaseOnBosId[index].bos_id,
-            groupDataBaseOnBosId[index].project_id
-          );
-        }
+
+      for (let index = 0; index < groupDataBaseOnBosId.length; index++) {
+        reminderProjectDelayToPic(
+          groupDataBaseOnBosId[index].email,
+          subject,
+          groupDataBaseOnBosId[index].project_delay,
+          groupDataBaseOnBosId[index].bos_id,
+          groupDataBaseOnBosId[index].project_id
+        );
       }
 
       // reminder pic
-      if (date.toLocaleTimeString() === reminderDate && date.getDay() < 6) {
-        for (let index = 0; index < contentEmail.length; index++) {
-          reminderProjectDelayToPic(
-            contentEmail[index].pic,
-            subject,
-            contentEmail[index].project_delay,
-            contentEmail[index].pic_id,
-            contentEmail[index].project_id
-          );
-        }
+
+      for (let index = 0; index < contentEmail.length; index++) {
+        reminderProjectDelayToPic(
+          contentEmail[index].pic,
+          subject,
+          contentEmail[index].project_delay,
+          contentEmail[index].pic_id,
+          contentEmail[index].project_id
+        );
       }
     }
   } catch (error) {
@@ -607,54 +607,69 @@ export const sendNotificationToPic = async (req, res) => {
   }
 };
 
-export const approvalManagerFileReport = async () => {
-  const getDataManagerList = (await getDataManagerListModels()).recordset;
-  const listDataManagerAndProduct = [];
-  if (getDataManagerList.length > 0) {
-    for (let index = 0; index < getDataManagerList.length; index++) {
-      listDataManagerAndProduct.push({
-        ...getDataManagerList[index],
-        product_id: getDataManagerList[index].product_id.split(","),
-      });
-    }
-  }
+export const approvalManagerFileReport = async (req, res) => {
+  try {
+    const id = uuidv4();
+    await createDocumentModels(req.body, id);
+    const file = req.files;
+    const product_id_document = req.body.product_id;
+    const document_id = id;
+    const linkDocument = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${document_id}`;
+    const subject = `Your team has upload new Document Engineering Report`;
+    if (file.length > 0) {
+      for (let index = 0; index < file.length; index++) {
+        let filename =
+          req.protocol +
+          "://" +
+          req.get("host") +
+          "/static/files/" +
+          file[index].filename;
+        await createFilesModels(document_id, filename, file[index].filename);
+      }
 
-  const documentListToEmail = (await getDocumentReportModels()).recordset;
-  let contentEmail = [];
-  let subject = "Request Approval Document from Prosysta";
+      let managerApproval = "";
+      const getDataManagerList = (await getDataManagerListModels()).recordset;
+      if (getDataManagerList.length > 0) {
+        for (let index = 0; index < getDataManagerList.length; index++) {
+          getDataManagerList[index].product_id =
+            getDataManagerList[index].product_id.split(",");
+        }
 
-  if (documentListToEmail.length > 0) {
-    for (let index = 0; index < documentListToEmail.length; index++) {
-      const idProductDocument = documentListToEmail[0].product_id;
-
-      let managerId = [];
-      if (listDataManagerAndProduct.length > 0) {
-        for (let index = 0; index < listDataManagerAndProduct.length; index++) {
-          let check = listDataManagerAndProduct[index].product_id.find(
-            (value) => parseInt(value) === idProductDocument
-          );
-          if (check) {
-            managerId = listDataManagerAndProduct[index].manager_id;
+        for (let index = 0; index < getDataManagerList.length; index++) {
+          for (
+            let index2 = 0;
+            index2 < getDataManagerList[index].product_id.length;
+            index2++
+          ) {
+            if (
+              parseInt(getDataManagerList[index].product_id[index2]) ===
+              parseInt(product_id_document)
+            ) {
+              managerApproval = getDataManagerList[index].manager_id;
+              break;
+            }
           }
         }
       }
 
-      const managerEmail = await managerFunction(managerId);
-      contentEmail.push({
-        manager_id: managerEmail[0].email,
-        product_id: documentListToEmail[0].product_id,
-        document_id: documentListToEmail[index].id,
-        document_title: documentListToEmail[index].title,
+      const manager = await managerFunction(managerApproval);
+      const managerEmail = manager[0].email;
+
+      sendDocumentApprovalModel(managerEmail, subject, linkDocument);
+      res.status(200).json({
+        msg: "Submit Data Document dan File Berhasil",
+        data: req.body,
+      });
+    } else {
+      res.status(200).json({
+        msg: "Submit Data Document Berhasil",
+        data: req.body,
       });
     }
-
-    console.log(contentEmail, "content");
-    // requestApprovalToManagerModal(
-    //   contentEmail[index].manager_id,
-    //   subject,
-    //   contentEmail[index].product_id,
-    //   contentEmail[index].document_id,
-    //   contentEmail[index].document_title
-    // );
+  } catch (error) {
+    res.status(400).json({
+      msg: "Submit Data Gagal",
+      errMsg: error,
+    });
   }
 };

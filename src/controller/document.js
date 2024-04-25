@@ -1,3 +1,4 @@
+import { getDataManagerListModels } from "../models/approval.js";
 import {
   changeStatusDocumentModels,
   createDocumentModels,
@@ -17,14 +18,20 @@ import {
   deleteFileByDocumentIdModels,
   getFileByDocumentId,
 } from "../models/file.js";
-import { getUserByUserIdModels } from "../models/user.js";
+import { getUserByNPKModels, getUserByUserIdModels } from "../models/user.js";
 import { v4 as uuidv4 } from "uuid";
+
+const managerFunction = async (npk) => {
+  const manager = (await getUserByNPKModels(npk)).recordset;
+  return manager;
+};
 
 export const createDocument = async (req, res) => {
   try {
     const id = uuidv4();
     await createDocumentModels(req.body, id);
     const file = req.files;
+    const product_id_document = req.body.product_id;
     const document_id = id;
     if (file.length > 0) {
       for (let index = 0; index < file.length; index++) {
@@ -36,6 +43,34 @@ export const createDocument = async (req, res) => {
           file[index].filename;
         await createFilesModels(document_id, filename, file[index].filename);
       }
+
+      // let managerApproval = "";
+      // const getDataManagerList = (await getDataManagerListModels()).recordset;
+      // if (getDataManagerList.length > 0) {
+      //   for (let index = 0; index < getDataManagerList.length; index++) {
+      //     getDataManagerList[index].product_id =
+      //       getDataManagerList[index].product_id.split(",");
+      //   }
+
+      //   for (let index = 0; index < getDataManagerList.length; index++) {
+      //     for (
+      //       let index2 = 0;
+      //       index2 < getDataManagerList[index].product_id.length;
+      //       index2++
+      //     ) {
+      //       if (
+      //         parseInt(getDataManagerList[index].product_id[index2]) ===
+      //         parseInt(product_id_document)
+      //       ) {
+      //         managerApproval = getDataManagerList[index].manager_id;
+      //         break;
+      //       }
+      //     }
+      //   }
+      // }
+
+      // const managerEmail = await managerFunction(managerApproval);
+      // console.log(managerEmail[0].email);
       res.status(200).json({
         msg: "Submit Data Document dan File Berhasil",
         data: req.body,

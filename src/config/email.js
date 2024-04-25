@@ -86,6 +86,15 @@ const projectList = (item, picId, projectId) => {
     </table>`;
 };
 
+// const documentList = (item, managerId, documentId)=> {
+//   const functionDocument = () =>{
+//     let array =""
+//     for (let index = 0; index < item.length; index++) {
+
+//     }
+//   }
+// }
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // export const reminderProjectDelayToManager = async () => {
@@ -370,6 +379,44 @@ export const sendNotificationToPicModel = async (
   });
   console.log(
     `Message sent: to ${(toPicMail, subject, new Date().toLocaleString())}%s`,
+    info.messageId
+  );
+};
+
+export const sendDocumentApprovalModel = async (
+  managerEmail,
+  subject,
+  linkDocument
+) => {
+  let info = await transporter.sendMail({
+    from: '"Prosysta Administrator<No Reply>" <asep.syafrudin.a5g@ap.denso.com>',
+    to: managerEmail,
+    subject: subject,
+
+    html: `
+    <div>
+    Dear Manager,<br/>
+    <br/><br/>
+     
+    
+    We would like to inform you that your team has added a new Document Engineering Report <br/>
+    "<a href='${linkDocument}'>click</a>" for detail (Login to Prosysta App) <br/>
+    <br/>
+    <br/>
+    <br/>
+    
+    Best Regards, 
+    <br/> <br/> <br/>
+     
+    
+    PROSYSTA administrator <br/>
+    </div>
+`,
+  });
+  console.log(
+    `Message sent: to ${
+      (managerEmail, subject, new Date().toLocaleString())
+    }%s`,
     info.messageId
   );
 };
