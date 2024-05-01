@@ -614,7 +614,7 @@ export const approvalManagerFileReport = async (req, res) => {
     const file = req.files;
     const product_id_document = req.body.product_id;
     const document_id = id;
-    const linkDocument = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${document_id}`;
+
     const subject = `Your team has upload new Document Engineering Report`;
     if (file.length > 0) {
       for (let index = 0; index < file.length; index++) {
@@ -654,6 +654,10 @@ export const approvalManagerFileReport = async (req, res) => {
 
       const manager = await managerFunction(managerApproval);
       const managerEmail = manager[0].email;
+      const user = await managerFunction(managerApproval);
+      const userId = user[0].id;
+      console.log(userId, "user id");
+      const linkDocument = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/document/${document_id}/${userId}`;
 
       sendDocumentApprovalModel(managerEmail, subject, linkDocument);
       res.status(200).json({

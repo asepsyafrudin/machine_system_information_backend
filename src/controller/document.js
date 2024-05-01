@@ -8,6 +8,7 @@ import {
   getAllDocumentModels,
   getDocumentByIdModels,
   getDocumentByProjectIdModels,
+  getDocumentReportModels,
   searchAllDocumentModels,
   searchDocumentForAdminModels,
   searchDocumentForUserModels,
@@ -84,6 +85,199 @@ export const createDocument = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "Submit Data Gagal",
+      errMsg: error,
+    });
+  }
+};
+
+// export const getDocumentApproval = async (req, res) => {
+//   try {
+//     const page = req.params.page;
+//     const dataPerPage = 10;
+//     const result = (await getDocumentReportModels()).recordset;
+//     let idProduct = [];
+//     for (let i = 0; i < result.length; i++) {
+//       const product_id = result[i].product_id;
+//       idProduct.push(product_id);
+//     }
+
+//     const getDataManagerList = (await getDataManagerListModels()).recordset;
+//     const totalPageData = Math.ceil(result.length / dataPerPage);
+
+//     const listDataManagerAndDocument = [];
+//     if (getDataManagerList.length > 0) {
+//       for (let index = 0; index < getDataManagerList.length; index++) {
+//         getDataManagerList[index].product_id =
+//           getDataManagerList[index].product_id.split(",");
+//       }
+
+//       for (let index = 0; index < getDataManagerList.length; index++) {
+//         for (
+//           let index2 = 0;
+//           index2 < getDataManagerList[index].product_id.length;
+//           index2++
+//         ) {
+//           if (
+//             parseInt(getDataManagerList[index].product_id[index2]) ===
+//             parseInt(idProduct)
+//           ) {
+//             for (
+//               let index3 = (page - 1) * dataPerPage;
+//               index3 < page * dataPerPage && index3 < result.length;
+//               index3++
+//             ) {
+//               const fileResult = (await getFileByDocumentId(result[index3].id))
+//                 .recordset;
+//               listDataManagerAndDocument.push({
+//                 id: result[index3].id,
+//                 title: result[index3].title,
+//                 create_date: result[index3].create_date,
+//                 description: result[index3].description,
+//                 user_id: result[index3].user_id,
+//                 username: result[index3].username,
+//                 photo: result[index3].photo,
+//                 email: result[index3].email,
+//                 machine_id: result[index3].machine_id,
+//                 machine_name: result[index3].machine_name,
+//                 line_id: result[index3].line_id,
+//                 line_name: result[index3].line_name,
+//                 product_id: result[index3].product_id,
+//                 product_name: result[index3].product_name,
+//                 status: result[index3].status,
+//                 file_type: result[index3].file_type,
+//                 project_id: result[index3].project_id,
+//                 file: fileResult,
+//               });
+//             }
+//             res.status(200).json({
+//               msg: "get data berhasil di ambil",
+//               dataPerPage: dataPerPage,
+//               numberStart: (page - 1) * dataPerPage + 1,
+//               totalPageData: totalPageData,
+//               data: listDataManagerAndDocument,
+//             });
+//           }
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     res.status(400).json({
+//       msg: "Get Data Gagal",
+//       errMsg: error,
+//     });
+//   }
+// };
+
+export const getDocumentApproval = async (req, res) => {
+  try {
+    const page = req.params.page;
+    const dataPerPage = 10;
+    const result = (await getDocumentReportModels()).recordset;
+    let idProduct = [];
+    for (let i = 0; i < result.length; i++) {
+      const product_id = result[i].product_id;
+      idProduct.push(product_id);
+    }
+
+    const getDataManagerList = (await getDataManagerListModels()).recordset;
+    const totalPageData = Math.ceil(result.length / dataPerPage);
+
+    const listDataManagerAndDocument = [];
+    if (result.length > 0) {
+      for (
+        let index = (page - 1) * dataPerPage;
+        index < page * dataPerPage && index < result.length;
+        index++
+      ) {
+        const fileResult = (await getFileByDocumentId(result[index].id))
+          .recordset;
+        listDataManagerAndDocument.push({
+          id: result[index].id,
+          title: result[index].title,
+          create_date: result[index].create_date,
+          description: result[index].description,
+          user_id: result[index].user_id,
+          username: result[index].username,
+          photo: result[index].photo,
+          email: result[index].email,
+          machine_id: result[index].machine_id,
+          machine_name: result[index].machine_name,
+          line_id: result[index].line_id,
+          line_name: result[index].line_name,
+          product_id: result[index].product_id,
+          product_name: result[index].product_name,
+          status: result[index].status,
+          file_type: result[index].file_type,
+          project_id: result[index].project_id,
+          file: fileResult,
+        });
+      }
+      res.status(200).json({
+        msg: "get data berhasil di ambil",
+        dataPerPage: dataPerPage,
+        numberStart: (page - 1) * dataPerPage + 1,
+        totalPageData: totalPageData,
+        data: listDataManagerAndDocument,
+      });
+    }
+    // if (getDataManagerList.length > 0) {
+    //   for (let index = 0; index < getDataManagerList.length; index++) {
+    //     getDataManagerList[index].product_id =
+    //       getDataManagerList[index].product_id.split(",");
+    //   }
+
+    //   for (let index = 0; index < getDataManagerList.length; index++) {
+    //     for (
+    //       let index2 = 0;
+    //       index2 < getDataManagerList[index].product_id.length;
+    //       index2++
+    //     ) {
+    //       if (
+    //         parseInt(getDataManagerList[index].product_id[index2]) ===
+    //         parseInt(idProduct)
+    //       ) {
+    //         for (
+    //           let index3 = (page - 1) * dataPerPage;
+    //           index3 < page * dataPerPage && index3 < result.length;
+    //           index3++
+    //         ) {
+    //           const fileResult = (await getFileByDocumentId(result[index3].id))
+    //             .recordset;
+    //           listDataManagerAndDocument.push({
+    //             id: result[index3].id,
+    //             title: result[index3].title,
+    //             create_date: result[index3].create_date,
+    //             description: result[index3].description,
+    //             user_id: result[index3].user_id,
+    //             username: result[index3].username,
+    //             photo: result[index3].photo,
+    //             email: result[index3].email,
+    //             machine_id: result[index3].machine_id,
+    //             machine_name: result[index3].machine_name,
+    //             line_id: result[index3].line_id,
+    //             line_name: result[index3].line_name,
+    //             product_id: result[index3].product_id,
+    //             product_name: result[index3].product_name,
+    //             status: result[index3].status,
+    //             file_type: result[index3].file_type,
+    //             project_id: result[index3].project_id,
+    //             file: fileResult,
+    //           });
+    //         }
+    //         res.status(200).json({
+    //           msg: "get data berhasil di ambil",
+    //           dataPerPage: dataPerPage,
+    //           numberStart: (page - 1) * dataPerPage + 1,
+    //           totalPageData: totalPageData,
+    //           data: listDataManagerAndDocument,
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
+  } catch (error) {
+    res.status(400).json({
+      msg: "Get Data Gagal",
       errMsg: error,
     });
   }

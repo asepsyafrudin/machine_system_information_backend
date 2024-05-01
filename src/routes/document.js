@@ -12,6 +12,7 @@ import {
   updateDocumentById,
   getDocumentForGeneralByPage,
   getDocumentByProjectId,
+  getDocumentApproval,
 } from "../controller/document.js";
 import multer from "multer";
 import { diskStorageFile } from "../config/multer.js";
@@ -41,5 +42,6 @@ router.patch("/changeStatus", changeStatusDocument);
 router.get("/getDocumentById/:id", getDocumentById);
 router.patch("/update", upload.array("file", 10), updateDocumentById);
 router.get("/getDocumentForGeneralByPage/:page", getDocumentForGeneralByPage);
+router.get("/getDocumentApproval/:page", getDocumentApproval);
 
 export default router;
