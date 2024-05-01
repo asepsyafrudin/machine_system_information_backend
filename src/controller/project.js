@@ -24,6 +24,9 @@ import {
   updateProjectModels,
   updateStatusProjectModels,
   updateProjectByDateModels,
+  getAllProjectTableModels,
+  getAllProductTableModels,
+  getALlSectionTableModels,
 } from "../models/project.js";
 
 export const createProject = async (req, res) => {
@@ -183,7 +186,31 @@ export const getDataResult = async (result) => {
 
 export const getAllProject = async (req, res) => {
   try {
-    const result = (await countGetAllProjectModels()).recordset;
+    const tableProject = (await getAllProjectTableModels()).recordset;
+    const tableProduct = (await getAllProductTableModels()).recordset;
+    const tableSection = (await getALlSectionTableModels()).recordset;
+
+    if (tableProject.length > 0) {
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataProduct = tableProduct.find(
+          (value) => value.id === tableProject.product_id
+        );
+        if (dataProduct) {
+          tableProject[index] = { ...tableProject[index], ...dataProduct };
+        }
+      }
+
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataSection = tableSection.find(
+          (value) => value.id === tableProject.section_id
+        );
+        if (dataSection) {
+          tableProject[index] = { ...tableProject[index], ...dataSection };
+        }
+      }
+    }
+
+    const result = tableProject;
 
     const resultSubmit = await getDataResult(result);
     res.status(200).json({
@@ -272,7 +299,31 @@ export const getProjectByPageAndUser = async (req, res) => {
 export const getProjectByUser = async (req, res) => {
   try {
     const user = req.params.userId;
-    const result = (await countGetAllProjectModels()).recordset;
+    const tableProject = (await getAllProjectTableModels()).recordset;
+    const tableProduct = (await getAllProductTableModels()).recordset;
+    const tableSection = (await getALlSectionTableModels()).recordset;
+
+    if (tableProject.length > 0) {
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataProduct = tableProduct.find(
+          (value) => value.id === tableProject.product_id
+        );
+        if (dataProduct) {
+          tableProject[index] = { ...tableProject[index], ...dataProduct };
+        }
+      }
+
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataSection = tableSection.find(
+          (value) => value.id === tableProject.section_id
+        );
+        if (dataSection) {
+          tableProject[index] = { ...tableProject[index], ...dataSection };
+        }
+      }
+    }
+
+    const result = tableProject;
     const resultSubmit = await getDataResult(result);
     let filterByMember = [];
 
