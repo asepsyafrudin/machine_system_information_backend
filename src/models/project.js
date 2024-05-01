@@ -171,6 +171,21 @@ export const countGetAllProjectModels = () => {
   return sql.query(query);
 };
 
+export const getAllProjectTableModels = () => {
+  const query = `select * from t_project ORDER BY t_project.create_date DESC`;
+  return sql.query(query);
+};
+
+export const getAllProductTableModels = () => {
+  const query = `select * from t_product`;
+  return sql.query(query);
+};
+
+export const getALlSectionTableModels = () => {
+  const query = `select * from t_section`;
+  return sql.query(query);
+};
+
 export const updateStatusProjectModels = (id, status) => {
   const query = `UPDATE t_project SET status = '${status}' WHERE id = '${id}'`;
   return sql.query(query);
