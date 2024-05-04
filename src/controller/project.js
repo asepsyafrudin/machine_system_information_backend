@@ -193,19 +193,26 @@ export const getAllProject = async (req, res) => {
     if (tableProject.length > 0) {
       for (let index = 0; index < tableProject.length; index++) {
         const dataProduct = tableProduct.find(
-          (value) => value.id === tableProject.product_id
+          (value) => value.id === tableProject[index].product_id
         );
         if (dataProduct) {
-          tableProject[index] = { ...tableProject[index], ...dataProduct };
+          tableProject[index] = {
+            ...tableProject[index],
+            product_name: dataProduct.product_name,
+            section_id: dataProduct.section_id,
+          };
         }
       }
 
       for (let index = 0; index < tableProject.length; index++) {
         const dataSection = tableSection.find(
-          (value) => value.id === tableProject.section_id
+          (value) => value.id === tableProject[index].section_id
         );
         if (dataSection) {
-          tableProject[index] = { ...tableProject[index], ...dataSection };
+          tableProject[index] = {
+            ...tableProject[index],
+            section_name: dataSection.section_name,
+          };
         }
       }
     }
@@ -306,19 +313,26 @@ export const getProjectByUser = async (req, res) => {
     if (tableProject.length > 0) {
       for (let index = 0; index < tableProject.length; index++) {
         const dataProduct = tableProduct.find(
-          (value) => value.id === tableProject.product_id
+          (value) => value.id === tableProject[index].product_id
         );
         if (dataProduct) {
-          tableProject[index] = { ...tableProject[index], ...dataProduct };
+          tableProject[index] = {
+            ...tableProject[index],
+            product_name: dataProduct.product_name,
+            section_id: dataProduct.section_id,
+          };
         }
       }
 
       for (let index = 0; index < tableProject.length; index++) {
         const dataSection = tableSection.find(
-          (value) => value.id === tableProject.section_id
+          (value) => value.id === tableProject[index].section_id
         );
         if (dataSection) {
-          tableProject[index] = { ...tableProject[index], ...dataSection };
+          tableProject[index] = {
+            ...tableProject[index],
+            section_name: dataSection.section_name,
+          };
         }
       }
     }
