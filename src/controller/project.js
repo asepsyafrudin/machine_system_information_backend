@@ -146,37 +146,49 @@ export const getDataResult = async (result) => {
   if (result.length > 0) {
     for (let index = 0; index < result.length; index++) {
       let member = (await getMemberByProjectId(result[index].id)).recordset;
-      let progress = (await avgActivityByProjectIdModels(result[index].id))
-        .recordset;
+      // let progress = (await avgActivityByProjectIdModels(result[index].id))
+      //   .recordset;
       let activityData = (await getActivityByProjectIdModels(result[index].id))
         .recordset;
+
+      let averageProgess = 0;
+      if (activityData.length > 0) {
+        for (let index = 0; index < activityData.length; index++) {
+          averageProgess += parseInt(activityData[index].progress);
+        }
+        averageProgess = averageProgess / activityData.length;
+      }
+
       let data = {
-        id: result[index].id,
-        product_id: result[index].product_id,
-        product_name: result[index].product_name,
-        rank: result[index].rank,
-        project_name: result[index].project_name,
-        manager_id: result[index].manager_id,
-        budget: result[index].budget,
-        saving_cost: result[index].saving_cost,
-        start: result[index].start,
-        finish: result[index].finish,
-        create_date: result[index].create_date,
+        ...result[index],
+        // id: result[index].id,
+        // product_id: result[index].product_id,
+        // product_name: result[index].product_name,
+        // rank: result[index].rank,
+        // project_name: result[index].project_name,
+        // manager_id: result[index].manager_id,
+        // budget: result[index].budget,
+        // saving_cost: result[index].saving_cost,
+        // start: result[index].start,
+        // finish: result[index].finish,
+        // create_date: result[index].create_date,
+
+        // user_id: result[index].user_id,
+        // category: result[index].category,
+        // sub_category: result[index].sub_category,
+        // description: result[index].description,
+        // section_id: result[index].section_id,
+        // section_name: result[index].section_name,
+        activityData: activityData,
         member: member,
-        user_id: result[index].user_id,
-        category: result[index].category,
-        sub_category: result[index].sub_category,
-        description: result[index].description,
-        section_id: result[index].section_id,
-        section_name: result[index].section_name,
         status: statusFunction(
           activityData,
           result[index].start,
           result[index].finish,
-          progress[0].progress,
+          averageProgess,
           result[index].status
         ),
-        progress: progress[0].progress,
+        progress: averageProgess,
       };
       resultSubmit.push(data);
     }
