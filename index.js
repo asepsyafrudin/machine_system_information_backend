@@ -44,7 +44,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use("/static", express.static(path.join(__dirname, "../assets")));
 app.use(express.static(path.join(__dirname, "./public")));
 
-const reminderDate = "07:30:00";
+const reminderDate = "7:30:00 AM";
 
 setInterval(() => {
   const date = new Date();
