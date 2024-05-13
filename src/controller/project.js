@@ -28,6 +28,8 @@ import {
   getAllProductTableModels,
   getALlSectionTableModels,
 } from "../models/project.js";
+import { getActivityByProjectId } from "./activity.js";
+import { getDependenciesByActivityIdModels } from "../models/dependencies.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -148,15 +150,45 @@ export const getDataResult = async (result) => {
       let member = (await getMemberByProjectId(result[index].id)).recordset;
       // let progress = (await avgActivityByProjectIdModels(result[index].id))
       //   .recordset;
-      let activityData = (await getActivityByProjectIdModels(result[index].id))
-        .recordset;
+      // let activityData = await getActivityByProjectId(result[index].id);
+
+      const activityData = (
+        await getActivityByProjectIdModels(result[index].id)
+      ).recordset;
+
+      let dataSend = [];
+      if (activityData.length > 0) {
+        for (let index3 = 0; index3 < activityData.length; index3++) {
+          const dependencies = (
+            await getDependenciesByActivityIdModels(activityData[index3].id)
+          ).recordset;
+
+          let data = {
+            id: activityData[index3].id,
+            start: activityData[index3].start,
+            end: activityData[index3].finish,
+            name: activityData[index3].name,
+            progress: activityData[index3].progress,
+            dependencies: dependencies.length > 0 ? [dependencies[0].name] : [],
+            type: activityData[index3].type,
+            project: activityData[index3].project_id,
+            remark: activityData[index3].remark,
+            linkToProject: activityData[index3].link_to_project,
+            pic: activityData[index3].pic,
+          };
+          dataSend.push(data);
+        }
+      }
+      let newData = dataSend.sort(
+        (a, b) => new Date(a.start) - new Date(b.start)
+      );
 
       let averageProgess = 0;
-      if (activityData.length > 0) {
-        for (let index = 0; index < activityData.length; index++) {
-          averageProgess += parseInt(activityData[index].progress);
+      if (newData.length > 0) {
+        for (let index = 0; index < newData.length; index++) {
+          averageProgess += parseInt(newData[index].progress);
         }
-        averageProgess = averageProgess / activityData.length;
+        averageProgess = averageProgess / newData.length;
       }
 
       let data = {
@@ -179,7 +211,7 @@ export const getDataResult = async (result) => {
         // description: result[index].description,
         // section_id: result[index].section_id,
         // section_name: result[index].section_name,
-        activityData: activityData,
+        activityData: newData,
         member: member,
         status: statusFunction(
           activityData,
