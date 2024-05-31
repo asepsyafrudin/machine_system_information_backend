@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   createLineModels,
   getAllLineModels,
@@ -15,6 +16,8 @@ export const createLine = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "line gagal di submit",
       errMsg: error,
@@ -30,6 +33,8 @@ export const getAllLine = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "product gagal di cari",
       errMsg: error,
@@ -45,6 +50,8 @@ export const updateLine = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "product gagal di update",
       errMsg: error,
@@ -60,6 +67,7 @@ export const updateStatusLine = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "product gagal di update",
       errMsg: error,
@@ -75,6 +83,7 @@ export const searchLine = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "product gagal di cari",
       errMsg: error,
@@ -90,6 +99,7 @@ export const deleteLine = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "product gagal di delete",
       errMsg: error,

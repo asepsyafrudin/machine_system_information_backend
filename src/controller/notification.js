@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   changeStatusNotifToReadModels,
   createNotificationModels,
@@ -12,6 +13,8 @@ export const createNotification = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "Gagal",
       errMsg: error,
@@ -21,12 +24,15 @@ export const createNotification = async (req, res) => {
 
 export const getNotificationByUserId = async (req, res) => {
   try {
-    const result = (await getNotificationByUserIdModels(req.params.userId)).recordset;
+    const result = (await getNotificationByUserIdModels(req.params.userId))
+      .recordset;
     res.status(200).json({
       msg: "Berhasil create notif",
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "Gagal",
       errMsg: error,
@@ -42,6 +48,8 @@ export const changeStatusNotifToRead = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "Gagal",
       errMsg: error,

@@ -30,6 +30,7 @@ import {
 } from "../models/project.js";
 import { getActivityByProjectId } from "./activity.js";
 import { getDependenciesByActivityIdModels } from "../models/dependencies.js";
+import { log } from "../config/logConfig.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -404,6 +405,8 @@ export const getProjectByUser = async (req, res) => {
       data: filterByMember,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error.message,
@@ -419,6 +422,8 @@ export const updateStatusProject = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "update project gagal",
       errMsg: error,
@@ -435,6 +440,7 @@ export const getProjectById = async (req, res) => {
       data: resultSubmit,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -450,6 +456,7 @@ export const deleteProjectByProjectId = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -531,6 +538,7 @@ export const searchProject = async (req, res) => {
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -560,6 +568,7 @@ export const getProjectBySectioIdAndPageController = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di get",
       errMsg: error,
@@ -661,6 +670,7 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get data failed",
       errMsg: error,

@@ -34,7 +34,6 @@ export const createPattern = async (req, res) => {
       activity[index]["id_pattern"] = generatedId;
     }
 
-    console.log(totalData);
     await createPatternModels(totalData);
 
     for (let index = 0; index < activity.length; index++) {

@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import { getFileByDocumentId } from "../models/file.js";
 import { getFTaLv1ByProblemIdModels } from "../models/ftaLv1.js";
 import { getFtaLv2ModelsByLv1Id } from "../models/ftaLv2.js";
@@ -19,6 +20,8 @@ export const createProblem = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "prooblem gagal di post",
       errMsg: error,
@@ -42,6 +45,8 @@ export const getAllProblemList = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "problem gagal di get",
       errMsg: error,
@@ -55,11 +60,9 @@ export const searchProblemByMachineId = async (req, res) => {
     const page = req.params.page;
     const dataPerPage = 10;
     const offset = (page - 1) * dataPerPage;
-    const result = (await searchProblemByIdMachineModels(
-      machineId,
-      dataPerPage,
-      offset
-    )).recordset
+    const result = (
+      await searchProblemByIdMachineModels(machineId, dataPerPage, offset)
+    ).recordset;
 
     const countData = (await getProblemModelsByMachineId(machineId)).recordset;
     const totalPageData = Math.ceil(countData.length / dataPerPage);
@@ -72,6 +75,8 @@ export const searchProblemByMachineId = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "problem gagal di get",
       errMsg: error,
@@ -81,12 +86,15 @@ export const searchProblemByMachineId = async (req, res) => {
 
 export const getProblemByMachieId = async (req, res) => {
   try {
-    const result = (await getProblemModelsByMachineId(req.params.machineId)).recordset;
+    const result = (await getProblemModelsByMachineId(req.params.machineId))
+      .recordset;
     res.status(200).json({
       msg: "problem berhasil di get",
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "problem gagal di get",
       errMsg: error,
@@ -102,7 +110,8 @@ export const getProblemById = async (req, res) => {
     let dataFTALv2 = [];
     if (ftaLv1.length > 0) {
       for (let index = 0; index < ftaLv1.length; index++) {
-        const ftaLv1FileResult = (await getFileByDocumentId(ftaLv1[index].id)).recordset;
+        const ftaLv1FileResult = (await getFileByDocumentId(ftaLv1[index].id))
+          .recordset;
         dataFTALv1.push({
           id: ftaLv1[index].id,
           type: ftaLv1[index].type,
@@ -110,12 +119,13 @@ export const getProblemById = async (req, res) => {
           attachment: ftaLv1FileResult,
         });
 
-        const ftaLv2 = (await getFtaLv2ModelsByLv1Id(ftaLv1[index].id)).recordset;
+        const ftaLv2 = (await getFtaLv2ModelsByLv1Id(ftaLv1[index].id))
+          .recordset;
         if (ftaLv2.length > 0) {
           for (let index = 0; index < ftaLv2.length; index++) {
-            const FtaLv2FileResult = (await getFileByDocumentId(
-              ftaLv2[index].id
-            )).recordset;
+            const FtaLv2FileResult = (
+              await getFileByDocumentId(ftaLv2[index].id)
+            ).recordset;
             dataFTALv2.push({
               idAnalysis2: ftaLv2[index].id,
               type: ftaLv2[index].type,
@@ -135,6 +145,8 @@ export const getProblemById = async (req, res) => {
       dataFTA2: dataFTALv2,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "problem gagal di get",
       errMsg: error,

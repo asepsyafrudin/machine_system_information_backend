@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import sql from "mssql";
+import { log } from "./logConfig.js";
 
 dotenv.config();
 
@@ -23,10 +24,10 @@ const connectDB = async () => {
   try {
     // make sure that any items are correctly URL encoded in the connection string
     await sql.connect(sqlConfig);
-    console.log("sql connected");
+    log.info("sql connected");
   } catch (err) {
     // ... error checks
-    console.log(err);
+    log.error(err);
   }
 };
 

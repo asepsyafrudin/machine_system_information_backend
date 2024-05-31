@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import { createFilesModels } from "../models/file.js";
 import {
   createFtaLv1Models,
@@ -26,6 +27,7 @@ export const createFtaLv1 = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "fta gagal di upload",
       errMsg: error,
@@ -35,12 +37,14 @@ export const createFtaLv1 = async (req, res) => {
 
 export const getFTALv1ByProblemId = async (req, res) => {
   try {
-    const result = (await getFTaLv1ByProblemIdModels(req.params.problemId)).recordset;
+    const result = (await getFTaLv1ByProblemIdModels(req.params.problemId))
+      .recordset;
     res.status(200).json({
       msg: "fta1 berhasil di get",
       data: result,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "fta gagal di get",
       errMsg: error,

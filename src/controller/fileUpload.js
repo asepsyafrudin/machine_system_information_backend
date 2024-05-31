@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   createfileUploadGeneralModels,
   deleteFileUploadGeneralModels,
@@ -18,6 +19,7 @@ export const createFileUploadGeneral = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "data gagal di submit",
       errMsg: error,
@@ -33,6 +35,7 @@ export const deleteFileUploadGeneral = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "data gagal di delete",
       errMsg: error,

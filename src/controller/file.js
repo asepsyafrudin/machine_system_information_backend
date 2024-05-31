@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   createFilesModels,
   deleteFileByIdModels,
@@ -24,6 +25,7 @@ export const createFile = async (req, res) => {
       data: id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "Submit Data Gagal",
       errMsg: error,
@@ -39,6 +41,7 @@ export const deleteFileById = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "Submit Data Gagal",
       errMsg: error,
@@ -54,6 +57,7 @@ export const getFile = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "Get Data Gagal",
       errMsg: error,

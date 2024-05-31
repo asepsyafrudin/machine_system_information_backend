@@ -1,4 +1,5 @@
 import express from "express";
+import http from "http";
 import userRoute from "./src/routes/user.js";
 import loginRoute from "./src/routes/login.js";
 import productRoute from "./src/routes/product.js";
@@ -35,14 +36,21 @@ import {
 import settingRoute from "./src/routes/setting.js";
 import patternRoute from "./src/routes/pattern.js";
 import patternActivityRoute from "./src/routes/pattern_activity.js";
+import { log } from "./src/config/logConfig.js";
+import compression from "compression";
 dotenv.config();
 
+http.globalAgent.maxSockets = Infinity;
+
 const app = express();
+const server = http.createServer(app);
+
+app.use(compression());
 const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use("/static", express.static(path.join(__dirname, "../assets")));
-app.use(express.static(path.join(__dirname, "./public")));
+app.use(express.static(path.join(__dirname, "./public"), { maxAge: 31557600 }));
 
 const reminderDate = "7:30:00 AM";
 
@@ -87,9 +95,10 @@ app.use("/api/pattern", patternRoute);
 app.use("/api/patternActivity", patternActivityRoute);
 
 app.use("/prosysta", (req, res) => {
+  res.setHeader("Cache-Control", "public, max-age=86400");
   res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
-app.listen(port, () => {
-  console.log("Server Run On Port " + port);
+server.listen(port, () => {
+  log.info("Server Already Run On Port " + port);
 });

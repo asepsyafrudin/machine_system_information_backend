@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   countGetTodoListByUserIdModels,
   countTotalDataTodoList,
@@ -74,6 +75,7 @@ export const getTodoByProjectId = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di get",
       errMsg: error,
@@ -275,6 +277,7 @@ export const getTodoListByUserId = async (req, res) => {
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "assignment gagal di get",
       errMsg: error,
@@ -468,6 +471,7 @@ export const getAssignmentSummary = async (req, res) => {
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "assignment gagal di get",
       errMsg: error,
@@ -483,6 +487,7 @@ export const updateTodoList = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di update",
       errMsg: error,

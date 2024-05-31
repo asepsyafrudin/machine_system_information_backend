@@ -1,4 +1,5 @@
 import { comparePassword } from "../config/hashPassword.js";
+import { log } from "../config/logConfig.js";
 import { loginModels } from "../models/login.js";
 
 const login = async (req, res) => {
@@ -28,6 +29,8 @@ const login = async (req, res) => {
       data: newData,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "Login Gagal",
       errMsg: error,
