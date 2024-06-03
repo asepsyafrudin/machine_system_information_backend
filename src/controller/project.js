@@ -24,7 +24,13 @@ import {
   updateProjectModels,
   updateStatusProjectModels,
   updateProjectByDateModels,
+  getAllProjectTableModels,
+  getAllProductTableModels,
+  getALlSectionTableModels,
 } from "../models/project.js";
+import { getActivityByProjectId } from "./activity.js";
+import { getDependenciesByActivityIdModels } from "../models/dependencies.js";
+import { log } from "../config/logConfig.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -143,37 +149,79 @@ export const getDataResult = async (result) => {
   if (result.length > 0) {
     for (let index = 0; index < result.length; index++) {
       let member = (await getMemberByProjectId(result[index].id)).recordset;
-      let progress = (await avgActivityByProjectIdModels(result[index].id))
-        .recordset;
-      let activityData = (await getActivityByProjectIdModels(result[index].id))
-        .recordset;
+      // let progress = (await avgActivityByProjectIdModels(result[index].id))
+      //   .recordset;
+      // let activityData = await getActivityByProjectId(result[index].id);
+
+      const activityData = (
+        await getActivityByProjectIdModels(result[index].id)
+      ).recordset;
+
+      let dataSend = [];
+      if (activityData.length > 0) {
+        for (let index3 = 0; index3 < activityData.length; index3++) {
+          const dependencies = (
+            await getDependenciesByActivityIdModels(activityData[index3].id)
+          ).recordset;
+
+          let data = {
+            id: activityData[index3].id,
+            start: activityData[index3].start,
+            end: activityData[index3].finish,
+            name: activityData[index3].name,
+            progress: activityData[index3].progress,
+            dependencies: dependencies.length > 0 ? [dependencies[0].name] : [],
+            type: activityData[index3].type,
+            project: activityData[index3].project_id,
+            remark: activityData[index3].remark,
+            linkToProject: activityData[index3].link_to_project,
+            pic: activityData[index3].pic,
+          };
+          dataSend.push(data);
+        }
+      }
+      let newData = dataSend.sort(
+        (a, b) => new Date(a.start) - new Date(b.start)
+      );
+
+      let averageProgess = 0;
+      if (newData.length > 0) {
+        for (let index = 0; index < newData.length; index++) {
+          averageProgess += parseInt(newData[index].progress);
+        }
+        averageProgess = averageProgess / newData.length;
+      }
+
       let data = {
-        id: result[index].id,
-        product_id: result[index].product_id,
-        product_name: result[index].product_name,
-        rank: result[index].rank,
-        project_name: result[index].project_name,
-        manager_id: result[index].manager_id,
-        budget: result[index].budget,
-        saving_cost: result[index].saving_cost,
-        start: result[index].start,
-        finish: result[index].finish,
-        create_date: result[index].create_date,
+        ...result[index],
+        // id: result[index].id,
+        // product_id: result[index].product_id,
+        // product_name: result[index].product_name,
+        // rank: result[index].rank,
+        // project_name: result[index].project_name,
+        // manager_id: result[index].manager_id,
+        // budget: result[index].budget,
+        // saving_cost: result[index].saving_cost,
+        // start: result[index].start,
+        // finish: result[index].finish,
+        // create_date: result[index].create_date,
+
+        // user_id: result[index].user_id,
+        // category: result[index].category,
+        // sub_category: result[index].sub_category,
+        // description: result[index].description,
+        // section_id: result[index].section_id,
+        // section_name: result[index].section_name,
+        activityData: newData,
         member: member,
-        user_id: result[index].user_id,
-        category: result[index].category,
-        sub_category: result[index].sub_category,
-        description: result[index].description,
-        section_id: result[index].section_id,
-        section_name: result[index].section_name,
         status: statusFunction(
           activityData,
           result[index].start,
           result[index].finish,
-          progress[0].progress,
+          averageProgess,
           result[index].status
         ),
-        progress: progress[0].progress,
+        progress: averageProgess,
       };
       resultSubmit.push(data);
     }
@@ -183,7 +231,38 @@ export const getDataResult = async (result) => {
 
 export const getAllProject = async (req, res) => {
   try {
-    const result = (await countGetAllProjectModels()).recordset;
+    const tableProject = (await getAllProjectTableModels()).recordset;
+    const tableProduct = (await getAllProductTableModels()).recordset;
+    const tableSection = (await getALlSectionTableModels()).recordset;
+
+    if (tableProject.length > 0) {
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataProduct = tableProduct.find(
+          (value) => value.id === tableProject[index].product_id
+        );
+        if (dataProduct) {
+          tableProject[index] = {
+            ...tableProject[index],
+            product_name: dataProduct.product_name,
+            section_id: dataProduct.section_id,
+          };
+        }
+      }
+
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataSection = tableSection.find(
+          (value) => value.id === tableProject[index].section_id
+        );
+        if (dataSection) {
+          tableProject[index] = {
+            ...tableProject[index],
+            section_name: dataSection.section_name,
+          };
+        }
+      }
+    }
+
+    const result = tableProject;
 
     const resultSubmit = await getDataResult(result);
     res.status(200).json({
@@ -272,7 +351,38 @@ export const getProjectByPageAndUser = async (req, res) => {
 export const getProjectByUser = async (req, res) => {
   try {
     const user = req.params.userId;
-    const result = (await countGetAllProjectModels()).recordset;
+    const tableProject = (await getAllProjectTableModels()).recordset;
+    const tableProduct = (await getAllProductTableModels()).recordset;
+    const tableSection = (await getALlSectionTableModels()).recordset;
+
+    if (tableProject.length > 0) {
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataProduct = tableProduct.find(
+          (value) => value.id === tableProject[index].product_id
+        );
+        if (dataProduct) {
+          tableProject[index] = {
+            ...tableProject[index],
+            product_name: dataProduct.product_name,
+            section_id: dataProduct.section_id,
+          };
+        }
+      }
+
+      for (let index = 0; index < tableProject.length; index++) {
+        const dataSection = tableSection.find(
+          (value) => value.id === tableProject[index].section_id
+        );
+        if (dataSection) {
+          tableProject[index] = {
+            ...tableProject[index],
+            section_name: dataSection.section_name,
+          };
+        }
+      }
+    }
+
+    const result = tableProject;
     const resultSubmit = await getDataResult(result);
     let filterByMember = [];
 
@@ -295,6 +405,8 @@ export const getProjectByUser = async (req, res) => {
       data: filterByMember,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error.message,
@@ -310,6 +422,8 @@ export const updateStatusProject = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "update project gagal",
       errMsg: error,
@@ -326,6 +440,7 @@ export const getProjectById = async (req, res) => {
       data: resultSubmit,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -341,6 +456,7 @@ export const deleteProjectByProjectId = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -422,6 +538,7 @@ export const searchProject = async (req, res) => {
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get project gagal",
       errMsg: error,
@@ -451,6 +568,7 @@ export const getProjectBySectioIdAndPageController = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di get",
       errMsg: error,
@@ -552,6 +670,7 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get data failed",
       errMsg: error,

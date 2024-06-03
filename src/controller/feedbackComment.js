@@ -9,6 +9,7 @@ import {
 import dotenv from "dotenv";
 import { createNotificationModels } from "../models/notification.js";
 import { getVideoByIdModels } from "../models/video.js";
+import { log } from "../config/logConfig.js";
 
 dotenv.config();
 
@@ -17,7 +18,8 @@ export const createFeedbackComment = async (req, res) => {
     await createFeedbackModels(req.body);
     let newArrayListUserNotif = [];
     if (req.body.selected_item === "document") {
-      const document = (await getDocumentByIdModels(req.body.selected_id)).recordset;
+      const document = (await getDocumentByIdModels(req.body.selected_id))
+        .recordset;
       newArrayListUserNotif.push({
         user_id: document[0].user_id,
         username: document[0].username,
@@ -32,14 +34,16 @@ export const createFeedbackComment = async (req, res) => {
       });
     }
 
-    const comment = (await getCommentByCommentId(req.body.comment_id)).recordset;
+    const comment = (await getCommentByCommentId(req.body.comment_id))
+      .recordset;
     newArrayListUserNotif.push({
       user_id: comment[0].user_id,
       username: comment[0].username,
       email: comment[0].email,
     });
 
-    const feedbackComment = (await getFeedbackByCommentId(req.body.comment_id)).recordset;
+    const feedbackComment = (await getFeedbackByCommentId(req.body.comment_id))
+      .recordset;
     if (feedbackComment.length !== 0) {
       for (let index = 0; index < feedbackComment.length; index++) {
         newArrayListUserNotif.push({
@@ -94,6 +98,7 @@ export const createFeedbackComment = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "comment gagal di post",
       errMsg: error,
@@ -109,6 +114,7 @@ export const deleteFeedback = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "comment gagal di post",
       errMsg: error,
@@ -124,6 +130,7 @@ export const getFeedbackById = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "get data gagal",
       errMsg: error,

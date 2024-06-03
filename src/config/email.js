@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import { log } from "./logConfig.js";
 
 dotenv.config();
 
@@ -52,7 +53,7 @@ export const sendingEmail = async (
     `,
   });
 
-  console.log("Message sent: %s", info.messageId);
+  log.info("Message sent: %s", info.messageId);
 };
 
 const projectList = (item, picId, projectId) => {
@@ -143,7 +144,7 @@ export const reminderProjectDelayToPic = async (
     ],
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -186,7 +187,7 @@ export const reminderProjectWaitingActivityToPic = async (
     ],
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -213,7 +214,7 @@ export const sendTokenForChangePassword = async (toUserMail, link) => {
       `,
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -250,7 +251,7 @@ export const sendingEmailForFeedback = async (
     `,
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -294,7 +295,7 @@ export const shareFinishProjectForElectronicNewModel = async (
     `,
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -337,7 +338,7 @@ export const shareFinishProjectCommon = async (
     `,
   });
 
-  console.log(
+  log.info(
     `Message sent: to ${(toUserMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -377,7 +378,7 @@ export const sendNotificationToPicModel = async (
     </div>
 `,
   });
-  console.log(
+  log.info(
     `Message sent: to ${(toPicMail, subject, new Date().toLocaleString())}%s`,
     info.messageId
   );
@@ -413,7 +414,7 @@ export const sendDocumentApprovalModel = async (
     </div>
 `,
   });
-  console.log(
+  log.info(
     `Message sent: to ${
       (managerEmail, subject, new Date().toLocaleString())
     }%s`,

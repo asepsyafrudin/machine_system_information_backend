@@ -1,4 +1,3 @@
-import moment from "moment";
 import {
   reminderProjectDelayToPic,
   reminderProjectWaitingActivityToPic,
@@ -9,10 +8,7 @@ import {
   sendNotificationToPicModel,
   sendDocumentApprovalModel,
 } from "../config/email.js";
-import {
-  getActivityByProjectIdModels,
-  getActivityByActivityIdModels,
-} from "../models/activity.js";
+import { getActivityByActivityIdModels } from "../models/activity.js";
 import {
   countGetAllProjectModels,
   getProjectByIdModels,
@@ -27,13 +23,9 @@ import { getProblemByIdModels } from "../models/problem.js";
 import dotenv from "dotenv";
 import { getDataManagerListModels } from "../models/approval.js";
 import { v4 as uuidv4 } from "uuid";
-import { getDocumentById, getDocumentForGeneralByPage } from "./document.js";
-import {
-  createDocumentModels,
-  getAllDocumentModels,
-  getDocumentReportModels,
-} from "../models/document.js";
+import { createDocumentModels } from "../models/document.js";
 import { createFilesModels } from "../models/file.js";
+import { log } from "../config/logConfig.js";
 
 dotenv.config();
 function capitalCaseFirstWord(word) {
@@ -284,7 +276,7 @@ export const reminderNotificationDelaytoPic = async () => {
       }
     }
   } catch (error) {
-    console.log(error);
+    log.error(error);
   }
 };
 
@@ -377,7 +369,7 @@ export const reminderNotificationWaitingtoPic = async () => {
       }
     }
   } catch (error) {
-    console.log(error);
+    log.error(error);
   }
 };
 
@@ -453,7 +445,7 @@ export const reminderNotificationDelayToManager = async () => {
       for (let index = 0; index < emailListToManager.length; index++) {}
     }
   } catch (error) {
-    console.log(error);
+    log.error(error);
   }
 };
 
@@ -614,7 +606,7 @@ export const approvalManagerFileReport = async (req, res) => {
     const file = req.files;
     const product_id_document = req.body.product_id;
     const document_id = id;
-    const linkDocument = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/login/${document_id}`;
+
     const subject = `Your team has upload new Document Engineering Report`;
     if (file.length > 0) {
       for (let index = 0; index < file.length; index++) {
@@ -654,6 +646,9 @@ export const approvalManagerFileReport = async (req, res) => {
 
       const manager = await managerFunction(managerApproval);
       const managerEmail = manager[0].email;
+      const user = await managerFunction(managerApproval);
+      const userId = user[0].id;
+      const linkDocument = `${process.env.IP_ADDRESS_LOCALHOST}/redirectPage/document/${document_id}/${userId}`;
 
       sendDocumentApprovalModel(managerEmail, subject, linkDocument);
       res.status(200).json({

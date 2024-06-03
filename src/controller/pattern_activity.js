@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import { getDependenciesByActivityIdModels } from "../models/dependencies.js";
 import {
   createActivityPatternModels,
@@ -44,6 +45,8 @@ export const createPatternActivity = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "activity pattern gagal di create",
       errMsg: error,
@@ -94,6 +97,8 @@ export const getActivityPatternByPatternId = async (req, res) => {
       data: activityResult,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "get activity pattern gagal",
       errMsg: error,
@@ -109,6 +114,8 @@ export const getAllActivityPattern = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "get activity pattern gagal",
       errMsg: error,

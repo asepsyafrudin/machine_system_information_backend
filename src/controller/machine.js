@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   createMachineModels,
   deleteMachineModels,
@@ -15,6 +16,7 @@ export const createMachine = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "machine gagal di submit",
       errMsg: error,
@@ -30,6 +32,8 @@ export const getAllMachine = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "machine gagal di ambil",
       errMsg: error,
@@ -45,6 +49,8 @@ export const deleteMachine = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "machine gagal di hapus",
       errMsg: error,
@@ -60,6 +66,8 @@ export const updateStatusMachine = async (req, res) => {
       data: req.params.id,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "machine gagal di update",
       errMsg: error,
@@ -75,6 +83,8 @@ export const updateMachine = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "machine gagal di update",
       errMsg: error,
@@ -90,6 +100,8 @@ export const searchMachine = async (req, res) => {
       data: result,
     });
   } catch (error) {
+    log.error(error);
+
     res.status(400).json({
       msg: "machine gagal di ambil",
       errMsg: error,

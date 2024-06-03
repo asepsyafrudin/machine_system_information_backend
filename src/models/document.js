@@ -10,7 +10,8 @@ export const createDocumentModels = (data, id) => {
              ,[description]
              ,[title]
              ,[status]
-             ,[project_id])
+             ,[project_id]
+             ,[approval_status])
        VALUES
              ('${id}'
              ,'${data.machine_id}'
@@ -19,7 +20,8 @@ export const createDocumentModels = (data, id) => {
              ,'${data.description}'
              ,'${data.title}'
              ,'${data.status}'
-             ,'${data.project_id}')`;
+             ,'${data.project_id}'
+             ,'${data.approval_status}')`;
   return sql.query(query);
 };
 // export const createDocumentModels = (data, id) => {
@@ -115,6 +117,7 @@ export const getDocumentReportModels = () => {
     t_document.status,
     t_document.file_type,
     t_document.project_id,
+    t_document.approval_status,
     t_users.username,
     t_users.photo,
     t_users.email,
@@ -128,7 +131,7 @@ export const getDocumentReportModels = () => {
     JOIN t_machine ON t_document.machine_id = t_machine.id
     JOIN t_line ON t_line.id = t_machine.line_id 
     JOIN t_product ON t_product.id = t_line.product_id 
-    where t_document.file_type = 'Engineering Report'
+    where t_document.approval_status IS NOT NULL 
     ORDER BY t_document.create_date DESC
     `;
   return sql.query(query);

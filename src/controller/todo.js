@@ -1,3 +1,4 @@
+import { log } from "../config/logConfig.js";
 import {
   countGetTodoListByUserIdModels,
   countTotalDataTodoList,
@@ -14,12 +15,12 @@ import {
 export const createTodo = async (req, res) => {
   try {
     const dataSave = req.body;
-    
+
     if (dataSave.length > 0) {
       for (let index = 0; index < dataSave.length; index++) {
         const checkData = (await getTodoByIdModels(dataSave[index].id))
           .recordset;
-        
+
         if (checkData.length > 0) {
           (await updateTodoModels(dataSave[index])).recordset;
         } else {
@@ -63,11 +64,9 @@ export const getTodoByProjectId = async (req, res) => {
     const offset = (page - 1) * dataPerPage;
     const totalData = (await countTotalDataTodoList(projectId)).recordset;
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
-    const result = (await getTodoByProjectIdModels(
-      projectId,
-      dataPerPage,
-      offset
-    )).recordset
+    const result = (
+      await getTodoByProjectIdModels(projectId, dataPerPage, offset)
+    ).recordset;
     res.status(200).json({
       msg: "todo berhasil di get",
       data: result,
@@ -76,6 +75,7 @@ export const getTodoByProjectId = async (req, res) => {
       totalPageData: totalPageData,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di get",
       errMsg: error,
@@ -95,7 +95,6 @@ const getMonthvalue = (month) => {
 export const getTodoListByUserId = async (req, res) => {
   try {
     const { userId, page, filterType } = req.body;
-
     const dataPerPage = 10;
     const totalData = (await countGetTodoListByUserIdModels(userId)).recordset;
     const totalPageData = Math.ceil(totalData.length / dataPerPage);
@@ -111,18 +110,18 @@ export const getTodoListByUserId = async (req, res) => {
           (item) => item.due_date === filterDate
         );
 
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterByDay.length;
-          index++
-        ) {
-          filterData.push(filterByDay[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterByDay.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterByDay[index]);
+        // }
         const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterByDay,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -130,9 +129,7 @@ export const getTodoListByUserId = async (req, res) => {
       } else if (filterType === "week2") {
         let thisDay = new Date();
 
-        let firstDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() 
-        );
+        let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
 
         let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
 
@@ -144,28 +141,27 @@ export const getTodoListByUserId = async (req, res) => {
         });
 
         const filterOnThisWeek = onThisWeek;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisWeek.length;
-          index++
-        ) {
-          filterData.push(filterOnThisWeek[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisWeek.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisWeek[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisWeek,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
         });
       } else if (filterType === "month2") {
         let thisDay = new Date();
-        let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth() ;
+        let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth();
         let lastMonth = thisDay.getMonth() + 1 - thisDay.getMonth() + 1;
         let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
-
 
         let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
           firstMonth
@@ -182,18 +178,18 @@ export const getTodoListByUserId = async (req, res) => {
         });
 
         const filterOnThisMonth = onThisMonth;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisMonth.length;
-          index++
-        ) {
-          filterData.push(filterOnThisMonth[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisMonth.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisMonth[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisMonth,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -215,18 +211,18 @@ export const getTodoListByUserId = async (req, res) => {
         });
 
         const filterByWeek = onThisWeek;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterByWeek.length;
-          index++
-        ) {
-          filterData.push(filterByWeek[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterByWeek.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterByWeek[index]);
+        // }
         const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterByWeek,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -250,37 +246,38 @@ export const getTodoListByUserId = async (req, res) => {
         });
 
         const filterOnThisMonth = onThisMonth;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisMonth.length;
-          index++
-        ) {
-          filterData.push(filterOnThisMonth[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisMonth.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisMonth[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisMonth,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
         });
       }
     } else {
-      const offset = (page - 1) * dataPerPage;
-      const result = (await getTodoListByUserIdModels(  userId,
-        dataPerPage,
-        offset)).recordset
+      // const offset = (page - 1) * dataPerPage;
+      // const result = (
+      //   await getTodoListByUserIdModels(userId, dataPerPage, offset)
+      // ).recordset;
       res.status(200).json({
         msg: "get data success",
-        data: result,
+        data: totalData,
         dataPerPage: dataPerPage,
         numberStart: (page - 1) * dataPerPage + 1,
         totalPageData: totalPageData,
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "assignment gagal di get",
       errMsg: error,
@@ -307,18 +304,18 @@ export const getAssignmentSummary = async (req, res) => {
           (item) => item.due_date === filterDate
         );
 
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterByDay.length;
-          index++
-        ) {
-          filterData.push(filterByDay[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterByDay.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterByDay[index]);
+        // }
         const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterByDay,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -326,9 +323,7 @@ export const getAssignmentSummary = async (req, res) => {
       } else if (filterType === "week2") {
         let thisDay = new Date();
 
-        let firstDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() 
-        );
+        let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
 
         let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
 
@@ -340,18 +335,18 @@ export const getAssignmentSummary = async (req, res) => {
         });
 
         const filterOnThisWeek = onThisWeek;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisWeek.length;
-          index++
-        ) {
-          filterData.push(filterOnThisWeek[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisWeek.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisWeek[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisWeek,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -377,18 +372,18 @@ export const getAssignmentSummary = async (req, res) => {
         });
 
         const filterOnThisMonth = onThisMonth;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisMonth.length;
-          index++
-        ) {
-          filterData.push(filterOnThisMonth[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisMonth.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisMonth[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisMonth,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -410,18 +405,18 @@ export const getAssignmentSummary = async (req, res) => {
         });
 
         const filterByWeek = onThisWeek;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterByWeek.length;
-          index++
-        ) {
-          filterData.push(filterByWeek[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterByWeek.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterByWeek[index]);
+        // }
         const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterByWeek,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
@@ -445,37 +440,38 @@ export const getAssignmentSummary = async (req, res) => {
         });
 
         const filterOnThisMonth = onThisMonth;
-        for (
-          let index = (page - 1) * dataPerPage;
-          index < page * dataPerPage && index < filterOnThisMonth.length;
-          index++
-        ) {
-          filterData.push(filterOnThisMonth[index]);
-        }
+        // for (
+        //   let index = (page - 1) * dataPerPage;
+        //   index < page * dataPerPage && index < filterOnThisMonth.length;
+        //   index++
+        // ) {
+        //   filterData.push(filterOnThisMonth[index]);
+        // }
         const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
         const numberStart = (page - 1) * dataPerPage + 1;
         res.status(200).json({
           msg: "get data success",
-          data: filterData,
+          data: filterOnThisMonth,
           dataPerPage: dataPerPage,
           numberStart: numberStart,
           totalPageData: totalPageData,
         });
       }
     } else {
-      const offset = (page - 1) * dataPerPage;
-      const result = (await getAssignmentSummaryModels(  userId,
-        dataPerPage,
-        offset)).recordset
+      // const offset = (page - 1) * dataPerPage;
+      // const result = (await getAssignmentSummaryModels(  userId,
+      //   dataPerPage,
+      //   offset)).recordset
       res.status(200).json({
         msg: "get data success",
-        data: result,
+        data: totalData,
         dataPerPage: dataPerPage,
         numberStart: (page - 1) * dataPerPage + 1,
         totalPageData: totalPageData,
       });
     }
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "assignment gagal di get",
       errMsg: error,
@@ -491,6 +487,7 @@ export const updateTodoList = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
+    log.error(error);
     res.status(400).json({
       msg: "todo gagal di update",
       errMsg: error,
