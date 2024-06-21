@@ -9,7 +9,7 @@ export const log = bunyan.createLogger({
     },
     {
       level: "error",
-      path: "./log/myapp-error.log", // log ERROR and above to a file
+      path: "./src/log/myapp-error.log", // log ERROR and above to a file
     },
   ],
 });

@@ -95,187 +95,187 @@ const getMonthvalue = (month) => {
 export const getTodoListByUserId = async (req, res) => {
   try {
     const { userId, page, filterType } = req.body;
-    const dataPerPage = 10;
+    // const dataPerPage = 10;
     const totalData = (await countGetTodoListByUserIdModels(userId)).recordset;
-    const totalPageData = Math.ceil(totalData.length / dataPerPage);
+    // const totalPageData = Math.ceil(totalData.length / dataPerPage);
 
-    if (filterType) {
-      let filterData = [];
-      if (filterType === "day") {
-        let filterDate = `${new Date().getFullYear()}-${getMonthvalue(
-          new Date().getMonth()
-        )}-${new Date().getDate()}`;
+    // if (filterType) {
+    //   let filterData = [];
+    //   if (filterType === "day") {
+    //     let filterDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       new Date().getMonth()
+    //     )}-${new Date().getDate()}`;
 
-        const filterByDay = totalData.filter(
-          (item) => item.due_date === filterDate
-        );
+    //     const filterByDay = totalData.filter(
+    //       (item) => item.due_date === filterDate
+    //     );
 
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterByDay.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterByDay[index]);
-        // }
-        const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterByDay,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "week2") {
-        let thisDay = new Date();
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterByDay.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterByDay[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterByDay,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "week2") {
+    //     let thisDay = new Date();
 
-        let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
+    //     let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
 
-        let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
+    //     let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
 
-        const onThisWeek = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //     const onThisWeek = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterOnThisWeek = onThisWeek;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisWeek.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisWeek[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisWeek,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "month2") {
-        let thisDay = new Date();
-        let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth();
-        let lastMonth = thisDay.getMonth() + 1 - thisDay.getMonth() + 1;
-        let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
+    //     const filterOnThisWeek = onThisWeek;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisWeek.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisWeek[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisWeek,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "month2") {
+    //     let thisDay = new Date();
+    //     let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth();
+    //     let lastMonth = thisDay.getMonth() + 1 - thisDay.getMonth() + 1;
+    //     let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
 
-        let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
-          firstMonth
-        )}-${firstDay}`;
+    //     let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       firstMonth
+    //     )}-${firstDay}`;
 
-        let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
-          lastMonth
-        )}-${1}`;
-        const onThisMonth = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //     let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       lastMonth
+    //     )}-${1}`;
+    //     const onThisMonth = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterOnThisMonth = onThisMonth;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisMonth.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisMonth[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisMonth,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "week") {
-        let thisDay = new Date();
-        let firstDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() + 7
-        );
-        let lastDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() + 7
-        );
-        const onThisWeek = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
+    //     const filterOnThisMonth = onThisMonth;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisMonth.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisMonth[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisMonth,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "week") {
+    //     let thisDay = new Date();
+    //     let firstDate = thisDay.setDate(
+    //       thisDay.getDate() - thisDay.getDay() + 7
+    //     );
+    //     let lastDate = thisDay.setDate(
+    //       thisDay.getDate() - thisDay.getDay() + 7
+    //     );
+    //     const onThisWeek = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
 
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterByWeek = onThisWeek;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterByWeek.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterByWeek[index]);
-        // }
-        const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterByWeek,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "month") {
-        let thisDay = new Date();
-        let firstMonth = thisDay.getMonth() + 1 + thisDay.getMonth() - 1;
-        let lastMonth = thisDay.getMonth() + 1 + thisDay.getMonth();
-        let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
+    //     const filterByWeek = onThisWeek;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterByWeek.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterByWeek[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterByWeek,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "month") {
+    //     let thisDay = new Date();
+    //     let firstMonth = thisDay.getMonth() + 1 + thisDay.getMonth() - 1;
+    //     let lastMonth = thisDay.getMonth() + 1 + thisDay.getMonth();
+    //     let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
 
-        let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
-          firstMonth
-        )}-${firstDay}`;
-        let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
-          lastMonth
-        )}-${1}`;
+    //     let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       firstMonth
+    //     )}-${firstDay}`;
+    //     let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       lastMonth
+    //     )}-${1}`;
 
-        const onThisMonth = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return dueDate >= new Date(firstDate) && dueDate < new Date(lastDate);
-        });
+    //     const onThisMonth = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return dueDate >= new Date(firstDate) && dueDate < new Date(lastDate);
+    //     });
 
-        const filterOnThisMonth = onThisMonth;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisMonth.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisMonth[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisMonth,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      }
-    } else {
-      // const offset = (page - 1) * dataPerPage;
-      // const result = (
-      //   await getTodoListByUserIdModels(userId, dataPerPage, offset)
-      // ).recordset;
-      res.status(200).json({
-        msg: "get data success",
-        data: totalData,
-        dataPerPage: dataPerPage,
-        numberStart: (page - 1) * dataPerPage + 1,
-        totalPageData: totalPageData,
-      });
-    }
+    //     const filterOnThisMonth = onThisMonth;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisMonth.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisMonth[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisMonth,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   }
+    // } else {
+    // const offset = (page - 1) * dataPerPage;
+    // const result = (
+    //   await getTodoListByUserIdModels(userId, dataPerPage, offset)
+    // ).recordset;
+    res.status(200).json({
+      msg: "get data success",
+      data: totalData,
+      // dataPerPage: dataPerPage,
+      // numberStart: (page - 1) * dataPerPage + 1,
+      // totalPageData: totalPageData,
+    });
+    // }
   } catch (error) {
     log.error(error);
     res.status(400).json({
@@ -291,185 +291,185 @@ export const getAssignmentSummary = async (req, res) => {
 
     const dataPerPage = 10;
     const totalData = (await countGetAssignmentSummaryModels(userId)).recordset;
-    const totalPageData = Math.ceil(totalData.length / dataPerPage);
+    // const totalPageData = Math.ceil(totalData.length / dataPerPage);
 
-    if (filterType) {
-      let filterData = [];
-      if (filterType === "day") {
-        let filterDate = `${new Date().getFullYear()}-${getMonthvalue(
-          new Date().getMonth()
-        )}-${new Date().getDate()}`;
+    // if (filterType) {
+    //   let filterData = [];
+    //   if (filterType === "day") {
+    //     let filterDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       new Date().getMonth()
+    //     )}-${new Date().getDate()}`;
 
-        const filterByDay = totalData.filter(
-          (item) => item.due_date === filterDate
-        );
+    //     const filterByDay = totalData.filter(
+    //       (item) => item.due_date === filterDate
+    //     );
 
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterByDay.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterByDay[index]);
-        // }
-        const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterByDay,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "week2") {
-        let thisDay = new Date();
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterByDay.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterByDay[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterByDay.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterByDay,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "week2") {
+    //     let thisDay = new Date();
 
-        let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
+    //     let firstDate = thisDay.setDate(thisDay.getDate() - thisDay.getDay());
 
-        let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
+    //     let lastDate = new Date().setDate(new Date(firstDate).getDate() + 7);
 
-        const onThisWeek = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //     const onThisWeek = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterOnThisWeek = onThisWeek;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisWeek.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisWeek[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisWeek,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "month2") {
-        let thisDay = new Date();
-        let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth();
-        let lastMonth = thisDay.getMonth() + 1 - thisDay.getMonth() + 1;
-        let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
+    //     const filterOnThisWeek = onThisWeek;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisWeek.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisWeek[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisWeek.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisWeek,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "month2") {
+    //     let thisDay = new Date();
+    //     let firstMonth = thisDay.getMonth() + 1 - thisDay.getMonth();
+    //     let lastMonth = thisDay.getMonth() + 1 - thisDay.getMonth() + 1;
+    //     let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
 
-        let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
-          firstMonth
-        )}-${firstDay}`;
+    //     let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       firstMonth
+    //     )}-${firstDay}`;
 
-        let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
-          lastMonth
-        )}-${1}`;
-        const onThisMonth = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //     let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       lastMonth
+    //     )}-${1}`;
+    //     const onThisMonth = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterOnThisMonth = onThisMonth;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisMonth.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisMonth[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisMonth,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "week") {
-        let thisDay = new Date();
-        let firstDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() + 7
-        );
-        let lastDate = thisDay.setDate(
-          thisDay.getDate() - thisDay.getDay() + 7
-        );
-        const onThisWeek = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
+    //     const filterOnThisMonth = onThisMonth;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisMonth.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisMonth[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisMonth,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "week") {
+    //     let thisDay = new Date();
+    //     let firstDate = thisDay.setDate(
+    //       thisDay.getDate() - thisDay.getDay() + 7
+    //     );
+    //     let lastDate = thisDay.setDate(
+    //       thisDay.getDate() - thisDay.getDay() + 7
+    //     );
+    //     const onThisWeek = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
 
-          return (
-            dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
-          );
-        });
+    //       return (
+    //         dueDate >= new Date(firstDate) && dueDate <= new Date(lastDate)
+    //       );
+    //     });
 
-        const filterByWeek = onThisWeek;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterByWeek.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterByWeek[index]);
-        // }
-        const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterByWeek,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      } else if (filterType === "month") {
-        let thisDay = new Date();
-        let firstMonth = thisDay.getMonth() + 1 + thisDay.getMonth() - 1;
-        let lastMonth = thisDay.getMonth() + 1 + thisDay.getMonth();
-        let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
+    //     const filterByWeek = onThisWeek;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterByWeek.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterByWeek[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterByWeek.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterByWeek,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   } else if (filterType === "month") {
+    //     let thisDay = new Date();
+    //     let firstMonth = thisDay.getMonth() + 1 + thisDay.getMonth() - 1;
+    //     let lastMonth = thisDay.getMonth() + 1 + thisDay.getMonth();
+    //     let firstDay = thisDay.getDate() + 1 - thisDay.getDate();
 
-        let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
-          firstMonth
-        )}-${firstDay}`;
-        let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
-          lastMonth
-        )}-${1}`;
+    //     let firstDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       firstMonth
+    //     )}-${firstDay}`;
+    //     let lastDate = `${new Date().getFullYear()}-${getMonthvalue(
+    //       lastMonth
+    //     )}-${1}`;
 
-        const onThisMonth = totalData.filter((item) => {
-          const dueDate = new Date(item.due_date);
-          return dueDate >= new Date(firstDate) && dueDate < new Date(lastDate);
-        });
+    //     const onThisMonth = totalData.filter((item) => {
+    //       const dueDate = new Date(item.due_date);
+    //       return dueDate >= new Date(firstDate) && dueDate < new Date(lastDate);
+    //     });
 
-        const filterOnThisMonth = onThisMonth;
-        // for (
-        //   let index = (page - 1) * dataPerPage;
-        //   index < page * dataPerPage && index < filterOnThisMonth.length;
-        //   index++
-        // ) {
-        //   filterData.push(filterOnThisMonth[index]);
-        // }
-        const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
-        const numberStart = (page - 1) * dataPerPage + 1;
-        res.status(200).json({
-          msg: "get data success",
-          data: filterOnThisMonth,
-          dataPerPage: dataPerPage,
-          numberStart: numberStart,
-          totalPageData: totalPageData,
-        });
-      }
-    } else {
-      // const offset = (page - 1) * dataPerPage;
-      // const result = (await getAssignmentSummaryModels(  userId,
-      //   dataPerPage,
-      //   offset)).recordset
-      res.status(200).json({
-        msg: "get data success",
-        data: totalData,
-        dataPerPage: dataPerPage,
-        numberStart: (page - 1) * dataPerPage + 1,
-        totalPageData: totalPageData,
-      });
-    }
+    //     const filterOnThisMonth = onThisMonth;
+    //     // for (
+    //     //   let index = (page - 1) * dataPerPage;
+    //     //   index < page * dataPerPage && index < filterOnThisMonth.length;
+    //     //   index++
+    //     // ) {
+    //     //   filterData.push(filterOnThisMonth[index]);
+    //     // }
+    //     const totalPageData = Math.ceil(filterOnThisMonth.length / dataPerPage);
+    //     const numberStart = (page - 1) * dataPerPage + 1;
+    //     res.status(200).json({
+    //       msg: "get data success",
+    //       data: filterOnThisMonth,
+    //       dataPerPage: dataPerPage,
+    //       numberStart: numberStart,
+    //       totalPageData: totalPageData,
+    //     });
+    //   }
+    // } else {
+    // const offset = (page - 1) * dataPerPage;
+    // const result = (await getAssignmentSummaryModels(  userId,
+    //   dataPerPage,
+    //   offset)).recordset
+    res.status(200).json({
+      msg: "get data success",
+      data: totalData,
+      // dataPerPage: dataPerPage,
+      // numberStart: (page - 1) * dataPerPage + 1,
+      // totalPageData: totalPageData,
+    });
+    // }
   } catch (error) {
     log.error(error);
     res.status(400).json({

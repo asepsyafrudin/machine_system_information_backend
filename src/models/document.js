@@ -21,7 +21,7 @@ export const createDocumentModels = (data, id) => {
              ,'${data.title}'
              ,'${data.status}'
              ,'${data.project_id}'
-             ,'${data.approval_status}')`;
+             ,${data.approval_status ? 1 : 0})`;
   return sql.query(query);
 };
 // export const createDocumentModels = (data, id) => {

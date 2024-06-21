@@ -1,8 +1,5 @@
 import moment from "moment/moment.js";
-import {
-  avgActivityByProjectIdModels,
-  getActivityByProjectIdModels,
-} from "../models/activity.js";
+import { getActivityByProjectIdModels } from "../models/activity.js";
 import {
   createMembers,
   deleteMembers,
@@ -20,15 +17,14 @@ import {
   getProjectByProductIdAndDateRange,
   getProjectByProductIdModels,
   getProjectBySectionId,
-  getProjectBySectionIdAndPage,
   updateProjectModels,
   updateStatusProjectModels,
   updateProjectByDateModels,
   getAllProjectTableModels,
   getAllProductTableModels,
   getALlSectionTableModels,
+  updateSummaryProgressModels,
 } from "../models/project.js";
-import { getActivityByProjectId } from "./activity.js";
 import { getDependenciesByActivityIdModels } from "../models/dependencies.js";
 import { log } from "../config/logConfig.js";
 
@@ -149,10 +145,6 @@ export const getDataResult = async (result) => {
   if (result.length > 0) {
     for (let index = 0; index < result.length; index++) {
       let member = (await getMemberByProjectId(result[index].id)).recordset;
-      // let progress = (await avgActivityByProjectIdModels(result[index].id))
-      //   .recordset;
-      // let activityData = await getActivityByProjectId(result[index].id);
-
       const activityData = (
         await getActivityByProjectIdModels(result[index].id)
       ).recordset;
@@ -194,24 +186,6 @@ export const getDataResult = async (result) => {
 
       let data = {
         ...result[index],
-        // id: result[index].id,
-        // product_id: result[index].product_id,
-        // product_name: result[index].product_name,
-        // rank: result[index].rank,
-        // project_name: result[index].project_name,
-        // manager_id: result[index].manager_id,
-        // budget: result[index].budget,
-        // saving_cost: result[index].saving_cost,
-        // start: result[index].start,
-        // finish: result[index].finish,
-        // create_date: result[index].create_date,
-
-        // user_id: result[index].user_id,
-        // category: result[index].category,
-        // sub_category: result[index].sub_category,
-        // description: result[index].description,
-        // section_id: result[index].section_id,
-        // section_name: result[index].section_name,
         activityData: newData,
         member: member,
         status: statusFunction(
@@ -235,39 +209,86 @@ export const getAllProject = async (req, res) => {
     const tableProduct = (await getAllProductTableModels()).recordset;
     const tableSection = (await getALlSectionTableModels()).recordset;
 
+    let returnData = [];
     if (tableProject.length > 0) {
       for (let index = 0; index < tableProject.length; index++) {
         const dataProduct = tableProduct.find(
           (value) => value.id === tableProject[index].product_id
         );
-        if (dataProduct) {
-          tableProject[index] = {
-            ...tableProject[index],
-            product_name: dataProduct.product_name,
-            section_id: dataProduct.section_id,
-          };
-        }
-      }
 
-      for (let index = 0; index < tableProject.length; index++) {
         const dataSection = tableSection.find(
-          (value) => value.id === tableProject[index].section_id
+          (value) => value.id === dataProduct.section_id
         );
-        if (dataSection) {
-          tableProject[index] = {
-            ...tableProject[index],
-            section_name: dataSection.section_name,
-          };
+
+        let member = (await getMemberByProjectId(tableProject[index].id))
+          .recordset;
+        const activityData = (
+          await getActivityByProjectIdModels(tableProject[index].id)
+        ).recordset;
+
+        let dataSend = [];
+        if (activityData.length > 0) {
+          for (let index3 = 0; index3 < activityData.length; index3++) {
+            const dependencies = (
+              await getDependenciesByActivityIdModels(activityData[index3].id)
+            ).recordset;
+
+            let data = {
+              id: activityData[index3].id,
+              start: activityData[index3].start,
+              end: activityData[index3].finish,
+              name: activityData[index3].name,
+              progress: activityData[index3].progress,
+              dependencies:
+                dependencies.length > 0 ? [dependencies[0].name] : [],
+              type: activityData[index3].type,
+              project: activityData[index3].project_id,
+              remark: activityData[index3].remark,
+              linkToProject: activityData[index3].link_to_project,
+              pic: activityData[index3].pic,
+            };
+            dataSend.push(data);
+          }
         }
+
+        let newData = dataSend.sort(
+          (a, b) => new Date(a.start) - new Date(b.start)
+        );
+
+        let averageProgess = 0;
+        if (newData.length > 0) {
+          for (let index4 = 0; index4 < newData.length; index4++) {
+            averageProgess += parseInt(newData[index4].progress);
+          }
+          averageProgess = averageProgess / newData.length;
+        }
+
+        returnData.push({
+          ...tableProject[index],
+          product_name: dataProduct.product_name
+            ? dataProduct.product_name
+            : "",
+          section_id: dataProduct.section_id ? dataProduct.section_id : "",
+          section_name: dataSection.section_name
+            ? dataSection.section_name
+            : "",
+          activityData: newData,
+          member: member,
+          status: statusFunction(
+            activityData,
+            tableProject[index].start,
+            tableProject[index].finish,
+            averageProgess,
+            tableProject[index].status
+          ),
+          progress: averageProgess,
+        });
+        //new
       }
     }
-
-    const result = tableProject;
-
-    const resultSubmit = await getDataResult(result);
     res.status(200).json({
       msg: "get data berhasil",
-      data: resultSubmit,
+      data: returnData,
     });
   } catch (error) {
     res.status(400).json({
@@ -354,55 +375,93 @@ export const getProjectByUser = async (req, res) => {
     const tableProject = (await getAllProjectTableModels()).recordset;
     const tableProduct = (await getAllProductTableModels()).recordset;
     const tableSection = (await getALlSectionTableModels()).recordset;
-
+    let returnData = [];
     if (tableProject.length > 0) {
       for (let index = 0; index < tableProject.length; index++) {
         const dataProduct = tableProduct.find(
           (value) => value.id === tableProject[index].product_id
         );
-        if (dataProduct) {
-          tableProject[index] = {
-            ...tableProject[index],
-            product_name: dataProduct.product_name,
-            section_id: dataProduct.section_id,
-          };
-        }
-      }
 
-      for (let index = 0; index < tableProject.length; index++) {
         const dataSection = tableSection.find(
-          (value) => value.id === tableProject[index].section_id
+          (value) => value.id === dataProduct.section_id
         );
-        if (dataSection) {
-          tableProject[index] = {
-            ...tableProject[index],
-            section_name: dataSection.section_name,
-          };
-        }
-      }
-    }
 
-    const result = tableProject;
-    const resultSubmit = await getDataResult(result);
-    let filterByMember = [];
+        let member = (await getMemberByProjectId(tableProject[index].id))
+          .recordset;
 
-    if (resultSubmit.length > 0) {
-      for (let index = 0; index < resultSubmit.length; index++) {
-        for (
-          let index2 = 0;
-          index2 < resultSubmit[index].member.length;
-          index2++
-        ) {
-          if (resultSubmit[index].member[index2].user_id === parseInt(user)) {
-            filterByMember.push(resultSubmit[index]);
+        const checkUserOnMember = member.find(
+          (value) => value.user_id === parseInt(user)
+        );
+
+        if (checkUserOnMember) {
+          const activityData = (
+            await getActivityByProjectIdModels(tableProject[index].id)
+          ).recordset;
+
+          let dataSend = [];
+          if (activityData.length > 0) {
+            for (let index3 = 0; index3 < activityData.length; index3++) {
+              const dependencies = (
+                await getDependenciesByActivityIdModels(activityData[index3].id)
+              ).recordset;
+
+              let data = {
+                id: activityData[index3].id,
+                start: activityData[index3].start,
+                end: activityData[index3].finish,
+                name: activityData[index3].name,
+                progress: activityData[index3].progress,
+                dependencies:
+                  dependencies.length > 0 ? [dependencies[0].name] : [],
+                type: activityData[index3].type,
+                project: activityData[index3].project_id,
+                remark: activityData[index3].remark,
+                linkToProject: activityData[index3].link_to_project,
+                pic: activityData[index3].pic,
+              };
+              dataSend.push(data);
+            }
           }
+
+          let newData = dataSend.sort(
+            (a, b) => new Date(a.start) - new Date(b.start)
+          );
+
+          let averageProgess = 0;
+          if (newData.length > 0) {
+            for (let index4 = 0; index4 < newData.length; index4++) {
+              averageProgess += parseInt(newData[index4].progress);
+            }
+            averageProgess = averageProgess / newData.length;
+          }
+
+          returnData.push({
+            ...tableProject[index],
+            product_name: dataProduct.product_name
+              ? dataProduct.product_name
+              : "",
+            section_id: dataProduct.section_id ? dataProduct.section_id : "",
+            section_name: dataSection.section_name
+              ? dataSection.section_name
+              : "",
+            activityData: newData,
+            member: member,
+            status: statusFunction(
+              activityData,
+              tableProject[index].start,
+              tableProject[index].finish,
+              averageProgess,
+              tableProject[index].status
+            ),
+            progress: averageProgess,
+          });
         }
       }
     }
 
     res.status(200).json({
       msg: "get project berhasil",
-      data: filterByMember,
+      data: returnData,
     });
   } catch (error) {
     log.error(error);
@@ -673,6 +732,22 @@ export const getAllProjectByFilterAndPage = async (req, res) => {
     log.error(error);
     res.status(400).json({
       msg: "get data failed",
+      errMsg: error,
+    });
+  }
+};
+
+export const updateSummaryProgress = async (req, res) => {
+  try {
+    await updateSummaryProgressModels(req.body);
+    res.status(200).json({
+      msg: "update summary progress success",
+      data: req.body,
+    });
+  } catch (error) {
+    log.error(error);
+    res.status(400).json({
+      msg: "update summary progress failed",
       errMsg: error,
     });
   }

@@ -135,7 +135,8 @@ export const getProjectByIdModels = (id) => {
   t_product.section_id,
   t_section.section_name,
   t_project.status,
-  t_project.create_date
+  t_project.create_date,
+  t_project.summary_progress
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
@@ -162,7 +163,8 @@ export const countGetAllProjectModels = () => {
   t_product.product_name,
   t_product.section_id,
   t_section.section_name,
-  t_project.create_date
+  t_project.create_date,
+  t_project.summary_progress
   FROM t_project 
   LEFT JOIN t_product ON t_project.product_id = t_product.id
   LEFT JOIN t_section ON t_product.section_id = t_section.id
@@ -302,7 +304,8 @@ export const getProjectBySectionId = (id) => {
   t_product.section_id,
   t_section.section_name,
   t_project.status,
-  t_project.create_date
+  t_project.create_date,
+  t_project.summary_progress
   FROM t_project 
   JOIN t_product ON t_project.product_id = t_product.id
   JOIN t_section ON t_product.section_id = t_section.id
@@ -408,5 +411,10 @@ export const getProjectByAllWithoutDateRangeModels = (productId, category) => {
   ORDER BY t_project.create_date DESC
   `;
 
+  return sql.query(query);
+};
+
+export const updateSummaryProgressModels = (data) => {
+  const query = `UPDATE t_project SET summary_progress = '${data.summary_progress}' where id = '${data.id}'`;
   return sql.query(query);
 };

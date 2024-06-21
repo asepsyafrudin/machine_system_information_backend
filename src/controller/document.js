@@ -30,6 +30,7 @@ const managerFunction = async (npk) => {
 export const createDocument = async (req, res) => {
   try {
     const id = uuidv4();
+    console.log(req.body);
     await createDocumentModels(req.body, id);
     const file = req.files;
     const product_id_document = req.body.product_id;
